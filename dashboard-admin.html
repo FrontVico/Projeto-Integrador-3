@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Administrador - VanUniversity</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+    <div class="dashboard">
+        <aside class="sidebar admin-sidebar">
+            <div class="sidebar-header">
+                <i class="fas fa-bus"></i>
+                <h3>Admin</h3>
+            </div>
+            <nav class="sidebar-nav">
+                <ul>
+                    <li class="active"><a href="#dashboard"><i class="fas fa-home"></i> Dashboard</a></li>
+                    <li><a href="#passageiros"><i class="fas fa-users"></i> Passageiros</a></li>
+                    <li><a href="#presenca"><i class="fas fa-calendar-check"></i> Lista de Presença</a></li>
+                    <li><a href="#financeiro"><i class="fas fa-dollar-sign"></i> Financeiro</a></li>
+                    <li><a href="#abastecimento"><i class="fas fa-gas-pump"></i> Abastecimento</a></li>
+                    <li><a href="#relatorios"><i class="fas fa-chart-bar"></i> Relatórios</a></li>
+                    <li><a href="#configuracoes"><i class="fas fa-cog"></i> Configurações</a></li>
+                    <li><a href="login.html" class="logout"><i class="fas fa-sign-out-alt"></i> Sair</a></li>
+                </ul>
+            </nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="dashboard-header">
+                <h1>Painel do Administrador</h1>
+                <div class="header-info">
+                    <span class="date"><i class="fas fa-calendar"></i> 13/03/2024</span>
+                    <span class="vehicle-info"><i class="fas fa-tachometer-alt"></i> Km: 45.678</span>
+                </div>
+            </header>
+
+            <section class="dashboard-cards">
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Total Passageiros</h3>
+                        <p class="card-value">24</p>
+                        <span class="card-label">ativos</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-user-check"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Presentes Hoje</h3>
+                        <p class="card-value">18</p>
+                        <span class="card-label">de 24 passageiros</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-dollar-sign"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Receita Mensal</h3>
+                        <p class="card-value">R$ 6.000</p>
+                        <span class="card-label">75% recebido</span>
+                    </div>
+                </div>
+                <div class="card">
+                    <div class="card-icon">
+                        <i class="fas fa-gas-pump"></i>
+                    </div>
+                    <div class="card-info">
+                        <h3>Consumo Médio</h3>
+                        <p class="card-value">8,5 km/l</p>
+                        <span class="card-label">últimos 30 dias</span>
+                    </div>
+                </div>
+            </section>
+
+            <section id="presenca" class="presenca-admin">
+                <h2>Lista de Presença - Hoje</h2>
+                <table class="presenca-table">
+                    <thead>
+                        <tr>
+                            <th>Passageiro</th>
+                            <th>Status</th>
+                            <th>Telefone</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>João Silva</td>
+                            <td><span class="status-badge present">Presente</span></td>
+                            <td>(11) 99999-9999</td>
+                            <td>
+                                <button class="btn-icon"><i class="fas fa-check-circle"></i></button>
+                                <button class="btn-icon"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Maria Oliveira</td>
+                            <td><span class="status-badge present">Presente</span></td>
+                            <td>(11) 98888-8888</td>
+                            <td>
+                                <button class="btn-icon"><i class="fas fa-check-circle"></i></button>
+                                <button class="btn-icon"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>Pedro Santos</td>
+                            <td><span class="status-badge absent">Ausente</span></td>
+                            <td>(11) 97777-7777</td>
+                            <td>
+                                <button class="btn-icon"><i class="fas fa-check-circle"></i></button>
+                                <button class="btn-icon"><i class="fas fa-times-circle"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </section>
+
+            <section class="charts-section">
+                <div class="chart-container">
+                    <h3>Frequência de Passageiros</h3>
+                    <canvas id="frequenciaChart"></canvas>
+                </div>
+                <div class="chart-container">
+                    <h3>Receitas vs Despesas</h3>
+                    <canvas id="financeiroChart"></canvas>
+                </div>
+            </section>
+
+            <section id="abastecimento" class="abastecimento-section">
+                <h2>Registro de Abastecimento</h2>
+                <form id="abastecimentoForm" class="abastecimento-form">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="data">Data</label>
+                            <input type="date" id="data" name="data" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="km">Quilometragem</label>
+                            <input type="number" id="km" name="km" required placeholder="km atual">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="litros">Litros</label>
+                            <input type="number" step="0.01" id="litros" name="litros" required placeholder="0.00">
+                        </div>
+                        <div class="form-group">
+                            <label for="valor">Valor Total (R$)</label>
+                            <input type="number" step="0.01" id="valor" name="valor" required placeholder="0.00">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="posto">Posto</label>
+                        <input type="text" id="posto" name="posto" required placeholder="Nome do posto">
+                    </div>
+                    <button type="submit" class="btn-primary">Registrar Abastecimento</button>
+                </form>
+
+                <div class="abastecimento-history">
+                    <h3>Últimos Abastecimentos</h3>
+                    <table class="abastecimento-table">
+                        <thead>
+                            <tr>
+                                <th>Data</th>
+                                <th>Km</th>
+                                <th>Litros</th>
+                                <th>Valor</th>
+                                <th>Consumo</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>10/03/2024</td>
+                                <td>45.600</td>
+                                <td>50,0 L</td>
+                                <td>R$ 275,00</td>
+                                <td>8,2 km/l</td>
+                            </tr>
+                            <tr>
+                                <td>05/03/2024</td>
+                                <td>45.200</td>
+                                <td>48,5 L</td>
+                                <td>R$ 266,75</td>
+                                <td>8,8 km/l</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+
+            <section id="financeiro" class="financeiro-section">
+                <h2>Controle Financeiro</h2>
+                <div class="financeiro-cards">
+                    <div class="finance-card">
+                        <h4>Mensalidades</h4>
+                        <p class="value">R$ 6.000,00</p>
+                        <p class="sub">Receita Bruta</p>
+                    </div>
+                    <div class="finance-card">
+                        <h4>Gastos Combustível</h4>
+                        <p class="value">R$ 1.200,00</p>
+                        <p class="sub">Este mês</p>
+                    </div>
+                    <div class="finance-card">
+                        <h4>Outros Gastos</h4>
+                        <p class="value">R$ 500,00</p>
+                        <p class="sub">Manutenção</p>
+                    </div>
+                    <div class="finance-card highlight">
+                        <h4>Rentabilidade</h4>
+                        <p class="value">R$ 4.300,00</p>
+                        <p class="sub">Lucro Estimado</p>
+                    </div>
+                </div>
+
+                <div class="mensalidades-table">
+                    <h3>Status de Pagamento</h3>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Passageiro</th>
+                                <th>Mensalidade</th>
+                                <th>Vencimento</th>
+                                <th>Status</th>
+                                <th>Ações</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>João Silva</td>
+                                <td>R$ 250,00</td>
+                                <td>10/03/2024</td>
+                                <td><span class="status-badge paid">Pago</span></td>
+                                <td><button class="btn-small">Confirmar</button></td>
+                            </tr>
+                            <tr>
+                                <td>Maria Oliveira</td>
+                                <td>R$ 250,00</td>
+                                <td>10/03/2024</td>
+                                <td><span class="status-badge pending">Pendente</span></td>
+                                <td><button class="btn-small">Confirmar</button></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script>
+        // Gráfico de Frequência
+        const ctx1 = document.getElementById('frequenciaChart').getContext('2d');
+        new Chart(ctx1, {
+            type: 'line',
+            data: {
+                labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'],
+                datasets: [{
+                    label: 'Passageiros Presentes',
+                    data: [18, 20, 19, 22, 21, 15],
+                    borderColor: '#2563eb',
+                    backgroundColor: 'rgba(37, 99, 235, 0.1)',
+                    tension: 0.4
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+
+        // Gráfico Financeiro
+        const ctx2 = document.getElementById('financeiroChart').getContext('2d');
+        new Chart(ctx2, {
+            type: 'bar',
+            data: {
+                labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun'],
+                datasets: [
+                    {
+                        label: 'Receitas',
+                        data: [5800, 6000, 6200, 5900, 6100, 6300],
+                        backgroundColor: '#10b981'
+                    },
+                    {
+                        label: 'Despesas',
+                        data: [3200, 3400, 3100, 3500, 3300, 3600],
+                        backgroundColor: '#ef4444'
+                    }
+                ]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false
+            }
+        });
+    </script>
+    <script src="js/admin.js"></script>
+</body>
+</html>
