@@ -1,11 +1,11 @@
-package com.VanControl.VanControl.Controller;
+package com.VanControl.VanControl.user.Controller;
 
-import com.VanControl.VanControl.DTO.LoginRequestDTO;
-import com.VanControl.VanControl.DTO.RegisterRequestDTO;
-import com.VanControl.VanControl.DTO.ResponseDTO;
-import com.VanControl.VanControl.Infra.Security.TokenService;
-import com.VanControl.VanControl.Model.User.User;
-import com.VanControl.VanControl.Repository.UserRepository;
+import com.VanControl.VanControl.user.DTO.LoginRequestDTO;
+import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
+import com.VanControl.VanControl.user.DTO.ResponseDTO;
+import com.VanControl.VanControl.user.Infra.Security.TokenService;
+import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;

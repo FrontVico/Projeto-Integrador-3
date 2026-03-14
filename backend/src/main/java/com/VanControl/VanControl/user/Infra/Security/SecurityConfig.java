@@ -1,6 +1,5 @@
-package com.VanControl.VanControl.Infra.Security;
+package com.VanControl.VanControl.user.Infra.Security;
 
-import jakarta.persistence.Entity;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

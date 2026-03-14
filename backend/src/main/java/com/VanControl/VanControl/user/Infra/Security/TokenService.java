@@ -1,6 +1,6 @@
-package com.VanControl.VanControl.Infra.Security;
+package com.VanControl.VanControl.user.Infra.Security;
 
-import com.VanControl.VanControl.Model.User.User;
+import com.VanControl.VanControl.user.Model.User.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;

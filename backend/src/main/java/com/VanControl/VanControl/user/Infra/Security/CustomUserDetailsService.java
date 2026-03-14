@@ -1,7 +1,7 @@
-package com.VanControl.VanControl.Infra.Security;
+package com.VanControl.VanControl.user.Infra.Security;
 
-import com.VanControl.VanControl.Model.User.User;
-import com.VanControl.VanControl.Repository.UserRepository;
+import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

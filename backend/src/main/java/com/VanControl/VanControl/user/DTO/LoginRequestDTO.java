@@ -1,4 +1,4 @@
-package com.VanControl.VanControl.DTO;
+package com.VanControl.VanControl.user.DTO;
 
 public record LoginRequestDTO(String email, String password) {
 }

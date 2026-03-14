@@ -1,7 +1,7 @@
-package com.VanControl.VanControl.Infra.Security;
+package com.VanControl.VanControl.user.Infra.Security;
 
-import com.VanControl.VanControl.Model.User.User;
-import com.VanControl.VanControl.Repository.UserRepository;
+import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.Repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -11,7 +11,6 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
-import org.springframework.web.filter.GenericFilterBean;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;

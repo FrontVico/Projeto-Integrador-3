@@ -1,6 +1,6 @@
-package com.VanControl.VanControl.Repository;
+package com.VanControl.VanControl.user.Repository;
 
-import com.VanControl.VanControl.Model.User.User;
+import com.VanControl.VanControl.user.Model.User.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 

@@ -1,4 +1,4 @@
-package com.VanControl.VanControl.Controller;
+package com.VanControl.VanControl.user.Controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;

@@ -1,4 +1,4 @@
-package com.VanControl.VanControl.Model.User;
+package com.VanControl.VanControl.user.Model.User;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
