@@ -24,7 +24,8 @@ public class VeiculoMapper {
                 veiculo.getModelo(),
                 veiculo.getAno(),
                 veiculo.getCapacidade(),
-                veiculo.getRenavam()
+                veiculo.getRenavam(),
+                veiculo.getStatus()
         );
     }
 }

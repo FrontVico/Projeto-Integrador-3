@@ -1,10 +1,7 @@
 package com.VanControl.VanControl.veiculos.domain.entity;
 
 import com.VanControl.VanControl.veiculos.domain.enums.StatusEnum;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -18,6 +15,7 @@ import java.util.UUID;
 public class Veiculo {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idVeiculo;
 
     private String placa;

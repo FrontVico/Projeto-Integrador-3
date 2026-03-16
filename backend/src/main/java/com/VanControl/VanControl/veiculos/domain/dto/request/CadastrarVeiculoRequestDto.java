@@ -11,7 +11,8 @@ public record CadastrarVeiculoRequestDto(
         String modelo,
         int ano,
         int capacidade,
-        String renavam
+        String renavam,
+        String status
 
 
 
