@@ -1,0 +1,15 @@
+services:
+  db:
+    image: 'postgres:latest'
+    container_name: 'database'
+    environment:
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'minhasenha'
+      POSTGRES_DB: 'VanControl'
+    ports:
+      - '5432:5432'
+    volumes:
+      - 'db_data:/var/lib/postgresql'
+
+volumes:
+  db_data:
