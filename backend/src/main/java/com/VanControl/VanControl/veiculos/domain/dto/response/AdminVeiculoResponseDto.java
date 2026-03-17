@@ -1,11 +1,15 @@
 package com.VanControl.VanControl.veiculos.domain.dto.response;
 
-public record VeiculoResponseDto(
+import java.util.UUID;
+
+public record AdminVeiculoResponseDto(
+        UUID id,
         String placa,
         String marca,
         String modelo,
         int ano,
         int capacidade,
+        String renavam,
         String status
 ) {
 }

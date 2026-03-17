@@ -2,7 +2,7 @@ package com.VanControl.VanControl.veiculos.service;
 
 import com.VanControl.VanControl.veiculos.domain.dto.request.AtualizarStatusVeiculoRequestDto;
 import com.VanControl.VanControl.veiculos.domain.dto.request.CadastrarVeiculoRequestDto;
-import com.VanControl.VanControl.veiculos.domain.dto.response.ResponseDto;
+import com.VanControl.VanControl.veiculos.domain.dto.response.VeiculoDefaultResponseDto;
 import com.VanControl.VanControl.veiculos.domain.dto.response.VeiculoResponseDto;
 import com.VanControl.VanControl.veiculos.domain.enums.StatusEnum;
 import com.VanControl.VanControl.veiculos.mapper.VeiculoMapper;
@@ -18,7 +18,7 @@ public class VeiculoService {
 
     private final VeiculoRepository veiculoRepository;
 
-    public ResponseDto cadastrarVeiculo(CadastrarVeiculoRequestDto dto) {
+    public VeiculoDefaultResponseDto cadastrarVeiculo(CadastrarVeiculoRequestDto dto) {
         if(veiculoRepository.findByPlaca(dto.placa()) != null){
             throw new RuntimeException("Veículo já cadastrado");
         }
@@ -26,7 +26,7 @@ public class VeiculoService {
         var veiculo = VeiculoMapper.converterParaVeiculo(dto);
 
         veiculoRepository.save(veiculo);
-        return new ResponseDto("Veículo cadastrado com sucesso");
+        return new VeiculoDefaultResponseDto("Veículo cadastrado com sucesso");
     }
 
     public VeiculoResponseDto buscarVeiculoPorPlaca(String placa) {
@@ -44,22 +44,22 @@ public class VeiculoService {
                 .toList();
     }
 
-    public ResponseDto atualizarStatusVeiculo(AtualizarStatusVeiculoRequestDto dto) {
+    public VeiculoDefaultResponseDto atualizarStatusVeiculo(AtualizarStatusVeiculoRequestDto dto) {
         var veiculo = veiculoRepository.findByPlaca(dto.placa());
         if(veiculo == null){
             throw new RuntimeException("Veículo não encontrado");
         }
         veiculo.setStatus(StatusEnum.valueOf(dto.status().toUpperCase()));
         veiculoRepository.save(veiculo);
-        return new ResponseDto("Status do veículo atualizado com sucesso");
+        return new VeiculoDefaultResponseDto("Status do veículo atualizado com sucesso");
     }
 
-    public ResponseDto deletarVeiculo(String placa) {
+    public VeiculoDefaultResponseDto deletarVeiculo(String placa) {
         var veiculo = veiculoRepository.findByPlaca(placa);
         if(veiculo == null){
             throw new RuntimeException("Veículo não encontrado");
         }
         veiculoRepository.delete(veiculo);
-        return new ResponseDto("Veículo deletado com sucesso");
+        return new VeiculoDefaultResponseDto("Veículo deletado com sucesso");
     }
 }

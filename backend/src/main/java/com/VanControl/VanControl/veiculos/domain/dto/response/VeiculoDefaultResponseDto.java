@@ -1,6 +1,6 @@
 package com.VanControl.VanControl.veiculos.domain.dto.response;
 
-public record ResponseDto(
+public record VeiculoDefaultResponseDto(
         String message
 ) {
 }

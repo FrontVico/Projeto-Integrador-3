@@ -2,7 +2,7 @@ package com.VanControl.VanControl.veiculos.controller;
 
 import com.VanControl.VanControl.veiculos.domain.dto.request.AtualizarStatusVeiculoRequestDto;
 import com.VanControl.VanControl.veiculos.domain.dto.request.CadastrarVeiculoRequestDto;
-import com.VanControl.VanControl.veiculos.domain.dto.response.ResponseDto;
+import com.VanControl.VanControl.veiculos.domain.dto.response.VeiculoDefaultResponseDto;
 import com.VanControl.VanControl.veiculos.domain.dto.response.VeiculoResponseDto;
 import com.VanControl.VanControl.veiculos.service.VeiculoService;
 import jakarta.validation.Valid;
@@ -21,7 +21,7 @@ public class VeiculoController {
     private final VeiculoService veiculoService;
 
     @PostMapping
-    public ResponseEntity<ResponseDto> cadastrarVeiculo(@RequestBody @Valid CadastrarVeiculoRequestDto dto) {
+    public ResponseEntity<VeiculoDefaultResponseDto> cadastrarVeiculo(@RequestBody @Valid CadastrarVeiculoRequestDto dto) {
         return new ResponseEntity<>(veiculoService.cadastrarVeiculo(dto), HttpStatus.CREATED);
     }
 
@@ -36,12 +36,12 @@ public class VeiculoController {
     }
 
     @PutMapping("/status")
-    public ResponseEntity<ResponseDto> atualizarStatusVeiculo(@RequestBody @Valid AtualizarStatusVeiculoRequestDto dto) {
+    public ResponseEntity<VeiculoDefaultResponseDto> atualizarStatusVeiculo(@RequestBody @Valid AtualizarStatusVeiculoRequestDto dto) {
         return new ResponseEntity<>(veiculoService.atualizarStatusVeiculo(dto), HttpStatus.OK);
     }
 
     @DeleteMapping()
-    public ResponseEntity<ResponseDto> deletarVeiculo(@RequestParam String placa) {
+    public ResponseEntity<VeiculoDefaultResponseDto> deletarVeiculo(@RequestParam String placa) {
         return new ResponseEntity<>(veiculoService.deletarVeiculo(placa), HttpStatus.OK);
     }
 }
