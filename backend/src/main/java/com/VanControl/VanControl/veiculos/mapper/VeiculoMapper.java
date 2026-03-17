@@ -1,6 +1,7 @@
 package com.VanControl.VanControl.veiculos.mapper;
 
 import com.VanControl.VanControl.veiculos.domain.dto.request.CadastrarVeiculoRequestDto;
+import com.VanControl.VanControl.veiculos.domain.dto.response.AdminVeiculoResponseDto;
 import com.VanControl.VanControl.veiculos.domain.dto.response.VeiculoResponseDto;
 import com.VanControl.VanControl.veiculos.domain.entity.Veiculo;
 
@@ -25,8 +26,20 @@ public class VeiculoMapper {
                 veiculo.getModelo(),
                 veiculo.getAno(),
                 veiculo.getCapacidade(),
+                String.valueOf(veiculo.getStatus())
+        );
+    }
+
+    public static AdminVeiculoResponseDto converterParaAdminVeiculoDto(Veiculo veiculo) {
+        return new AdminVeiculoResponseDto(
+                veiculo.getIdVeiculo(),
+                veiculo.getPlaca(),
+                veiculo.getMarca(),
+                veiculo.getModelo(),
+                veiculo.getAno(),
+                veiculo.getCapacidade(),
                 veiculo.getRenavam(),
-                veiculo.getStatus()
+                String.valueOf(veiculo.getStatus())
         );
     }
 }
