@@ -1,0 +1,29 @@
+package com.VanControl.VanControl.motorista.domain.dto.request;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.br.CPF;
+
+import java.time.YearMonth;
+
+public record CadastrarMotoristaRequestDto(
+        @Pattern(regexp = "^[A-ZÀ-Ÿ][a-zà-ÿ]+(?: [A-ZÀ-Ÿ][a-zà-ÿ]+)*$", message = "Insira seu nome completo, iniciando com letra maiúscula")
+        @NotBlank(message = "Insira o nome do motorista")
+        String nome,
+        @Pattern(regexp = "^[0-9]{11}$", message = "Insira a CNH com 11 dígitos numéricos")
+        @NotBlank(message = "Insira a CNH do motorista")
+        String cnh,
+        @Pattern(regexp = "(A|B|AB|C|D|E|AC|AD|AE)", message = "Insira a categoria da CNH")
+        @NotBlank(message = "Insira a categoria da CNH do motorista")
+        String categoriaCnh,
+        @Pattern(regexp = "^(0[1-9]|1[0-2])/(\\d{4})$", message = "Insira a data de validade da CNH no formato MM/YYYY")
+        @NotBlank(message = "Insira a data de validade da CNH do motorista")
+        YearMonth dataValidadeCnh,
+        @CPF(message = "CPF inválido")
+        @NotBlank(message = "Insira o CPF do motorista")
+        String cpf,
+        @Pattern(regexp = "^[0-9]{5}-[0-9]{4}$", message = "Insira o telefone no formato 12345-6789")
+        @NotBlank(message = "Insira o telefone do motorista")
+        String telefone
+) {
+}
