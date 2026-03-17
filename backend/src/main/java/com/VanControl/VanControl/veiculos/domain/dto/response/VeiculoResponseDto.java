@@ -1,7 +1,5 @@
 package com.VanControl.VanControl.veiculos.domain.dto.response;
 
-import com.VanControl.VanControl.veiculos.domain.enums.StatusEnum;
-
 public record VeiculoResponseDto(
         String placa,
         String marca,
@@ -9,6 +7,6 @@ public record VeiculoResponseDto(
         int ano,
         int capacidade,
         String renavam,
-        StatusEnum status
+        String status
 ) {
 }

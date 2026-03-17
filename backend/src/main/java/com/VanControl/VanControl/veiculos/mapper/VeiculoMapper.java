@@ -13,7 +13,8 @@ public class VeiculoMapper {
                 dto.modelo(),
                 dto.ano(),
                 dto.capacidade(),
-                dto.renavam()
+                dto.renavam(),
+                dto.status().toUpperCase()
         );
     }
 

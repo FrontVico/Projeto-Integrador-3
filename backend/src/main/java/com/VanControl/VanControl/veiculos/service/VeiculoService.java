@@ -7,7 +7,6 @@ import com.VanControl.VanControl.veiculos.domain.dto.response.VeiculoResponseDto
 import com.VanControl.VanControl.veiculos.domain.enums.StatusEnum;
 import com.VanControl.VanControl.veiculos.mapper.VeiculoMapper;
 import com.VanControl.VanControl.veiculos.repository.VeiculoRepository;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -45,7 +44,7 @@ public class VeiculoService {
                 .toList();
     }
 
-    public ResponseDto atualizarStatusVeiculo(@Valid AtualizarStatusVeiculoRequestDto dto) {
+    public ResponseDto atualizarStatusVeiculo(AtualizarStatusVeiculoRequestDto dto) {
         var veiculo = veiculoRepository.findByPlaca(dto.placa());
         if(veiculo == null){
             throw new RuntimeException("Veículo não encontrado");
