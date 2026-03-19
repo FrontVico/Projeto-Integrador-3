@@ -1,6 +1,9 @@
 package com.VanControl.VanControl.motorista.domain.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.br.CPF;
 
@@ -16,8 +19,9 @@ public record CadastrarMotoristaRequestDto(
         @Pattern(regexp = "(A|B|AB|C|D|E|AC|AD|AE)", message = "Insira a categoria da CNH")
         @NotBlank(message = "Insira a categoria da CNH do motorista")
         String categoriaCnh,
-        @Pattern(regexp = "^(0[1-9]|1[0-2])/(\\d{4})$", message = "Insira a data de validade da CNH no formato MM/YYYY")
-        @NotBlank(message = "Insira a data de validade da CNH do motorista")
+        @JsonFormat(pattern = "yyyy/MM")
+        @Future(message = "A CNH não pode estar vencida")
+        @NotNull(message = "Insira a data de validade da CNH do motorista")
         YearMonth dataValidadeCnh,
         @CPF(message = "CPF inválido")
         @NotBlank(message = "Insira o CPF do motorista")
