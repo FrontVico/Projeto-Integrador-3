@@ -4,10 +4,12 @@ import com.VanControl.VanControl.user.DTO.LoginRequestDTO;
 import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
 import com.VanControl.VanControl.user.DTO.ResponseDTO;
 import com.VanControl.VanControl.user.Infra.Security.TokenService;
+import com.VanControl.VanControl.user.Model.User.Role;
 import com.VanControl.VanControl.user.Model.User.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -29,7 +31,7 @@ public class AuthController {
     @PostMapping("/login")
     public ResponseEntity login(@RequestBody LoginRequestDTO body){
         User user = this.userRepository.findByEmail(body.email()).orElseThrow(() -> new RuntimeException("User not found"));
-        if(passwordEncoder.matches(user.getPassword(), body.password())){
+        if(passwordEncoder.matches(body.password(), user.getPassword())){
             String token = this.tokenService.generateToken(user);
             return ResponseEntity.ok(new ResponseDTO(user.getName(), token));
         }
@@ -45,6 +47,7 @@ public class AuthController {
             newUser.setPassword(passwordEncoder.encode(body.password()));
             newUser.setEmail(body.email());
             newUser.setName(body.name());
+            newUser.setRole(Role.CLIENTE);
             this.userRepository.save(newUser);
 
             String token = this.tokenService.generateToken(newUser);
@@ -53,6 +56,4 @@ public class AuthController {
         }
         return ResponseEntity.badRequest().build();
     }
-
-
 }

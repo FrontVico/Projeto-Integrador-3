@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class MotoristaController {
     private final MotoristaService motoristaService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MotoristaDefaultResponseDto> cadastrarMotorista(@RequestBody @Valid CadastrarMotoristaRequestDto dto) {
         return new ResponseEntity<>(motoristaService.cadastrarMotorista(dto), HttpStatus.CREATED);
     }
@@ -36,11 +38,13 @@ public class MotoristaController {
     }
 
     @PutMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MotoristaDefaultResponseDto> atualizarTelefoneMotorista(@RequestBody @Valid AtualizarTelefoneMotoristaRequestDto dto) {
         return new ResponseEntity<>(motoristaService.atualizarTelefoneMotorista(dto), HttpStatus.OK);
     }
 
     @DeleteMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MotoristaDefaultResponseDto> deletarMotorista(@RequestParam String cpf) {
         return new ResponseEntity<>(motoristaService.deletarMotorista(cpf), HttpStatus.OK);
     }

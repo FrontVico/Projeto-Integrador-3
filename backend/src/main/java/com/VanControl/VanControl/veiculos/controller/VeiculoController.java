@@ -9,6 +9,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,6 +22,7 @@ public class VeiculoController {
     private final VeiculoService veiculoService;
 
     @PostMapping
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VeiculoDefaultResponseDto> cadastrarVeiculo(@RequestBody @Valid CadastrarVeiculoRequestDto dto) {
         return new ResponseEntity<>(veiculoService.cadastrarVeiculo(dto), HttpStatus.CREATED);
     }
@@ -36,11 +38,13 @@ public class VeiculoController {
     }
 
     @PutMapping("/status")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VeiculoDefaultResponseDto> atualizarStatusVeiculo(@RequestBody @Valid AtualizarStatusVeiculoRequestDto dto) {
         return new ResponseEntity<>(veiculoService.atualizarStatusVeiculo(dto), HttpStatus.OK);
     }
 
     @DeleteMapping()
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<VeiculoDefaultResponseDto> deletarVeiculo(@RequestParam String placa) {
         return new ResponseEntity<>(veiculoService.deletarVeiculo(placa), HttpStatus.OK);
     }

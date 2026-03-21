@@ -1,5 +1,6 @@
 package com.VanControl.VanControl.user.Infra.Security;
 
+import com.VanControl.VanControl.user.Model.User.Role;
 import com.VanControl.VanControl.user.Model.User.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -30,7 +31,7 @@ public class SecurityFilter extends OncePerRequestFilter {
 
         if(login != null){
             User user = userRepository.findByEmail(login).orElseThrow(() -> new RuntimeException("User not found"));
-            var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"));
+            var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_ADMIN"));
             var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }
