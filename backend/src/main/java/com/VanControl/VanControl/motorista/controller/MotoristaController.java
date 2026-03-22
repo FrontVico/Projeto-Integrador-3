@@ -31,7 +31,7 @@ public class MotoristaController {
     public ResponseEntity<MotoristaResponseDto> buscarMotoristaPorCpf(@PathVariable String cpf) {
         return new ResponseEntity<>(motoristaService.buscarMotoristaPorCpf(cpf), HttpStatus.OK);
     }
-
+    
     @GetMapping
     public ResponseEntity<List<MotoristaResponseDto>> buscarTodosMotoristas() {
         return new ResponseEntity<>(motoristaService.buscarTodosMotoristas(), HttpStatus.OK);
