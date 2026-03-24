@@ -1,9 +1,7 @@
 package com.VanControl.VanControl.passageiros.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.VanControl.VanControl.user.Model.User.User;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.UUID;
@@ -20,13 +18,17 @@ public class Passageiro {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "user_id", referencedColumnName = "id")
+    private User user;
+
     private String nome;
     private String cpf;
     private String telefone;
     private String email;
-    private String intituicaoEnsino;
+    private String instituicaoEnsino;
     private String turno;
-    private String Endereco;
+    private String endereco;
     private String cep;
 
     public Passageiro(String nome, String cpf, String telefone, String email, String intituicaoEnsino, String turno,
@@ -35,9 +37,9 @@ public class Passageiro {
         this.cpf = cpf;
         this.telefone = telefone;
         this.email = email;
-        this.intituicaoEnsino = intituicaoEnsino;
+        this.instituicaoEnsino = intituicaoEnsino;
         this.turno = turno;
-        Endereco = endereco;
+        this.endereco = endereco;
         this.cep = cep;
     }
 }

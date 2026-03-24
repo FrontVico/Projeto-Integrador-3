@@ -1,7 +1,5 @@
 package com.VanControl.VanControl.user.Infra.Security;
 
-import ch.qos.logback.core.model.Model;
-import com.VanControl.VanControl.user.Model.User.Role;
 import com.VanControl.VanControl.user.Model.User.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,7 +9,6 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 
-import java.util.ArrayList;
 import java.util.Collections;
 
 @Component

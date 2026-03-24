@@ -43,7 +43,7 @@ public class MotoristaController {
         return new ResponseEntity<>(motoristaService.atualizarTelefoneMotorista(dto), HttpStatus.OK);
     }
 
-    @DeleteMapping()
+    @DeleteMapping
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<MotoristaDefaultResponseDto> deletarMotorista(@RequestParam String cpf) {
         return new ResponseEntity<>(motoristaService.deletarMotorista(cpf), HttpStatus.OK);

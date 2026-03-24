@@ -4,11 +4,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import org.hibernate.validator.constraints.br.CPF;
 
-public record AtualizarPassgeiroRequestDto(
+public record AtualizarPassageiroRequestDto(
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ ]+$", message = "O nome deve conter apenas letras e espaços")
         String nome,
-        @CPF(message = "Insira um CPF válido")
-        String cpf,
         @Pattern(regexp = "^[0-9]{5}-[0-9]{4}$", message = "Insira o telefone no formato 12345-6789")
         String telefone,
         @Email(message = "Insira um email válido")
