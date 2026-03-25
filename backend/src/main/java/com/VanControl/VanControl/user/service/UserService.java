@@ -9,7 +9,6 @@ import com.VanControl.VanControl.user.Model.User.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import com.VanControl.VanControl.user.Infra.Security.TokenService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -35,7 +34,7 @@ public class UserService {
             newUser.setRole(Role.PASSAGEIRO);
             this.userRepository.save(newUser);
 
-            this.passageiroService.cadastrarPassageiro(dto);
+            this.passageiroService.cadastrarPassageiro(dto, newUser);
 
             String token = this.tokenService.generateToken(newUser);
             return new ResponseDTO(newUser.getName(), token);

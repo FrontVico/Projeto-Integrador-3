@@ -24,11 +24,12 @@ public class PassageiroService {
 
     private final PassageiroRepository passageiroRepository;
 
-    public void cadastrarPassageiro(RegisterRequestDTO dto) {
+    public void cadastrarPassageiro(RegisterRequestDTO dto, User user) {
         if(passageiroRepository.findByCpf(dto.cpf()) != null){
             throw new RuntimeException("Passageiro já cadastrado");
         }
         var passageiro = converterParaPassageiro(dto);
+        passageiro.setUser(user);
         passageiroRepository.save(passageiro);
     }
 
@@ -59,17 +60,21 @@ public class PassageiroService {
 
         verificarPermissaoAcesso(passageiro);
 
-        var passageiroAtualizado = Passageiro.builder()
-                .nome(passageiro.getNome() != null ? passageiro.getNome() : dto.nome())
-                .telefone(passageiro.getTelefone() != null ? passageiro.getTelefone() : dto.telefone())
-                .email(passageiro.getEmail() != null ? passageiro.getEmail() : dto.email())
-                .instituicaoEnsino(passageiro.getInstituicaoEnsino() != null ? passageiro.getInstituicaoEnsino() : dto.intituicaoEnsino())
-                .turno(passageiro.getTurno() != null ? passageiro.getTurno() : dto.turno())
-                .endereco(passageiro.getEndereco() != null ? passageiro.getEndereco() : dto.Endereco())
-                .cep(passageiro.getCep() != null ? passageiro.getCep() : dto.cep())
-                .build();
+        if (dto.nome() != null) passageiro.setNome(dto.nome());
+        if (dto.telefone() != null) passageiro.setTelefone(dto.telefone());
+        if (dto.email() != null) {
+            passageiro.setEmail(dto.email());
+            if (passageiro.getUser() != null) {
+                passageiro.getUser().setEmail(dto.email());
+            }
+        }
+        if (dto.intituicaoEnsino() != null) passageiro.setInstituicaoEnsino(dto.intituicaoEnsino());
+        if (dto.turno() != null) passageiro.setTurno(dto.turno());
+        if (dto.Endereco() != null) passageiro.setEndereco(dto.Endereco());
+        if (dto.cep() != null) passageiro.setCep(dto.cep());
 
-        passageiroRepository.save(passageiroAtualizado);
+        var passageiroAtualizado = passageiroRepository.save(passageiro);
+
         return PassageiroMapper.converterParaPassageiroResponseDto(passageiroAtualizado);
     }
 
