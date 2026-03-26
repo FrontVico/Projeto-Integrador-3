@@ -1,9 +1,12 @@
 package com.VanControl.VanControl.passageiros.domain.entity;
 
+import com.VanControl.VanControl.pagamentos.domain.entity.Pagamento;
 import com.VanControl.VanControl.user.Model.User.User;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -21,6 +24,9 @@ public class Passageiro {
     @OneToOne(cascade = CascadeType.ALL)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
     private User user;
+
+    @OneToMany(mappedBy = "passageiro")
+    private List<Pagamento> pagamentos = new ArrayList<>();
 
     private String nome;
     private String cpf;
