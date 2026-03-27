@@ -29,8 +29,11 @@ public class Passageiro {
     private List<Pagamento> pagamentos = new ArrayList<>();
 
     private String nome;
+    @Column(unique = true)
     private String cpf;
+    @Column(unique = true)
     private String telefone;
+    @Column(unique = true)
     private String email;
     private String instituicaoEnsino;
     private String turno;

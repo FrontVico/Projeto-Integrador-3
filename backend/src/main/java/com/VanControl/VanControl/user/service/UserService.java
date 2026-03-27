@@ -1,5 +1,8 @@
 package com.VanControl.VanControl.user.service;
 
+import com.VanControl.VanControl.commons.exception.model.BadRequestException;
+import com.VanControl.VanControl.commons.exception.model.ConflictException;
+import com.VanControl.VanControl.commons.exception.model.NotFoundException;
 import com.VanControl.VanControl.passageiros.service.PassageiroService;
 import com.VanControl.VanControl.user.DTO.LoginRequestDTO;
 import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
@@ -40,17 +43,17 @@ public class UserService {
             return new ResponseDTO(newUser.getName(), token);
         }
 
-        throw new RuntimeException("Passageiro já cadastrado");
+        throw new ConflictException("Passageiro já cadastrado");
     }
 
     public ResponseDTO login(LoginRequestDTO dto) {
-        User user = this.userRepository.findByEmail(dto.email()).orElseThrow(() -> new RuntimeException("User not found"));
+        User user = this.userRepository.findByEmail(dto.email()).orElseThrow(() -> new NotFoundException("User not found"));
 
         if(passwordEncoder.matches(dto.password(), user.getPassword())){
             String token = this.tokenService.generateToken(user);
             return new ResponseDTO(user.getName(), token);
         }
 
-        throw new RuntimeException("Credenciais inválidas");
+        throw new BadRequestException("Credenciais inválidas");
     }
 }

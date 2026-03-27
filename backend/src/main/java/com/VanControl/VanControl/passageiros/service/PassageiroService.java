@@ -1,5 +1,7 @@
 package com.VanControl.VanControl.passageiros.service;
 
+import com.VanControl.VanControl.commons.exception.model.ConflictException;
+import com.VanControl.VanControl.commons.exception.model.NotFoundException;
 import com.VanControl.VanControl.passageiros.domain.dto.request.AtualizarPassageiroRequestDto;
 import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroDefaultResponseDto;
 import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroResponseDto;
@@ -9,6 +11,7 @@ import com.VanControl.VanControl.passageiros.repository.PassageiroRepository;
 import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
 import com.VanControl.VanControl.user.Model.User.User;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
@@ -26,7 +29,7 @@ public class PassageiroService {
 
     public void cadastrarPassageiro(RegisterRequestDTO dto, User user) {
         if(passageiroRepository.findByCpf(dto.cpf()) != null){
-            throw new RuntimeException("Passageiro já cadastrado");
+            throw new ConflictException("Passageiro já cadastrado");
         }
         var passageiro = converterParaPassageiro(dto);
         passageiro.setUser(user);
@@ -34,15 +37,9 @@ public class PassageiroService {
     }
 
     public PassageiroResponseDto buscarPassageiroPorCpf(String cpf) {
-        var passageiro = passageiroRepository.findByCpf(cpf);
-        if(passageiro == null){
-            throw new RuntimeException("Passageiro não encontrado");
-        }
-
+        var passageiro = buscarPassageiroPorCpfInterno(cpf);
         verificarPermissaoAcesso(passageiro);
-
         return PassageiroMapper.converterParaPassageiroResponseDto(passageiro);
-
     }
 
     public List<PassageiroResponseDto> listarPassageiros() {
@@ -53,10 +50,7 @@ public class PassageiroService {
     }
 
     public PassageiroResponseDto atualizarPassageiro(String cpf, AtualizarPassageiroRequestDto dto) {
-        var passageiro = passageiroRepository.findByCpf(cpf);
-        if(passageiro == null){
-            throw new RuntimeException("Passageiro não encontrado");
-        }
+        var passageiro = buscarPassageiroPorCpfInterno(cpf);
 
         verificarPermissaoAcesso(passageiro);
 
@@ -79,10 +73,7 @@ public class PassageiroService {
     }
 
     public PassageiroDefaultResponseDto deletarPassageiro(String cpf) {
-        var passageiro = passageiroRepository.findByCpf(cpf);
-        if(passageiro == null){
-            throw new RuntimeException("Passageiro não encontrado");
-        }
+        var passageiro = buscarPassageiroPorCpfInterno(cpf);
 
         verificarPermissaoAcesso(passageiro);
 
@@ -99,7 +90,15 @@ public class PassageiroService {
                 .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_ADMIN"));
 
         if(!hasAdminRole && !Objects.equals(usuarioLogado.getEmail(), passageiro.getEmail())) {
-            throw new RuntimeException("Acesso negado");
+            throw new AccessDeniedException("Acesso negado");
         }
+    }
+
+    private Passageiro buscarPassageiroPorCpfInterno(String cpf) {
+        var passageiro = passageiroRepository.findByCpf(cpf);
+        if(passageiro == null){
+            throw new NotFoundException("Passageiro não encontrado");
+        }
+        return passageiro;
     }
 }

@@ -26,6 +26,12 @@ public class SecurityConfig {
     @Autowired
     SecurityFilter securityFilter;
 
+    @Autowired
+    private CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
+
+    @Autowired
+    private CustomAccessDeniedHandler customAccessDeniedHandler;
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -39,6 +45,10 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/motoristas/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/veiculos/**").permitAll()
                         .anyRequest().authenticated()
+                )
+                .exceptionHandling(exceptions -> exceptions
+                        .authenticationEntryPoint(customAuthenticationEntryPoint)
+                        .accessDeniedHandler(customAccessDeniedHandler)
                 )
                 .addFilterBefore(securityFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();

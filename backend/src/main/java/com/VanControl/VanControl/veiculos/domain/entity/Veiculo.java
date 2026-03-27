@@ -18,11 +18,13 @@ public class Veiculo {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID idVeiculo;
 
+    @Column(unique = true)
     private String placa;
     private String marca;
     private String modelo;
     private int ano;
     private int capacidade;
+    @Column(unique = true)
     private String renavam;
     @Enumerated(EnumType.STRING)
     private StatusEnum status;

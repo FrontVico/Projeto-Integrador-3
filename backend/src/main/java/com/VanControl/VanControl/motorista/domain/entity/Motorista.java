@@ -1,9 +1,6 @@
 package com.VanControl.VanControl.motorista.domain.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.YearMonth;
@@ -22,10 +19,14 @@ public class Motorista {
     private UUID id;
 
     private String nome;
+
+    @Column(unique = true)
     private String cnh;
     private String categoriaCnh;
     private YearMonth dataValidadeCnh;
+    @Column(unique = true)
     private String cpf;
+    @Column(unique = true)
     private String telefone;
 
     public Motorista(String nome, String cnh, String categoriaCnh, YearMonth dataValidadeCnh, String cpf, String telefone) {

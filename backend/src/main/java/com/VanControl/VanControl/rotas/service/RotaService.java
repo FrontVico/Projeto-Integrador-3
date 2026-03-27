@@ -1,6 +1,8 @@
 package com.VanControl.VanControl.rotas.service;
 
 
+import com.VanControl.VanControl.commons.exception.model.ConflictException;
+import com.VanControl.VanControl.commons.exception.model.NotFoundException;
 import com.VanControl.VanControl.rotas.domain.dto.request.AtualizarDescricaoRotaRequestDto;
 import com.VanControl.VanControl.rotas.domain.dto.request.CadastrarRotaRequestDto;
 import com.VanControl.VanControl.rotas.domain.dto.response.RotaDefaultResponseDto;
@@ -22,7 +24,7 @@ public class RotaService {
 
     public RotaDefaultResponseDto cadastrarRota(CadastrarRotaRequestDto dto){
         if(rotaRepository.findByDescricao(dto.descricao()) != null){
-            throw new RuntimeException("Já existe uma rota cadastrada com essa descrição");
+            throw new ConflictException("Já existe uma rota cadastrada com essa descrição");
         }
 
         var rota  = RotasMapper.converterParaRota(dto);
@@ -34,7 +36,7 @@ public class RotaService {
     public List<RotaResponseDto> buscarRotaPorDestino(String destino){
         var rota = rotaRepository.findByDestinoContainingIgnoreCase(destino);
         if(rota.isEmpty()){
-            throw new RuntimeException("Rota inexistente");
+            throw new NotFoundException("Rota inexistente");
         }
         return rota.stream()
                 .map(RotasMapper::converterParaRotaDto)
@@ -50,11 +52,11 @@ public class RotaService {
 
     public RotaDefaultResponseDto atualizarDescricaoRota(UUID id, AtualizarDescricaoRotaRequestDto dto){
         Rota rota = rotaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Rota não encontrada"));
+                .orElseThrow(() -> new NotFoundException("Rota não encontrada"));
 
         if (!rota.getDescricao().equals(dto.novaDescricao()) &&
                 rotaRepository.existsByDescricao(dto.novaDescricao())) {
-            throw new RuntimeException("Já existe uma rota cadastrada com esta descrição.");
+            throw new ConflictException("Já existe uma rota cadastrada com esta descrição.");
         }
 
         rota.setDescricao(dto.novaDescricao());
@@ -66,7 +68,7 @@ public class RotaService {
     public RotaDefaultResponseDto deletarRota(UUID id){
         var rota = rotaRepository.findById(id);
         if(rota == null){
-            throw new RuntimeException("Rota inexistente");
+            throw new NotFoundException("Rota inexistente");
         }
         rotaRepository.deleteById(id);
         return new RotaDefaultResponseDto("Rota removida com sucesso");
