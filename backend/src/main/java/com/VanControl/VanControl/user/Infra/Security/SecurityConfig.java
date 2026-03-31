@@ -44,6 +44,7 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, "/rotas/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/motoristas/**").permitAll()
                         .requestMatchers(HttpMethod.GET, "/veiculos/**").permitAll()
+                        .requestMatchers(HttpMethod.GET, "/pagamentos/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .exceptionHandling(exceptions -> exceptions
