@@ -23,7 +23,7 @@ public record CadastrarPagamentoRequestDto(
         @DecimalMin(value = "0.1", message = "O valor deve ser maior que zero")
         BigDecimal valor,
 
-        @NotNull(message = "A data de vencimento é obrigatório")
+        @NotNull(message = "A data de vencimento é obrigatório, insira nesse formato (yyyy-MM-dd)")
         LocalDate dataVencimento
 ) {
 }

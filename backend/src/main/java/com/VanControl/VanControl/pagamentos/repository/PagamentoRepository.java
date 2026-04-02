@@ -8,7 +8,7 @@ import java.awt.*;
 import java.util.List;
 import java.util.UUID;
 
-public interface PagamentoRepository extends JpaRepository<Pagamento, Long> {
+public interface PagamentoRepository extends JpaRepository<Pagamento, UUID> {
 
    List<Pagamento> findByPassageiroId(UUID passageiroId);
 
