@@ -15,4 +15,6 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, UUID> {
    List<Pagamento> id(UUID id);
 
    boolean existsByPassageiroIdAndCompetencia(UUID passageiroId, String competencia);
+
+   List<Pagamento> findByCompetencia(String competencia);
 }

@@ -61,7 +61,7 @@ public class PagamentoService{
         return new PagamentoDefaultResponseDto("Status e data de pagamento atualizado com sucesso");
     }
 
-    public List<PagamentoResponseDto> buscarPagamentoPorID(UUID id){
+    public List<PagamentoResponseDto> buscarPagamentosDoPassageiroPorID(UUID id){
         var pagamento = pagamentoRepository.findByPassageiroId(id);
         if(pagamento.isEmpty()){
             throw new NotFoundException("Passageiro não encontrado");
@@ -72,5 +72,45 @@ public class PagamentoService{
                 .toList();
     }
 
+    public PagamentoResponseDto buscarPagamentoEspecificoPorID(UUID id){
+        Pagamento pagamento = pagamentoRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Pagamento não encontrado"));
+
+        return  PagamentoMapper.converterParaPagamentoDto(pagamento);
+    }
+
+    public List<PagamentoResponseDto> buscarPagamentosPorCompetencia(String competencia){
+        var pagamento = pagamentoRepository.findByCompetencia(competencia);
+        if(pagamento.isEmpty()){
+            throw new NotFoundException("Competencia não encontrado");
+        }
+
+        return pagamento.stream()
+                .map(PagamentoMapper::converterParaPagamentoDto)
+                .toList();
+
+    }
+
+    public List<PagamentoResponseDto> buscarMeusPagamentos(String user){
+
+        Passageiro passageiro = passageiroRepository.findByUser_Id(user)
+                .orElseThrow(() -> new NotFoundException("Perfil de passageiro não encontrado para esse usuário"));
+
+        List<Pagamento> pagamentos = pagamentoRepository.findByPassageiroId(passageiro.getId());
+
+        return pagamentos.stream()
+                .map(PagamentoMapper::converterParaPagamentoDto)
+                .toList();
+    }
+
+    public PagamentoDefaultResponseDto deletarPagamento(UUID id){
+        var pagamento = pagamentoRepository.findById(id);
+        if(pagamento.isEmpty()){
+            throw new NotFoundException("Pagamento não encontrado");
+        }
+
+        pagamentoRepository.deleteById(id);
+        return new PagamentoDefaultResponseDto("Pagamento removido com sucesso!");
+    }
 
 }

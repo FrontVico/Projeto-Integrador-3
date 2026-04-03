@@ -9,6 +9,7 @@ import java.time.LocalDate;
 import java.util.UUID;
 
 public record PagamentoResponseDto(
+        String nome,
         @JsonFormat(pattern = "MM/yyyy")
         String competencia,
         BigDecimal valor,
