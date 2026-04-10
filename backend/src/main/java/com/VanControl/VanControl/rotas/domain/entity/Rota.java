@@ -7,7 +7,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
 
-import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.UUID;
 
@@ -16,7 +15,6 @@ import java.util.UUID;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
 public class Rota {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
