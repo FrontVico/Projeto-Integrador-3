@@ -6,7 +6,7 @@ import java.time.LocalTime;
 import java.util.UUID;
 
 public record RotaResponseDto(
-        UUID id,
+        String codigoRota,
         String descricao,
         String destino,
         Double distancia,

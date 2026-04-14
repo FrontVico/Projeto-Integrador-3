@@ -17,7 +17,7 @@ public class RotasMapper {
 
     public static RotaResponseDto converterParaRotaDto(Rota rota){
         return new RotaResponseDto(
-                rota.getId(),
+                rota.getCodigoRota(),
                 rota.getDescricao(),
                 rota.getDestino(),
                 rota.getDistancia(),

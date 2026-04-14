@@ -12,6 +12,7 @@ import com.VanControl.VanControl.rotas.mapper.RotasMapper;
 import com.VanControl.VanControl.rotas.repository.RotaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 import java.util.UUID;
@@ -28,6 +29,9 @@ public class RotaService {
         }
 
         var rota  = RotasMapper.converterParaRota(dto);
+        rota.setCodigoRota(
+                "ROT-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase()
+        );
 
         rotaRepository.save(rota);;
         return new RotaDefaultResponseDto("Rota cadastrada com sucesso");

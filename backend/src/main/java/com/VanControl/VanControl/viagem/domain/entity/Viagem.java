@@ -24,13 +24,14 @@ public class Viagem {
     private UUID veiculoId;
     private UUID motoristaId;
 
+    private String codigoViagem;
+
     private String dataViagem;
     private String horarioSaidaPrevisto;
     private String horarioChegadaPrevisto;
     private boolean viagemConcluida;
 
-    public Viagem(UUID rotaId, UUID veiculoId, UUID motoristaId, String dataViagem, String horarioSaidaPrevisto, String horarioChegadaPrevisto) {
-        this.rotaId = rotaId;
+    public Viagem(UUID veiculoId, UUID motoristaId, String dataViagem, String horarioSaidaPrevisto, String horarioChegadaPrevisto) {
         this.veiculoId = veiculoId;
         this.motoristaId = motoristaId;
         this.dataViagem = dataViagem;
