@@ -7,6 +7,7 @@ import com.VanControl.VanControl.viagem.mapper.ViagemMapper;
 import com.VanControl.VanControl.viagem.repository.ViagemRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -47,6 +48,7 @@ public class ViagemService {
         return new ViagemDefaultResponseDto("Status da viagem atualizado para concluída.");
     }
 
+    @Transactional
     public ViagemDefaultResponseDto deletarViagem(String codigo) {
         var viagem = viagemRepository.findByCodigoViagem(codigo);
         viagemRepository.delete(viagem);

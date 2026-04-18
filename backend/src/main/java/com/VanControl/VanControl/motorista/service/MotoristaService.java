@@ -11,6 +11,7 @@ import com.VanControl.VanControl.motorista.mapper.MotoristaMapper;
 import com.VanControl.VanControl.motorista.repository.MotoristaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -50,6 +51,7 @@ public class MotoristaService {
         return new MotoristaDefaultResponseDto("Telefone do motorista atualizado com sucesso");
     }
 
+    @Transactional
     public MotoristaDefaultResponseDto deletarMotorista(String cpf) {
         var motorista = buscarMotoristaPorCpfInterno(cpf);
         motoristaRepository.delete(motorista);

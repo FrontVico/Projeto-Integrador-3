@@ -12,7 +12,7 @@ import com.VanControl.VanControl.rotas.mapper.RotasMapper;
 import com.VanControl.VanControl.rotas.repository.RotaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
@@ -54,8 +54,8 @@ public class RotaService {
                 .toList();
     }
 
-    public RotaDefaultResponseDto atualizarDescricaoRota(UUID id, AtualizarDescricaoRotaRequestDto dto){
-        Rota rota = rotaRepository.findById(id)
+    public RotaDefaultResponseDto atualizarDescricaoRota(String codigoRota, AtualizarDescricaoRotaRequestDto dto){
+        Rota rota = rotaRepository.findByCodigoRota(codigoRota)
                 .orElseThrow(() -> new NotFoundException("Rota não encontrada"));
 
         if (!rota.getDescricao().equals(dto.novaDescricao()) &&
@@ -69,12 +69,13 @@ public class RotaService {
         return new RotaDefaultResponseDto("Rota atualizada com sucesso");
     }
 
-    public RotaDefaultResponseDto deletarRota(UUID id){
-        var rota = rotaRepository.findById(id);
+    @Transactional
+    public RotaDefaultResponseDto deletarRota(String codigoRota){
+        var rota = rotaRepository.findByCodigoRota(codigoRota);
         if(rota == null){
             throw new NotFoundException("Rota inexistente");
         }
-        rotaRepository.deleteById(id);
+        rotaRepository.deleteByCodigoRota(codigoRota);
         return new RotaDefaultResponseDto("Rota removida com sucesso");
     }
 
