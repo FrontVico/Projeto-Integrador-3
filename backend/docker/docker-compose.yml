@@ -29,6 +29,9 @@ services:
       SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/VanControl
       POSTGRES_USER: ${POSTGRES_USER:-vancontrol}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-vancontrol123}
+      APP_ADMIN_EMAIL: ${ADMIN_EMAIL:-admin@vancontrol.com}
+      APP_ADMIN_NAME: ${ADMIN_NAME:-Administrador}
+      APP_ADMIN_PASSWORD: ${ADMIN_PASSWORD:-admin123}
     ports:
       - "8080:8080"
     depends_on:
