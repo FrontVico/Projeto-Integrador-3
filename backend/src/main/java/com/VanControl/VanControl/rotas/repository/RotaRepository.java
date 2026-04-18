@@ -11,6 +11,7 @@ public interface RotaRepository extends JpaRepository<Rota, UUID> {
     List<Rota> findByDestinoContainingIgnoreCase(String destino);
 
     Rota findByDescricao(String descricao);
+    Rota findByCodigoRota(String codigoRota);
 
     boolean existsByDescricao(String descricao);
 }

@@ -20,9 +20,9 @@ public class Viagem {
     @GeneratedValue(strategy = GenerationType.UUID)
     private UUID id;
 
-    private UUID rotaId;
-    private UUID veiculoId;
-    private UUID motoristaId;
+    private String codigoRota;
+    private String placaVeiculo;
+    private String documentoMotorista;
 
     private String codigoViagem;
 
@@ -31,9 +31,10 @@ public class Viagem {
     private String horarioChegadaPrevisto;
     private boolean viagemConcluida;
 
-    public Viagem(UUID veiculoId, UUID motoristaId, String dataViagem, String horarioSaidaPrevisto, String horarioChegadaPrevisto) {
-        this.veiculoId = veiculoId;
-        this.motoristaId = motoristaId;
+    public Viagem(String codigoRota, String placaVeiculo, String documentoMotorista, String dataViagem, String horarioSaidaPrevisto, String horarioChegadaPrevisto) {
+        this.codigoRota = codigoRota;
+        this.placaVeiculo = placaVeiculo;
+        this.documentoMotorista = documentoMotorista;
         this.dataViagem = dataViagem;
         this.horarioSaidaPrevisto = horarioSaidaPrevisto;
         this.horarioChegadaPrevisto = horarioChegadaPrevisto;

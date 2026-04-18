@@ -8,8 +8,9 @@ public class ViagemMapper {
 
     public static Viagem converterParaViagem(CriarViagemRequestDto dto) {
         return new Viagem(
-                dto.veiculoId(),
-                dto.motoristaId(),
+                dto.codigoRota(),
+                dto.placaVeiculo(),
+                dto.cpfMotorista(),
                 dto.dataViagem(),
                 dto.horarioSaidaPrevisto(),
                 dto.horarioChegadaPrevisto()
@@ -18,9 +19,9 @@ public class ViagemMapper {
 
     public static ViagemResponseDto converterParaViagemDto(Viagem viagem) {
         return new ViagemResponseDto(
-                viagem.getRotaId(),
-                viagem.getVeiculoId(),
-                viagem.getMotoristaId(),
+                viagem.getCodigoRota(),
+                viagem.getPlacaVeiculo(),
+                viagem.getDocumentoMotorista(),
                 viagem.getDataViagem(),
                 viagem.getHorarioSaidaPrevisto(),
                 viagem.getHorarioChegadaPrevisto(),
