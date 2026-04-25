@@ -1,8 +1,6 @@
 package com.VanControl.VanControl.pagamentos.domain.dto.request;
 
-import com.VanControl.VanControl.pagamentos.domain.enums.StatusPagamento;
 import jakarta.validation.constraints.DecimalMin;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 

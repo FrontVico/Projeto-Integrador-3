@@ -12,18 +12,12 @@ import com.VanControl.VanControl.pagamentos.mapper.PagamentoMapper;
 import com.VanControl.VanControl.pagamentos.repository.PagamentoRepository;
 import com.VanControl.VanControl.passageiros.domain.entity.Passageiro;
 import com.VanControl.VanControl.passageiros.repository.PassageiroRepository;
-import com.VanControl.VanControl.passageiros.service.PassageiroService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
-
-import static com.VanControl.VanControl.pagamentos.mapper.PagamentoMapper.converterParaPagamento;
 
 @Service
 @RequiredArgsConstructor
@@ -31,7 +25,6 @@ public class PagamentoService{
 
     private final PagamentoRepository pagamentoRepository;
     private final PassageiroRepository passageiroRepository;
-    private final PassageiroService passageiroService;
 
     public PagamentoDefaultResponseDto cadastrarPagamento(CadastrarPagamentoRequestDto dto){
         if(pagamentoRepository.existsByPassageiroIdAndCompetencia(dto.passageiroId(), dto.competencia())){

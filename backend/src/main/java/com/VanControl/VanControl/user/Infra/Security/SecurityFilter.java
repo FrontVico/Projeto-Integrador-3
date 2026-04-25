@@ -1,6 +1,5 @@
 package com.VanControl.VanControl.user.Infra.Security;
 
-import com.VanControl.VanControl.user.Model.User.Role;
 import com.VanControl.VanControl.user.Model.User.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import jakarta.servlet.FilterChain;

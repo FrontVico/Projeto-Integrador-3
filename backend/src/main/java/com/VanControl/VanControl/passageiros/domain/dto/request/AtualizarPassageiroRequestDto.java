@@ -2,7 +2,6 @@ package com.VanControl.VanControl.passageiros.domain.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
-import org.hibernate.validator.constraints.br.CPF;
 
 public record AtualizarPassageiroRequestDto(
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ ]+$", message = "O nome deve conter apenas letras e espaços")

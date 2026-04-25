@@ -26,6 +26,7 @@ public class Passageiro {
     private User user;
 
     @OneToMany(mappedBy = "passageiro")
+    @Builder.Default
     private List<Pagamento> pagamentos = new ArrayList<>();
 
     private String nome;

@@ -5,8 +5,6 @@ import com.VanControl.VanControl.pagamentos.domain.dto.response.PagamentoRespons
 import com.VanControl.VanControl.pagamentos.domain.entity.Pagamento;
 import com.VanControl.VanControl.passageiros.domain.entity.Passageiro;
 
-import java.net.PasswordAuthentication;
-import java.util.List;
 
 public class PagamentoMapper {
 
