@@ -2,6 +2,7 @@ package com.VanControl.VanControl.commons.exception;
 
 import com.VanControl.VanControl.commons.exception.model.BadRequestException;
 import com.VanControl.VanControl.commons.exception.model.ConflictException;
+import com.VanControl.VanControl.commons.exception.model.InternalServerErrorException;
 import com.VanControl.VanControl.commons.exception.model.NotFoundException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
@@ -30,5 +31,10 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(DataIntegrityViolationException.class)
     public ResponseEntity<ErrorDetails> handleDataIntegrityViolationException(DataIntegrityViolationException ex) {
         return new ResponseEntity<>(new ErrorDetails("Dados já cadastrados"), HttpStatus.CONFLICT);
+    }
+
+    @ExceptionHandler(InternalServerErrorException.class)
+    public ResponseEntity<ErrorDetails> handleInternalServerErrorException(InternalServerErrorException ex) {
+        return new ResponseEntity<>(new ErrorDetails(ex.getMessage()), HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

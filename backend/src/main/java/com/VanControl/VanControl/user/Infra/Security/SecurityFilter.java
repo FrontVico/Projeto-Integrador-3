@@ -1,5 +1,6 @@
 package com.VanControl.VanControl.user.Infra.Security;
 
+import com.VanControl.VanControl.commons.exception.model.NotFoundException;
 import com.VanControl.VanControl.user.Model.User.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import jakarta.servlet.FilterChain;
@@ -29,7 +30,7 @@ public class SecurityFilter extends OncePerRequestFilter {
         var login = tokenService.validateToken(token);
 
         if(login != null){
-            User user = userRepository.findByEmail(login).orElseThrow(() -> new RuntimeException("User not found"));
+            User user = userRepository.findByEmail(login).orElseThrow(() -> new NotFoundException("User not found"));
             System.out.println("TESTE DE SEGURANÇA: O usuario logado é " + user.getEmail() + " e a Role dele é: " + user.getRole());
             var authorities = Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + user.getRole().name()));
             var authentication = new UsernamePasswordAuthenticationToken(user, null, authorities);

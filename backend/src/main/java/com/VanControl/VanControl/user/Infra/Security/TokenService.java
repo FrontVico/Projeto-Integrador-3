@@ -1,5 +1,6 @@
 package com.VanControl.VanControl.user.Infra.Security;
 
+import com.VanControl.VanControl.commons.exception.model.InternalServerErrorException;
 import com.VanControl.VanControl.user.Model.User.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
@@ -27,7 +28,7 @@ public class TokenService {
                     .sign(algorithm);
             return token;
         }catch(JWTCreationException exception){
-            throw  new RuntimeException("Erro enquanto estava autenticando");
+            throw new InternalServerErrorException("Erro enquanto estava autenticando", exception);
 
         }
     }

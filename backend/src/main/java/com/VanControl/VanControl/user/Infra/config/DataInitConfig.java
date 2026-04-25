@@ -1,5 +1,6 @@
 package com.VanControl.VanControl.user.Infra.config;
 
+import com.VanControl.VanControl.commons.exception.model.InternalServerErrorException;
 import com.VanControl.VanControl.user.Model.User.Role;
 import com.VanControl.VanControl.user.Model.User.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
@@ -53,7 +54,7 @@ public class DataInitConfig {
             }
         } catch (Exception e) {
             log.error("Erro ao criar usuário admin: ", e);
-            throw new RuntimeException("Falha ao inicializar usuário admin", e);
+            throw new InternalServerErrorException("Falha ao inicializar usuário admin", e);
         }
     }
 }

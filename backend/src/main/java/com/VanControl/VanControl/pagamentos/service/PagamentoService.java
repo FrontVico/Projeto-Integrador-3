@@ -32,7 +32,7 @@ public class PagamentoService{
         }
 
         Passageiro passageiro = passageiroRepository.findById(dto.passageiroId())
-                .orElseThrow(() -> new RuntimeException("Passageiro não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Passageiro não encontrado"));
 
         var pagamento = PagamentoMapper.converterParaPagamento(dto, passageiro);
         pagamento.setStatus(StatusPagamento.PENDENTE);
@@ -45,7 +45,7 @@ public class PagamentoService{
     public PagamentoDefaultResponseDto atualizarStatusPagamento(UUID id, AtualizarStatusPagamentoRequestDto dto){
 
         Pagamento pagamento = pagamentoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pagamento não encontrado"));
+                .orElseThrow(() -> new NotFoundException("Pagamento não encontrado"));
 
         pagamento.setStatus(StatusPagamento.valueOf(dto.status()));
         pagamento.setDataPagamento(dto.dataPagamento());
