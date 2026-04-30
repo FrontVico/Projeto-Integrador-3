@@ -1,5 +1,8 @@
 package com.VanControl.VanControl.viagem.service;
 
+import com.VanControl.VanControl.motorista.service.MotoristaService;
+import com.VanControl.VanControl.rotas.service.RotaService;
+import com.VanControl.VanControl.veiculos.service.VeiculoService;
 import com.VanControl.VanControl.viagem.domain.dto.request.CriarViagemRequestDto;
 import com.VanControl.VanControl.viagem.domain.dto.response.ViagemDefaultResponseDto;
 import com.VanControl.VanControl.viagem.domain.dto.response.ViagemResponseDto;
@@ -17,8 +20,15 @@ import java.util.UUID;
 public class ViagemService {
 
     private final ViagemRepository viagemRepository;
+    private final RotaService rotaService;
+    private final VeiculoService veiculoService;
+    private final MotoristaService motoristaService;
 
     public ViagemDefaultResponseDto cadastrarViagem(CriarViagemRequestDto dto) {
+        rotaService.buscarRotaPorCodigo(dto.codigoRota());
+        veiculoService.buscarVeiculoPorPlaca(dto.placaVeiculo());
+        motoristaService.buscarMotoristaPorCpf(dto.cpfMotorista());
+
         var viagem = ViagemMapper.converterParaViagem(dto);
 
         viagem.setCodigoViagem(

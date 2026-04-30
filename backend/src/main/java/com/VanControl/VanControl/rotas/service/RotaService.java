@@ -37,6 +37,14 @@ public class RotaService {
         return new RotaDefaultResponseDto("Rota cadastrada com sucesso");
     }
 
+    public RotaResponseDto buscarRotaPorCodigo(String codigo){
+        var rota = rotaRepository.findByCodigoRota(codigo);
+        if(rota.isEmpty()){
+            throw new NotFoundException("Rota inexistente");
+        }
+        return RotasMapper.converterParaRotaDto(rota.get());
+    }
+
     public List<RotaResponseDto> buscarRotaPorDestino(String destino){
         var rota = rotaRepository.findByDestinoContainingIgnoreCase(destino);
         if(rota.isEmpty()){

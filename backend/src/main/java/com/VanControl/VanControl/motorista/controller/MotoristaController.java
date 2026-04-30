@@ -5,6 +5,8 @@ import com.VanControl.VanControl.motorista.domain.dto.request.CadastrarMotorista
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaDefaultResponseDto;
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaResponseDto;
 import com.VanControl.VanControl.motorista.service.MotoristaService;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,6 +19,8 @@ import java.util.List;
 @RestController
 @RequestMapping("/motoristas")
 @RequiredArgsConstructor
+@Tag(name = "Motoristas", description = "Operacoes relacionadas a motoristas")
+@SecurityRequirement(name = "bearerAuth")
 public class MotoristaController {
 
     private final MotoristaService motoristaService;
