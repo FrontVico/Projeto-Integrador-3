@@ -27,7 +27,7 @@ public class RotaController {
     private final RotaService rotaService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Cadastrar rota",
             description = "Entrada: CadastrarRotaRequestDto (descricao, destino, distancia, tempoEstimado). Saida: RotaDefaultResponseDto com mensagem."
@@ -56,7 +56,7 @@ public class RotaController {
     }
 
     @PatchMapping("/{codigoRota}/descricao")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Atualizar descricao da rota",
             description = "Entrada: codigoRota (path) e AtualizarDescricaoRotaRequestDto (novaDescricao). Saida: RotaDefaultResponseDto com mensagem."
@@ -67,7 +67,7 @@ public class RotaController {
     }
 
     @DeleteMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Deletar rota",
             description = "Entrada: codigoRota (query). Saida: RotaDefaultResponseDto com mensagem."

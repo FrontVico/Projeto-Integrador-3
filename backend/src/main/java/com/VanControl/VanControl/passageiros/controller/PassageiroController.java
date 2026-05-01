@@ -35,7 +35,7 @@ public class PassageiroController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Listar passageiros",
             description = "Saida: lista de PassageiroResponseDto (nome, cpf, telefone, email, intituicaoEnsino, turno, endereco, cep)."
@@ -45,6 +45,7 @@ public class PassageiroController {
     }
 
     @PutMapping("/{cpf}")
+    @PreAuthorize("hasAnyRole('ADMIN','PASSAGEIRO')")
     @Operation(
             summary = "Atualizar passageiro",
             description = "Entrada: cpf (path) e AtualizarPassageiroRequestDto (nome, telefone, email, intituicaoEnsino, turno, Endereco, cep). Saida: PassageiroResponseDto."
@@ -54,6 +55,7 @@ public class PassageiroController {
     }
 
     @DeleteMapping("/{cpf}")
+    @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Deletar passageiro",
             description = "Entrada: cpf (path). Saida: PassageiroDefaultResponseDto com mensagem."

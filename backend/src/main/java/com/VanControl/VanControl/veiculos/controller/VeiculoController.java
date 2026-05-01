@@ -27,7 +27,7 @@ public class VeiculoController {
     private final VeiculoService veiculoService;
 
     @PostMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Cadastrar veiculo",
             description = "Entrada: CadastrarVeiculoRequestDto (placa, marca, modelo, ano, capacidade, renavam, status). Saida: VeiculoDefaultResponseDto com mensagem."
@@ -55,7 +55,7 @@ public class VeiculoController {
     }
 
     @PutMapping("/status")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Atualizar status do veiculo",
             description = "Entrada: AtualizarStatusVeiculoRequestDto (placa, status). Saida: VeiculoDefaultResponseDto com mensagem."
@@ -65,7 +65,7 @@ public class VeiculoController {
     }
 
     @DeleteMapping()
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Deletar veiculo",
             description = "Entrada: placa (query). Saida: VeiculoDefaultResponseDto com mensagem."

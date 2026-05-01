@@ -26,6 +26,7 @@ public class ViagemController {
     private final ViagemService viagemService;
 
     @PostMapping
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Cadastrar viagem",
             description = "Entrada: CriarViagemRequestDto (codigoRota, placaVeiculo, cpfMotorista, dataViagem, horarioSaidaPrevisto, horarioChegadaPrevisto). Saida: ViagemDefaultResponseDto com mensagem."
@@ -44,7 +45,7 @@ public class ViagemController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Listar todas as viagens",
             description = "Saida: lista de ViagemResponseDto (codigoRota, placaVeiculo, cpfMotorista, dataViagem, horarioSaidaPrevisto, horarioChegadaPrevisto, viagemConcuida)."
@@ -54,6 +55,7 @@ public class ViagemController {
     }
 
     @PutMapping("/{codigo}")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Atualizar status da viagem",
             description = "Entrada: codigo (path). Saida: ViagemDefaultResponseDto com mensagem."
@@ -63,6 +65,7 @@ public class ViagemController {
     }
 
     @DeleteMapping("/{codigo}")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Deletar viagem",
             description = "Entrada: codigo (path). Saida: ViagemDefaultResponseDto com mensagem."
