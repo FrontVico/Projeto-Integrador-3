@@ -26,13 +26,17 @@ public class PagamentoService{
     private final PagamentoRepository pagamentoRepository;
     private final PassageiroRepository passageiroRepository;
 
-    public PagamentoDefaultResponseDto cadastrarPagamento(CadastrarPagamentoRequestDto dto){
-        if(pagamentoRepository.existsByPassageiroIdAndCompetencia(dto.passageiroId(), dto.competencia())){
-            throw new ConflictException("Pagamento já cadastrado para o passageiro na competência: " + dto.competencia());
+    public PagamentoDefaultResponseDto cadastrarPagamento(CadastrarPagamentoRequestDto dto) {
+
+        Passageiro passageiro = passageiroRepository.findByCpf(dto.cpf());
+
+        if(passageiro == null){
+            throw new NotFoundException("Passageiro não encontrado");
         }
 
-        Passageiro passageiro = passageiroRepository.findById(dto.passageiroId())
-                .orElseThrow(() -> new NotFoundException("Passageiro não encontrado"));
+        if (pagamentoRepository.existsByPassageiroIdAndCompetencia(passageiro.getId(), dto.competencia())) {
+            throw new ConflictException("Pagamento já cadastrado para o passageiro na competência: " + dto.competencia());
+        }
 
         var pagamento = PagamentoMapper.converterParaPagamento(dto, passageiro);
         pagamento.setStatus(StatusPagamento.PENDENTE);
@@ -55,13 +59,17 @@ public class PagamentoService{
         return new PagamentoDefaultResponseDto("Status e data de pagamento atualizado com sucesso");
     }
 
-    public List<PagamentoResponseDto> buscarPagamentosDoPassageiroPorID(UUID id){
-        var pagamento = pagamentoRepository.findByPassageiroId(id);
-        if(pagamento.isEmpty()){
+    public List<PagamentoResponseDto> buscarPagamentosDoPassageiroPorCpf(String cpf){
+        Passageiro passageiro = passageiroRepository.findByCpf(cpf);
+        if(passageiro == null){
             throw new NotFoundException("Passageiro não encontrado");
         }
+        var pagamentos = pagamentoRepository.findByPassageiroId(passageiro.getId());
+        if (pagamentos.isEmpty()) {
+            throw new NotFoundException("Nenhum pagamento encontrado para esse passageiro");
+        }
 
-        return pagamento.stream()
+        return pagamentos.stream()
                 .map(PagamentoMapper::converterParaPagamentoDto)
                 .toList();
     }

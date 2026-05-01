@@ -1,8 +1,10 @@
 package com.VanControl.VanControl.pagamentos.domain.dto.request;
 
 import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
+import org.hibernate.validator.constraints.br.CPF;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -10,8 +12,9 @@ import java.util.UUID;
 
 public record CadastrarPagamentoRequestDto(
 
-        @NotNull(message = "O ID do passageiro é obrigatório")
-        UUID passageiroId,
+        @NotBlank(message = "O CPF não pode estar em branco")
+        @CPF(message = "O formato do CPF é inválido")
+        String cpf,
 
         @Pattern(regexp = "^(0[1-9]|1[0-2])/\\d{4}$", message = "Insira a competência no formato (mês/ano)")
         @NotNull(message = "Insira a competencia do pagamento")

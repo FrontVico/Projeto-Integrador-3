@@ -33,7 +33,7 @@ public class PagamentoController {
     @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Cadastrar pagamento",
-            description = "Entrada: CadastrarPagamentoRequestDto (passageiroId, competencia, valor, dataVencimento). Saida: PagamentoDefaultResponseDto com mensagem."
+            description = "Entrada: CadastrarPagamentoRequestDto (cpf, competencia, valor, dataVencimento). Saida: PagamentoDefaultResponseDto com mensagem."
     )
     public ResponseEntity<PagamentoDefaultResponseDto> cadastroPagamento(@RequestBody @Valid CadastrarPagamentoRequestDto dto){
        return new ResponseEntity<>(pagamentoService.cadastrarPagamento(dto), HttpStatus.CREATED);
@@ -49,14 +49,14 @@ public class PagamentoController {
         return new ResponseEntity<>(pagamentoService.atualizarStatusPagamento(id,dto),HttpStatus.OK);
     }
 
-    @GetMapping("/passageiro/{id}")
+    @GetMapping("/passageiro/{cpf}")
     @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Listar pagamentos do passageiro",
-            description = "Entrada: id do passageiro (path). Saida: lista de PagamentoResponseDto (nome, competencia, valor, dataVencimento, dataPagamento, status)."
+            description = "Entrada: cpf do passageiro (path). Saida: lista de PagamentoResponseDto (nome, competencia, valor, dataVencimento, dataPagamento, status)."
     )
-    public ResponseEntity<List<PagamentoResponseDto>> buscarPagamentosDoPassageiroPorId(@PathVariable UUID id){
-        List<PagamentoResponseDto> pagamentos = pagamentoService.buscarPagamentosDoPassageiroPorID(id);
+    public ResponseEntity<List<PagamentoResponseDto>> buscarPagamentosDoPassageiroPorCpf(@PathVariable String cpf){
+        List<PagamentoResponseDto> pagamentos = pagamentoService.buscarPagamentosDoPassageiroPorCpf(cpf);
 
         return ResponseEntity.status(HttpStatus.OK).body(pagamentos);
     }
