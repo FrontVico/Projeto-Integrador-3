@@ -30,7 +30,6 @@ class SecurityUtilsTest {
 
     @BeforeEach
     void setUp() {
-        // Criar usuário passageiro
         passageiroUser = new User();
         passageiroUser.setId("user-passageiro-id");
         passageiroUser.setName("João Silva");
@@ -38,7 +37,6 @@ class SecurityUtilsTest {
         passageiroUser.setCpf("12345678901");
         passageiroUser.setRole(Role.PASSAGEIRO);
 
-        // Criar usuário motorista
         motoristaUser = new User();
         motoristaUser.setId("user-motorista-id");
         motoristaUser.setName("Maria Santos");
@@ -46,7 +44,6 @@ class SecurityUtilsTest {
         motoristaUser.setCpf("98765432100");
         motoristaUser.setRole(Role.MOTORISTA);
 
-        // Criar usuário admin
         adminUser = new User();
         adminUser.setId("user-admin-id");
         adminUser.setName("Admin User");
@@ -58,13 +55,10 @@ class SecurityUtilsTest {
     @Test
     @DisplayName("Deve obter o usuário autenticado com sucesso")
     void deveObterUsuarioAutenticado() {
-        // Arrange
         authenticateUser(passageiroUser);
 
-        // Act
         User result = securityUtils.getAuthenticatedUser();
 
-        // Assert
         assertNotNull(result);
         assertEquals(passageiroUser.getId(), result.getId());
         assertEquals(passageiroUser.getEmail(), result.getEmail());
@@ -73,56 +67,46 @@ class SecurityUtilsTest {
     @Test
     @DisplayName("Deve lançar exceção quando usuário não está autenticado")
     void deveLancarExcecaoQuandoUsuarioNaoAutenticado() {
-        // Arrange
         SecurityContextHolder.clearContext();
 
-        // Act & Assert
         assertThrows(AccessDeniedException.class, () -> securityUtils.getAuthenticatedUser());
     }
 
     @Test
     @DisplayName("Deve obter CPF do usuário autenticado com sucesso")
     void deveObterCpfDoUsuarioAutenticado() {
-        // Arrange
         authenticateUser(passageiroUser);
 
-        // Act
+
         String cpf = securityUtils.getAuthenticatedUserCpf();
 
-        // Assert
         assertEquals("12345678901", cpf);
     }
 
     @Test
     @DisplayName("Deve lançar exceção quando usuário não possui CPF")
     void deveLancarExcecaoQuandoUsuarioNaoPossuiCpf() {
-        // Arrange
         User userSemCpf = new User();
         userSemCpf.setId("user-id");
         userSemCpf.setRole(Role.PASSAGEIRO);
         authenticateUser(userSemCpf);
 
-        // Act & Assert
         assertThrows(AccessDeniedException.class, () -> securityUtils.getAuthenticatedUserCpf());
     }
 
     @Test
     @DisplayName("Deve permitir que PASSAGEIRO acesse seus próprios dados")
     void devePermitirPassageiroAcessarProprioDados() {
-        // Arrange
         authenticateUser(passageiroUser);
 
-        // Act & Assert
         assertDoesNotThrow(() -> securityUtils.validateCpfAccess("12345678901"));
     }
 
     @Test
     @DisplayName("Deve bloquear PASSAGEIRO de acessar dados de outro usuário")
     void deveBloquearPassageiroAcessarDadosDeOutroUsuario() {
-        // Arrange
         authenticateUser(passageiroUser);
 
-        // Act & Assert
         AccessDeniedException exception = assertThrows(AccessDeniedException.class,
                 () -> securityUtils.validateCpfAccess("98765432100"));
 
@@ -132,10 +116,8 @@ class SecurityUtilsTest {
     @Test
     @DisplayName("Deve permitir que ADMIN acesse dados de qualquer CPF")
     void devePermitirAdminAcessarQualquerCpf() {
-        // Arrange
         authenticateUser(adminUser);
 
-        // Act & Assert
         assertDoesNotThrow(() -> securityUtils.validateCpfAccess("12345678901"));
         assertDoesNotThrow(() -> securityUtils.validateCpfAccess("98765432100"));
         assertDoesNotThrow(() -> securityUtils.validateCpfAccess("00000000000"));
@@ -144,10 +126,8 @@ class SecurityUtilsTest {
     @Test
     @DisplayName("Deve permitir que MOTORISTA acesse dados de qualquer CPF")
     void devePermitirMotoristaAcessarQualquerCpf() {
-        // Arrange
         authenticateUser(motoristaUser);
 
-        // Act & Assert
         assertDoesNotThrow(() -> securityUtils.validateCpfAccess("12345678901"));
         assertDoesNotThrow(() -> securityUtils.validateCpfAccess("98765432100"));
         assertDoesNotThrow(() -> securityUtils.validateCpfAccess("00000000000"));
@@ -156,21 +136,17 @@ class SecurityUtilsTest {
     @Test
     @DisplayName("Deve permitir que MOTORISTA acesse seus próprios dados")
     void devePermitirMotoristaAcessarProprioDados() {
-        // Arrange
         authenticateUser(motoristaUser);
 
-        // Act & Assert
         assertDoesNotThrow(() -> securityUtils.validateCpfAccess("98765432100"));
     }
 
     @Test
     @DisplayName("Deve validar que PASSAGEIRO com CPF diferente é bloqueado")
     void deveValidarBloqueioPassageiroComCpfDiferente() {
-        // Arrange
         authenticateUser(passageiroUser);
         String cpfDiferente = "99999999999";
 
-        // Act & Assert
         AccessDeniedException exception = assertThrows(AccessDeniedException.class,
                 () -> securityUtils.validateCpfAccess(cpfDiferente));
 
@@ -180,13 +156,10 @@ class SecurityUtilsTest {
     @Test
     @DisplayName("Deve validar comparação exata de CPF para PASSAGEIRO")
     void deveValidarComparacaoExataDeCpf() {
-        // Arrange
         authenticateUser(passageiroUser);
 
-        // Act & Assert - CPF exato deve funcionar
         assertDoesNotThrow(() -> securityUtils.validateCpfAccess("12345678901"));
 
-        // CPF com um dígito diferente deve falhar
         assertThrows(AccessDeniedException.class,
                 () -> securityUtils.validateCpfAccess("12345678900"));
     }
