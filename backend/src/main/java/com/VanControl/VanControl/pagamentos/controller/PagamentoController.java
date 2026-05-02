@@ -1,5 +1,6 @@
 package com.VanControl.VanControl.pagamentos.controller;
 
+import com.VanControl.VanControl.commons.util.SecurityUtils;
 import com.VanControl.VanControl.pagamentos.domain.dto.request.AtualizarStatusPagamentoRequestDto;
 import com.VanControl.VanControl.pagamentos.domain.dto.request.CadastrarPagamentoRequestDto;
 import com.VanControl.VanControl.pagamentos.domain.dto.response.PagamentoDefaultResponseDto;
@@ -28,6 +29,7 @@ import java.util.UUID;
 public class PagamentoController {
 
     private final PagamentoService pagamentoService;
+    private final SecurityUtils securityUtils;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
@@ -50,12 +52,13 @@ public class PagamentoController {
     }
 
     @GetMapping("/passageiro/{cpf}")
-    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA','PASSAGEIRO')")
     @Operation(
             summary = "Listar pagamentos do passageiro",
             description = "Entrada: cpf do passageiro (path). Saida: lista de PagamentoResponseDto (nome, competencia, valor, dataVencimento, dataPagamento, status)."
     )
     public ResponseEntity<List<PagamentoResponseDto>> buscarPagamentosDoPassageiroPorCpf(@PathVariable String cpf){
+        securityUtils.validateCpfAccess(cpf);
         List<PagamentoResponseDto> pagamentos = pagamentoService.buscarPagamentosDoPassageiroPorCpf(cpf);
 
         return ResponseEntity.status(HttpStatus.OK).body(pagamentos);

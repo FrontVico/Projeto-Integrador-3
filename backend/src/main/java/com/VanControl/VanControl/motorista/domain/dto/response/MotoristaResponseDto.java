@@ -6,6 +6,7 @@ import java.time.YearMonth;
 
 public record MotoristaResponseDto(
             String nome,
+            String cpf,
             String cnh,
             String categoriaCnh,
             @JsonFormat(pattern = "MM/yyyy")

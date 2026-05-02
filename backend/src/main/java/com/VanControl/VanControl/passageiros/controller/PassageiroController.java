@@ -1,5 +1,6 @@
 package com.VanControl.VanControl.passageiros.controller;
 
+import com.VanControl.VanControl.commons.util.SecurityUtils;
 import com.VanControl.VanControl.passageiros.domain.dto.request.AtualizarPassageiroRequestDto;
 import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroDefaultResponseDto;
 import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroResponseDto;
@@ -24,6 +25,7 @@ import java.util.List;
 public class PassageiroController {
 
     private final PassageiroService passageiroService;
+    private final SecurityUtils securityUtils;
 
     @GetMapping("/{cpf}")
     @Operation(
@@ -31,6 +33,7 @@ public class PassageiroController {
             description = "Entrada: cpf (path). Saida: PassageiroResponseDto (nome, cpf, telefone, email, intituicaoEnsino, turno, endereco, cep)."
     )
     public ResponseEntity<PassageiroResponseDto> buscarPassageiroPorCpf(@PathVariable String cpf) {
+        securityUtils.validateCpfAccess(cpf);
         return new ResponseEntity<>(passageiroService.buscarPassageiroPorCpf(cpf), HttpStatus.OK);
     }
 
@@ -51,6 +54,7 @@ public class PassageiroController {
             description = "Entrada: cpf (path) e AtualizarPassageiroRequestDto (nome, telefone, email, intituicaoEnsino, turno, Endereco, cep). Saida: PassageiroResponseDto."
     )
     public ResponseEntity<PassageiroResponseDto> atualizarPassageiro(@PathVariable String cpf, @RequestBody @Valid AtualizarPassageiroRequestDto dto) {
+        securityUtils.validateCpfAccess(cpf);
         return new ResponseEntity<>(passageiroService.atualizarPassageiro(cpf, dto), HttpStatus.OK);
     }
 

@@ -1,5 +1,6 @@
 package com.VanControl.VanControl.motorista.controller;
 
+import com.VanControl.VanControl.commons.util.SecurityUtils;
 import com.VanControl.VanControl.motorista.domain.dto.request.AtualizarTelefoneMotoristaRequestDto;
 import com.VanControl.VanControl.motorista.domain.dto.request.CadastrarMotoristaRequestDto;
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaDefaultResponseDto;
@@ -24,6 +25,7 @@ import java.util.List;
 public class MotoristaController {
 
     private final MotoristaService motoristaService;
+    private final SecurityUtils securityUtils;
 
     @PostMapping
     @PreAuthorize("hasRole('ADMIN')")
@@ -33,6 +35,7 @@ public class MotoristaController {
 
     @GetMapping("/{cpf}")
     public ResponseEntity<MotoristaResponseDto> buscarMotoristaPorCpf(@PathVariable String cpf) {
+        securityUtils.validateCpfAccess(cpf);
         return new ResponseEntity<>(motoristaService.buscarMotoristaPorCpf(cpf), HttpStatus.OK);
     }
     
@@ -44,6 +47,7 @@ public class MotoristaController {
     @PutMapping
     @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     public ResponseEntity<MotoristaDefaultResponseDto> atualizarTelefoneMotorista(@RequestBody @Valid AtualizarTelefoneMotoristaRequestDto dto) {
+        securityUtils.validateCpfAccess(dto.cpf());
         return new ResponseEntity<>(motoristaService.atualizarTelefoneMotorista(dto), HttpStatus.OK);
     }
 

@@ -21,6 +21,7 @@ public class MotoristaMapper {
     public static MotoristaResponseDto converterParaMotoristaDto(Motorista motorista) {
         return new MotoristaResponseDto(
                 motorista.getNome(),
+                motorista.getCpf(),
                 motorista.getCnh(),
                 motorista.getCategoriaCnh(),
                 motorista.getDataValidadeCnh(),

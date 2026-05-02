@@ -34,6 +34,7 @@ public class UserService {
             newUser.setPassword(passwordEncoder.encode(dto.password()));
             newUser.setEmail(dto.email());
             newUser.setName(dto.name());
+            newUser.setCpf(dto.cpf());
             newUser.setRole(Role.PASSAGEIRO);
             this.userRepository.save(newUser);
 
