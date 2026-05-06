@@ -80,7 +80,7 @@ export default function HomeScreen() {
           </View>
 
           <Animated.View style={{ width: '100%', opacity: btnAnim, transform: [{ scale: pulseAnim }] }}>
-            <TouchableOpacity activeOpacity={0.85} onPress={() => router.push('/login')}>
+            <TouchableOpacity activeOpacity={0.85} onPress={() => router.push('/register')}>
               <LinearGradient
                 colors={['#2563eb', '#1953c0', '#1240a0']}
                 start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }}
