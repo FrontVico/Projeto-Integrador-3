@@ -6,7 +6,7 @@ import jakarta.validation.constraints.Pattern;
 public record AtualizarPassageiroRequestDto(
         @Pattern(regexp = "^[A-Za-zÀ-ÖØ-öø-ÿ ]+$", message = "O nome deve conter apenas letras e espaços")
         String nome,
-        @Pattern(regexp = "^[0-9]{5}-[0-9]{4}$", message = "Insira o telefone no formato 12345-6789")
+        @Pattern(regexp = "^\\\\([0-9]{2}\\\\)\\\\s?[0-9]{5}-[0-9]{4}$", message = "Insira o telefone no formato 12345-6789")
         String telefone,
         @Email(message = "Insira um email válido")
         String email,

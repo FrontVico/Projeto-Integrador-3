@@ -19,7 +19,7 @@ public record RegisterRequestDTO(
         @CPF(message = "Insira um CPF válido")
         @NotBlank(message = "Insira seu CPF")
         String cpf,
-        @Pattern(regexp = "^[0-9]{5}-[0-9]{4}$", message = "Insira o telefone no formato 12345-6789")
+        @Pattern(regexp = "^\\\\([0-9]{2}\\\\)\\\\s?[0-9]{5}-[0-9]{4}$", message = "Insira o telefone no formato 12345-6789")
         @NotBlank(message = "Insira seu telefone")
         String telefone,
         @Pattern(regexp = "^[a-zA-ZÀ-ÿ\\s]+$", message = "O nome da instituição de ensino deve conter apenas letras e espaços")

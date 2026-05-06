@@ -26,7 +26,7 @@ public record CadastrarMotoristaRequestDto(
         @CPF(message = "CPF inválido")
         @NotBlank(message = "Insira o CPF do motorista")
         String cpf,
-        @Pattern(regexp = "^[0-9]{5}-[0-9]{4}$", message = "Insira o telefone no formato 12345-6789")
+        @Pattern(regexp = "^\\\\([0-9]{2}\\\\)\\\\s?[0-9]{5}-[0-9]{4}$", message = "Insira o telefone no formato 12345-6789")
         @NotBlank(message = "Insira o telefone do motorista")
         String telefone
 ) {
