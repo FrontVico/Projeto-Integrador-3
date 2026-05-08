@@ -19,6 +19,7 @@ public class ViagemMapper {
 
     public static ViagemResponseDto converterParaViagemDto(Viagem viagem) {
         return new ViagemResponseDto(
+                viagem.getCodigoViagem(),
                 viagem.getCodigoRota(),
                 viagem.getPlacaVeiculo(),
                 viagem.getDocumentoMotorista(),

@@ -63,12 +63,12 @@ class MotoristaControllerTest {
                 "98765432101",
                 "D",
                 YearMonth.of(2026, 12),
-                "11111-1111"
+                "(11) 11111-1111"
         );
 
         atualizarTelefoneRequestDto = new AtualizarTelefoneMotoristaRequestDto(
                 CPF_PRINCIPAL,
-                "22222-2222"
+                "(11) 22222-2222"
         );
     }
 
@@ -157,7 +157,7 @@ class MotoristaControllerTest {
     void deveBloquerMotoristaDeAtualizarTelefoneDeOutroMotorista() throws Exception {
         AtualizarTelefoneMotoristaRequestDto requestOutroCpf = new AtualizarTelefoneMotoristaRequestDto(
                 CPF_OUTRO,
-                "22222-2222"
+                "(11)22222-2222"
         );
 
         doThrow(new AccessDeniedException("Você não tem permissão para acessar dados de outro usuário"))

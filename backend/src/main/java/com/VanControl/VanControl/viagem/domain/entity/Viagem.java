@@ -1,11 +1,16 @@
 package com.VanControl.VanControl.viagem.domain.entity;
 
+import com.VanControl.VanControl.viagemPassageiro.domain.entity.ViagemPassageiro;
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import lombok.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 @Entity
@@ -30,6 +35,10 @@ public class Viagem {
     private String horarioSaidaPrevisto;
     private String horarioChegadaPrevisto;
     private boolean viagemConcluida;
+
+    @OneToMany(mappedBy = "viagem", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<ViagemPassageiro> passageiros = new ArrayList<>();
 
     public Viagem(String codigoRota, String placaVeiculo, String documentoMotorista, String dataViagem, String horarioSaidaPrevisto, String horarioChegadaPrevisto) {
         this.codigoRota = codigoRota;

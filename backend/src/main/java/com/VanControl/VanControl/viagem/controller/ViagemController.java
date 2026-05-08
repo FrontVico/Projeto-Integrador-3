@@ -1,7 +1,9 @@
 package com.VanControl.VanControl.viagem.controller;
 
+import com.VanControl.VanControl.commons.util.SecurityUtils;
 import com.VanControl.VanControl.viagem.domain.dto.request.CriarViagemRequestDto;
 import com.VanControl.VanControl.viagem.domain.dto.response.ViagemDefaultResponseDto;
+import com.VanControl.VanControl.viagemPassageiro.domain.dto.ViagemPassageirosResponseDto;
 import com.VanControl.VanControl.viagem.domain.dto.response.ViagemResponseDto;
 import com.VanControl.VanControl.viagem.service.ViagemService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +26,7 @@ import java.util.List;
 public class ViagemController {
 
     private final ViagemService viagemService;
+    private final SecurityUtils securityUtils;
 
     @PostMapping
     @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
@@ -36,12 +39,45 @@ public class ViagemController {
     }
 
     @GetMapping("/{codigo}")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA','PASSAGEIRO')")
     @Operation(
             summary = "Buscar viagem por codigo",
             description = "Entrada: codigo (path). Saida: ViagemResponseDto (codigoRota, placaVeiculo, cpfMotorista, dataViagem, horarioSaidaPrevisto, horarioChegadaPrevisto, viagemConcuida)."
     )
     public ResponseEntity<ViagemResponseDto> buscarViagemPorCodigo(@PathVariable String codigo) {
         return new ResponseEntity<>(viagemService.buscarViagemPorCodigo(codigo), HttpStatus.OK);
+    }
+
+    @PostMapping("/{codigo}/passageiros/{cpf}")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA','PASSAGEIRO')")
+    @Operation(
+            summary = "Associar passageiro a viagem",
+            description = "Entrada: codigo e cpf (path). Saida: ViagemDefaultResponseDto com mensagem."
+    )
+    public ResponseEntity<ViagemDefaultResponseDto> associarPassageiro(@PathVariable String codigo, @PathVariable String cpf) {
+        securityUtils.validateCpfAccess(cpf);
+        return new ResponseEntity<>(viagemService.adicionarPassageiro(codigo, cpf), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/{codigo}/passageiros/{cpf}")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA','PASSGEIRO')")
+    @Operation(
+            summary = "Remover passageiro da viagem",
+            description = "Entrada: codigo e cpf (path). Saida: ViagemDefaultResponseDto com mensagem."
+    )
+    public ResponseEntity<ViagemDefaultResponseDto> removerPassageiro(@PathVariable String codigo, @PathVariable String cpf) {
+        securityUtils.validateCpfAccess(cpf);
+        return new ResponseEntity<>(viagemService.removerPassageiro(codigo, cpf), HttpStatus.OK);
+    }
+
+    @GetMapping("/{codigo}/passageiros")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
+    @Operation(
+            summary = "Listar passageiros da viagem",
+            description = "Entrada: codigo (path). Saida: ViagemPassageirosResponseDto com capacidade, ocupacao e lista de passageiros."
+    )
+    public ResponseEntity<ViagemPassageirosResponseDto> listarPassageiros(@PathVariable String codigo) {
+        return new ResponseEntity<>(viagemService.listarPassageirosPorViagem(codigo), HttpStatus.OK);
     }
 
     @GetMapping

@@ -7,6 +7,8 @@ import com.VanControl.VanControl.passageiros.mapper.PassageiroMapper;
 import com.VanControl.VanControl.passageiros.service.PassageiroService;
 import com.VanControl.VanControl.user.Infra.Security.TokenService;
 import com.VanControl.VanControl.user.Repository.UserRepository;
+import com.VanControl.VanControl.viagem.domain.dto.response.ViagemResumoResponseDto;
+import com.VanControl.VanControl.viagem.service.ViagemService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -47,6 +49,9 @@ class PassageiroControllerTest {
     private PassageiroService passageiroService;
 
     @MockitoBean
+    private ViagemService viagemService;
+
+    @MockitoBean
     private SecurityUtils securityUtils;
 
     private PassageiroResponseDto passageiroResponseDto;
@@ -60,19 +65,19 @@ class PassageiroControllerTest {
     @BeforeEach
     void setUp() {
         passageiroResponseDto = new PassageiroResponseDto(
-                "João Silva",
+                "Joao Silva",
                 CPF_PASSAGEIRO,
-                "11111-1111",
+                "\\(11\\) 11111-1111",
                 "joao@email.com",
                 "UFSC",
-                "Manhã",
+                "Manha",
                 "Rua A, 123",
                 "88000-000"
         );
 
         atualizarPassageiroRequestDto = new AtualizarPassageiroRequestDto(
-                "João Silva Atualizado",
-                "22222-2222",
+                "Joao Silva Atualizado",
+                "(11) 22222-2222",
                 "joao.novo@email.com",
                 "UFSC",
                 "Tarde",
@@ -91,7 +96,7 @@ class PassageiroControllerTest {
         mockMvc.perform(get("/passageiros/{cpf}", CPF_PASSAGEIRO))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.cpf").value(CPF_PASSAGEIRO))
-                .andExpect(jsonPath("$.nome").value("João Silva"));
+                .andExpect(jsonPath("$.nome").value("Joao Silva"));
 
         verify(securityUtils, times(1)).validateCpfAccess(CPF_PASSAGEIRO);
         verify(passageiroService, times(1)).buscarPassageiroPorCpf(CPF_PASSAGEIRO);
@@ -194,5 +199,21 @@ class PassageiroControllerTest {
 
         verify(securityUtils, times(1)).validateCpfAccess(CPF_PASSAGEIRO);
         verify(passageiroService, times(1)).atualizarPassageiro(eq(CPF_PASSAGEIRO), any(AtualizarPassageiroRequestDto.class));
+    }
+
+    @Test
+    @DisplayName("Deve listar viagens do passageiro quando acessa seus próprios dados")
+    @WithMockUser(username = CPF_PASSAGEIRO, roles = "PASSAGEIRO")
+    void deveListarViagensDoPassageiroQuandoPassageiroAcessaProprioDados() throws Exception {
+        doNothing().when(securityUtils).validateCpfAccess(CPF_PASSAGEIRO);
+        ViagemResumoResponseDto viagemResumo = new ViagemResumoResponseDto("VIA-12345678", "ROT-123", "ABC-1234", "2026-05-10", "08:00", "09:00", false);
+        when(viagemService.listarViagensPorPassageiroCpf(CPF_PASSAGEIRO)).thenReturn(java.util.List.of(viagemResumo));
+
+        mockMvc.perform(get("/passageiros/{cpf}/viagens", CPF_PASSAGEIRO))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$[0].codigoViagem").value("VIA-12345678"));
+
+        verify(securityUtils, times(1)).validateCpfAccess(CPF_PASSAGEIRO);
+        verify(viagemService, times(1)).listarViagensPorPassageiroCpf(CPF_PASSAGEIRO);
     }
 }

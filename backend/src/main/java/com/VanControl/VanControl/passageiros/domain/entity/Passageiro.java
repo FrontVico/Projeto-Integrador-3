@@ -1,6 +1,7 @@
 package com.VanControl.VanControl.passageiros.domain.entity;
 
 import com.VanControl.VanControl.pagamentos.domain.entity.Pagamento;
+import com.VanControl.VanControl.viagemPassageiro.domain.entity.ViagemPassageiro;
 import com.VanControl.VanControl.user.Model.User.User;
 import jakarta.persistence.*;
 import lombok.*;
@@ -28,6 +29,10 @@ public class Passageiro {
     @OneToMany(mappedBy = "passageiro")
     @Builder.Default
     private List<Pagamento> pagamentos = new ArrayList<>();
+
+    @OneToMany(mappedBy = "passageiro")
+    @Builder.Default
+    private List<ViagemPassageiro> viagens = new ArrayList<>();
 
     private String nome;
     @Column(unique = true)

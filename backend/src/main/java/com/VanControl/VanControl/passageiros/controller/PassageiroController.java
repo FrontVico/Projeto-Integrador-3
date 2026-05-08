@@ -5,6 +5,8 @@ import com.VanControl.VanControl.passageiros.domain.dto.request.AtualizarPassage
 import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroDefaultResponseDto;
 import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroResponseDto;
 import com.VanControl.VanControl.passageiros.service.PassageiroService;
+import com.VanControl.VanControl.viagem.domain.dto.response.ViagemResumoResponseDto;
+import com.VanControl.VanControl.viagem.service.ViagemService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,6 +28,7 @@ public class PassageiroController {
 
     private final PassageiroService passageiroService;
     private final SecurityUtils securityUtils;
+    private final ViagemService viagemService;
 
     @GetMapping("/{cpf}")
     @Operation(
@@ -66,5 +69,16 @@ public class PassageiroController {
     )
     public ResponseEntity<PassageiroDefaultResponseDto> deletarPassageiro(@PathVariable String cpf) {
         return new ResponseEntity<>(passageiroService.deletarPassageiro(cpf), HttpStatus.NO_CONTENT);
+    }
+
+    @GetMapping("/{cpf}/viagens")
+    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA','PASSAGEIRO')")
+    @Operation(
+            summary = "Listar viagens do passageiro",
+            description = "Entrada: cpf (path). Saida: lista de ViagemResumoResponseDto."
+    )
+    public ResponseEntity<List<ViagemResumoResponseDto>> listarViagensPorPassageiro(@PathVariable String cpf) {
+        securityUtils.validateCpfAccess(cpf);
+        return new ResponseEntity<>(viagemService.listarViagensPorPassageiroCpf(cpf), HttpStatus.OK);
     }
 }
