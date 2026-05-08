@@ -24,6 +24,8 @@ public class TokenService {
             String token = JWT.create()
                     .withIssuer("VanControl")
                     .withSubject(user.getEmail())
+                    .withClaim("name", user.getName())
+                    .withClaim("role", user.getRole().name())
                     .withExpiresAt(this.generateExpirationDate())
                     .sign(algorithm);
             return token;
