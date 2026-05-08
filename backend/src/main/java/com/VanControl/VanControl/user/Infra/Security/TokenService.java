@@ -26,6 +26,7 @@ public class TokenService {
                     .withSubject(user.getEmail())
                     .withClaim("name", user.getName())
                     .withClaim("role", user.getRole().name())
+                    .withClaim("cpf", user.getCpf())
                     .withExpiresAt(this.generateExpirationDate())
                     .sign(algorithm);
             return token;

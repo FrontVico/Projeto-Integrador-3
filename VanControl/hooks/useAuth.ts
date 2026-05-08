@@ -40,7 +40,7 @@ export function useAuth() {
           name:  payload.name  ?? payload.sub ?? 'Usuário',
           email: payload.email ?? '',
           role:  payload.role  ?? payload.perfil ?? 'PASSAGEIRO',
-          sub:   payload.sub   ?? '',
+          sub:   payload.cpf   ?? payload.sub   ?? '',
         });
       } finally {
         setLoading(false);

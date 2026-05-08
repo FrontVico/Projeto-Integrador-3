@@ -92,6 +92,13 @@ export default function RegisterScreen() {
     return formatted;
   }
 
+  function formatCep(value: string) {
+    const digits = onlyDigits(value).slice(0, 8);
+    const part1 = digits.slice(0, 5);
+    const part2 = digits.slice(5, 8);
+    return part2 ? `${part1}-${part2}` : part1;
+  }
+
   function updateField<K extends keyof RegisterForm>(key: K, value: RegisterForm[K]) {
     setForm((prev) => ({ ...prev, [key]: value }));
     if (error) setError('');
@@ -130,6 +137,9 @@ export default function RegisterScreen() {
 
     const telefoneDigits = onlyDigits(data.telefone);
     if (telefoneDigits.length < 10 || telefoneDigits.length > 11) return 'Telefone invalido.';
+
+    const cepDigits = onlyDigits(data.cep);
+    if (cepDigits.length !== 8) return 'CEP invalido.';
 
     return null;
   }
@@ -340,7 +350,7 @@ export default function RegisterScreen() {
                   placeholder="00000-000"
                   placeholderTextColor="#3d4a6b"
                   value={form.cep}
-                  onChangeText={(t) => updateField('cep', t)}
+                  onChangeText={(t) => updateField('cep', formatCep(t))}
                   keyboardType="numeric"
                 />
               </View>
@@ -384,7 +394,7 @@ export default function RegisterScreen() {
 const styles = StyleSheet.create({
   scroll: { flexGrow: 1, justifyContent: 'center', paddingHorizontal: 24, paddingVertical: 60, maxWidth: 520, alignSelf: 'center', width: '100%' },
   glowTopRight: { position: 'absolute', top: -60, right: -60, width: 240, height: 240, borderRadius: 120, backgroundColor: 'rgba(25,83,192,0.15)' },
-  glowBottomLeft: { position: 'absolute', bottom: 40, left: -80, width: 200, height: 200, borderRadius: 100, backgroundColor: 'rgba(37,99,235,0.08)' },
+  glowBottomLeft: { position: 'fixed', bottom: 40, left: -80, width: 200, height: 200, borderRadius: 100, backgroundColor: 'rgba(37,99,235,0.08)' },
   header: { marginBottom: 28 },
   backBtn: { width: 40, height: 40, borderRadius: 12, backgroundColor: 'rgba(255,255,255,0.07)', borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.12)', alignItems: 'center', justifyContent: 'center', marginBottom: 22 },
   backIcon: { color: '#fff', fontSize: 16 },
