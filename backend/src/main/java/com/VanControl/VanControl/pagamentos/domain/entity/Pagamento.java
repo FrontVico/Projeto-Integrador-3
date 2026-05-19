@@ -25,6 +25,7 @@ public class Pagamento {
     @JoinColumn(name = "passageiro_id")
     private Passageiro passageiro;
 
+    private String codigoPagamento;
     private String competencia;
     private BigDecimal valor;
     private LocalDate dataVencimento;

@@ -41,14 +41,16 @@ public class PagamentoService{
         var pagamento = PagamentoMapper.converterParaPagamento(dto, passageiro);
         pagamento.setStatus(StatusPagamento.PENDENTE);
 
+        pagamento.setCodigoPagamento("PGTO-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+
         pagamentoRepository.save(pagamento);
 
         return new PagamentoDefaultResponseDto("Pagamento cadastrado com sucesso");
     }
 
-    public PagamentoDefaultResponseDto atualizarStatusPagamento(UUID id, AtualizarStatusPagamentoRequestDto dto){
+    public PagamentoDefaultResponseDto atualizarStatusPagamento(String codigoPagamento, AtualizarStatusPagamentoRequestDto dto){
 
-        Pagamento pagamento = pagamentoRepository.findById(id)
+        Pagamento pagamento = pagamentoRepository.findByCodigoPagamento(codigoPagamento)
                 .orElseThrow(() -> new NotFoundException("Pagamento não encontrado"));
 
         pagamento.setStatus(StatusPagamento.valueOf(dto.status()));
@@ -74,8 +76,8 @@ public class PagamentoService{
                 .toList();
     }
 
-    public PagamentoResponseDto buscarPagamentoEspecificoPorID(UUID id){
-        Pagamento pagamento = pagamentoRepository.findById(id)
+    public PagamentoResponseDto buscarPagamentoPorCodigoPagamento(String codigoPagamento){
+        Pagamento pagamento = pagamentoRepository.findByCodigoPagamento(codigoPagamento)
                 .orElseThrow(() -> new NotFoundException("Pagamento não encontrado"));
 
         return  PagamentoMapper.converterParaPagamentoDto(pagamento);

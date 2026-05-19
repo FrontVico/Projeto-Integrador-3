@@ -7,6 +7,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 
 public record PagamentoResponseDto(
+        String codigoPagamento,
         String nome,
         @JsonFormat(pattern = "MM/yyyy")
         String competencia,
