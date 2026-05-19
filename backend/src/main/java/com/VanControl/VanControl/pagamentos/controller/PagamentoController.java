@@ -41,11 +41,11 @@ public class PagamentoController {
        return new ResponseEntity<>(pagamentoService.cadastrarPagamento(dto), HttpStatus.CREATED);
     }
 
-    @PatchMapping("/{id}/status")
+    @PatchMapping("/{codigoPagamento}/status")
     @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Atualizar status do pagamento",
-            description = "Entrada: id (path) e AtualizarStatusPagamentoRequestDto (status, dataPagamento). Saida: PagamentoDefaultResponseDto com mensagem."
+            description = "Entrada: codigoPagamento (path) e AtualizarStatusPagamentoRequestDto (status, dataPagamento). Saida: PagamentoDefaultResponseDto com mensagem."
     )
     public ResponseEntity<PagamentoDefaultResponseDto> atualizarStatusPagamento(@PathVariable String codigoPagamento, @RequestBody @Valid AtualizarStatusPagamentoRequestDto dto){
         return new ResponseEntity<>(pagamentoService.atualizarStatusPagamento(codigoPagamento, dto), HttpStatus.OK);
