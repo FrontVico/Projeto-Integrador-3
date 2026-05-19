@@ -52,6 +52,7 @@ class PagamentoControllerTest {
     @BeforeEach
     void setUp() {
         PagamentoResponseDto pagamento1 = new PagamentoResponseDto(
+                "PAG-123",
                 "João Silva",
                 "01/2024",
                 new BigDecimal("150.00"),
@@ -61,6 +62,7 @@ class PagamentoControllerTest {
         );
 
         PagamentoResponseDto pagamento2 = new PagamentoResponseDto(
+                "PAG-124",
                 "João Silva",
                 "02/2024",
                 new BigDecimal("150.00"),
