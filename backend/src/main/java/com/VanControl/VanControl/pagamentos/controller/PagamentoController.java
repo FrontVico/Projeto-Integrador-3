@@ -47,8 +47,8 @@ public class PagamentoController {
             summary = "Atualizar status do pagamento",
             description = "Entrada: id (path) e AtualizarStatusPagamentoRequestDto (status, dataPagamento). Saida: PagamentoDefaultResponseDto com mensagem."
     )
-    public ResponseEntity<PagamentoDefaultResponseDto> atualizarStatusPagamento(@PathVariable UUID id, @RequestBody @Valid AtualizarStatusPagamentoRequestDto dto){
-        return new ResponseEntity<>(pagamentoService.atualizarStatusPagamento(id,dto),HttpStatus.OK);
+    public ResponseEntity<PagamentoDefaultResponseDto> atualizarStatusPagamento(@PathVariable String codigoPagamento, @RequestBody @Valid AtualizarStatusPagamentoRequestDto dto){
+        return new ResponseEntity<>(pagamentoService.atualizarStatusPagamento(codigoPagamento, dto), HttpStatus.OK);
     }
 
     @GetMapping("/passageiro/{cpf}")
@@ -64,14 +64,14 @@ public class PagamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(pagamentos);
     }
 
-    @GetMapping("/{id}")
+    @GetMapping("/{codigoPagamento}")
     @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
-            summary = "Buscar pagamento por ID",
-            description = "Entrada: id (path). Saida: PagamentoResponseDto (nome, competencia, valor, dataVencimento, dataPagamento, status)."
+            summary = "Buscar pagamento por código",
+            description = "Entrada: codigoPagamento (path). Saida: PagamentoResponseDto (nome, competencia, valor, dataVencimento, dataPagamento, status)."
     )
-    public ResponseEntity<PagamentoResponseDto> buscarPagamentoEspecificoPorID(@PathVariable UUID id){
-        return new ResponseEntity<>(pagamentoService.buscarPagamentoEspecificoPorID(id),HttpStatus.OK);
+    public ResponseEntity<PagamentoResponseDto> buscarPagamentoPorCodigoPagamento(@PathVariable String codigoPagamento){
+        return new ResponseEntity<>(pagamentoService.buscarPagamentoPorCodigoPagamento(codigoPagamento), HttpStatus.OK);
     }
 
     @GetMapping
@@ -98,14 +98,14 @@ public class PagamentoController {
         return ResponseEntity.status(HttpStatus.OK).body(pagamentos);
     }
 
-    @DeleteMapping("/{id}")
+    @DeleteMapping("/{codigoPagamento}")
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(
             summary = "Deletar pagamento",
-            description = "Entrada: id (path). Saida: PagamentoDefaultResponseDto com mensagem."
+            description = "Entrada: codigoPagamento (path). Saida: PagamentoDefaultResponseDto com mensagem."
     )
-    public ResponseEntity<PagamentoDefaultResponseDto> deletarPagamento(@PathVariable UUID id){
-        return new ResponseEntity<>(pagamentoService.deletarPagamento(id),HttpStatus.OK);
+    public ResponseEntity<PagamentoDefaultResponseDto> deletarPagamento(@PathVariable String codigoPagamento){
+        return new ResponseEntity<>(pagamentoService.deletarPagamento(codigoPagamento), HttpStatus.OK);
     }
 
 }

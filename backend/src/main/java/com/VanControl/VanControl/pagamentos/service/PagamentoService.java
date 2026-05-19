@@ -108,13 +108,13 @@ public class PagamentoService{
     }
 
     @Transactional
-    public PagamentoDefaultResponseDto deletarPagamento(UUID id){
-        var pagamento = pagamentoRepository.findById(id);
+    public PagamentoDefaultResponseDto deletarPagamento(String codigoPagamento){
+        var pagamento = pagamentoRepository.findByCodigoPagamento(codigoPagamento);
         if(pagamento.isEmpty()){
             throw new NotFoundException("Pagamento não encontrado");
         }
 
-        pagamentoRepository.deleteById(id);
+        pagamentoRepository.delete(pagamento.get());
         return new PagamentoDefaultResponseDto("Pagamento removido com sucesso!");
     }
 

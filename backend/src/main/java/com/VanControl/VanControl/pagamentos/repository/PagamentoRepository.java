@@ -4,6 +4,7 @@ import com.VanControl.VanControl.pagamentos.domain.entity.Pagamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public interface PagamentoRepository extends JpaRepository<Pagamento, UUID> {
@@ -16,5 +17,5 @@ public interface PagamentoRepository extends JpaRepository<Pagamento, UUID> {
 
    List<Pagamento> findByCompetencia(String competencia);
 
-   Pagamento findByCodigoPagamento(String codigoPagamento);
+   Optional<Pagamento> findByCodigoPagamento(String codigoPagamento);
 }
