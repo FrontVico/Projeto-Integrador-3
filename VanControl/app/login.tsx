@@ -7,6 +7,7 @@ import { useEffect, useRef, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { authService } from '../services/api';
+import { Ionicons } from '@expo/vector-icons';
 
 export default function LoginScreen() {
   const [email,    setEmail]    = useState('');
@@ -75,27 +76,30 @@ export default function LoginScreen() {
 
           <Animated.View style={[styles.header, { opacity: fadeAnim, transform: [{ translateY: slideAnim }] }]}>
             <TouchableOpacity style={styles.backBtn} onPress={() => router.back()}>
-              <Text style={styles.backIcon}>←</Text>
+              <Ionicons name="arrow-back" size={20} color="#fff" />
             </TouchableOpacity>
             <View style={styles.badge}>
               <View style={styles.badgeDot} />
               <Text style={styles.badgeText}>VanControl</Text>
             </View>
-            <Text style={styles.title}>Bem-vindo{'\n'}de volta 👋</Text>
+           <View style={styles.titleRow}>
+  <Text style={styles.title}>Bem-vindo{'\n'}de volta</Text>
+
+</View>
             <Text style={styles.subtitle}>Entre com sua conta para continuar</Text>
           </Animated.View>
 
           <Animated.View style={[styles.form, {
             opacity: formAnim,
             transform: [
-              { translateY: formAnim.interpolate({ inputRange: [0,1], outputRange: [20,0] }) },
+              { translateY: formAnim.interpolate({inputRange: [0,1], outputRange: [20,0] }) },
               { translateX: shakeAnim },
             ],
           }]}>
             <View style={styles.fieldGroup}>
               <Text style={styles.label}>E-mail</Text>
               <View style={[styles.inputWrap, emailFocus && styles.inputWrapFocus]}>
-                <Text style={styles.inputIcon}>✉️</Text>
+                <Ionicons name="mail-outline" size={18} color="#60a5fa" />
                 <TextInput
                   style={styles.input}
                   placeholder="seu@email.com"
@@ -116,7 +120,7 @@ export default function LoginScreen() {
                 <Text style={styles.label}>Senha</Text>
               </View>
               <View style={[styles.inputWrap, passwordFocus && styles.inputWrapFocus]}>
-                <Text style={styles.inputIcon}>🔒</Text>
+                <Ionicons name="lock-closed-outline" size={18} color="#60a5fa" />
                 <TextInput
                   style={styles.input}
                   placeholder="••••••••"
@@ -128,14 +132,21 @@ export default function LoginScreen() {
                   onBlur={() => setPasswordFocus(false)}
                 />
                 <TouchableOpacity onPress={() => setShowPass(v => !v)} style={styles.eyeBtn}>
-                  <Text style={styles.eyeIcon}>{showPass ? '🙈' : '👁️'}</Text>
+                  <Ionicons
+                    name={showPass ? 'eye-off-outline' : 'eye-outline'}
+                    size={20}
+                    color="#94a3b8"
+                  />
                 </TouchableOpacity>
               </View>
             </View>
 
             {error ? (
               <Animated.View style={[styles.errorBox, { opacity: errorAnim }]}>
-                <Text style={styles.errorText}>⚠️  {error}</Text>
+                <View style={styles.errorContent}>
+                  <Ionicons name="alert-circle-outline" size={18} color="#fca5a5" />
+                  <Text style={styles.errorText}>{error}</Text>
+                </View>
               </Animated.View>
             ) : null}
 
@@ -203,4 +214,7 @@ const styles = StyleSheet.create({
   registerBtn:    { alignItems: 'center', paddingVertical: 4 },
   registerText:   { fontSize: 14, color: '#64748b' },
   registerLink:   { color: '#60a5fa', fontWeight: '700' },
+  titleRow:       {flexDirection: 'row',  alignItems: 'center',  gap: 10,},
+  waveIcon:       {  marginTop: -10,},
+  errorContent:   {  flexDirection: 'row',  alignItems: 'center',  gap: 8,},
 });

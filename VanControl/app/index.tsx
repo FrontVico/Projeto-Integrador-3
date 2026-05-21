@@ -2,13 +2,13 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, ImageBackground, Anima
 import { useEffect, useRef } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
-
+import { Ionicons } from '@expo/vector-icons';
 const { width } = Dimensions.get('window');
 
 const FEATURES = [
-  { icon: '🗺️', label: 'Rotas em tempo real' },
-  { icon: '🚐', label: 'Frota monitorada' },
-  { icon: '💳', label: 'Pagamentos fáceis' },
+  { icon: 'map-outline', label: 'Rotas em tempo real' },
+  { icon: 'bus-outline', label: 'Frota monitorada' },
+  { icon: 'card-outline', label: 'Pagamentos fáceis' },
 ];
 
 export default function HomeScreen() {
@@ -73,7 +73,7 @@ export default function HomeScreen() {
                 opacity: cardAnims[i],
                 transform: [{ translateY: cardAnims[i].interpolate({ inputRange: [0,1], outputRange: [24,0] }) }],
               }]}>
-                <Text style={styles.cardIcon}>{f.icon}</Text>
+                <Ionicons name={f.icon as any} size={24} color="#60a5fa" />
                 <Text style={styles.cardLabel}>{f.label}</Text>
               </Animated.View>
             ))}
