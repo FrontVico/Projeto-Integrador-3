@@ -9,6 +9,8 @@ import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaResponse
 import com.VanControl.VanControl.motorista.domain.entity.Motorista;
 import com.VanControl.VanControl.motorista.mapper.MotoristaMapper;
 import com.VanControl.VanControl.motorista.repository.MotoristaRepository;
+import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
+import com.VanControl.VanControl.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import java.util.List;
 public class MotoristaService {
 
     private final MotoristaRepository motoristaRepository;
+    private final UserService userService;
 
     public MotoristaDefaultResponseDto cadastrarMotorista(CadastrarMotoristaRequestDto dto) {
         if(motoristaRepository.findByCpf(dto.cpf()) != null){
@@ -27,7 +30,9 @@ public class MotoristaService {
         }
 
         var motorista = MotoristaMapper.converterParaMotorista(dto);
+        var userMotorista = MotoristaMapper.converterParaRequestDto(dto);
 
+        userService.registrarUsuario(userMotorista);
         motoristaRepository.save(motorista);
         return new MotoristaDefaultResponseDto("Motorista cadastrado com sucesso");
     }
