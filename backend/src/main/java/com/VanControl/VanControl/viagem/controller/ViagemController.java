@@ -81,7 +81,6 @@ public class ViagemController {
     }
 
     @GetMapping
-    @PreAuthorize("hasAnyRole('ADMIN','MOTORISTA')")
     @Operation(
             summary = "Listar todas as viagens",
             description = "Saida: lista de ViagemResponseDto (codigoRota, placaVeiculo, cpfMotorista, dataViagem, horarioSaidaPrevisto, horarioChegadaPrevisto, viagemConcuida)."

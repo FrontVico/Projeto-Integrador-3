@@ -49,9 +49,10 @@ public class ViagemService {
     public ViagemDefaultResponseDto cadastrarViagem(CriarViagemRequestDto dto) {
         rotaService.buscarRotaPorCodigo(dto.codigoRota());
         veiculoService.buscarVeiculoPorPlaca(dto.placaVeiculo());
-        motoristaService.buscarMotoristaPorCpf(dto.cpfMotorista());
+        var motorista = motoristaService.buscarMotoristaPorCpf(dto.cpfMotorista());
 
         var viagem = ViagemMapper.converterParaViagem(dto);
+        viagem.setDocumentoMotorista(motorista.nome());
 
         viagem.setCodigoViagem(
                 "VIA-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase()
