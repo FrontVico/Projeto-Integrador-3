@@ -35,10 +35,16 @@ public class UserService {
             newUser.setEmail(dto.email());
             newUser.setName(dto.name());
             newUser.setCpf(dto.cpf());
-            newUser.setRole(Role.PASSAGEIRO);
+            if (dto.instituicaoEnsino() == null) {
+                newUser.setRole(Role.MOTORISTA);
+            } else {
+                newUser.setRole(Role.PASSAGEIRO);
+            }
             this.userRepository.save(newUser);
 
-            this.passageiroService.cadastrarPassageiro(dto, newUser);
+            if (newUser.getRole() == Role.PASSAGEIRO) {
+                this.passageiroService.cadastrarPassageiro(dto, newUser);
+            }
 
             String token = this.tokenService.generateToken(newUser);
             return new ResponseDTO(newUser.getName(), token);
