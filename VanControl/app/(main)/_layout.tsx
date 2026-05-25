@@ -2,65 +2,37 @@ import { Tabs } from 'expo-router';
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
-import Svg, { Path, Circle } from 'react-native-svg';
-
-function IconHome({ color, size = 22 }: { color: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d="M3 9.5L12 3l9 6.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1V9.5z" stroke={color} strokeWidth={1.8} strokeLinejoin="round"/>
-      <Path d="M9 21V12h6v9" stroke={color} strokeWidth={1.8} strokeLinecap="round"/>
-    </Svg>
-  );
-}
-function IconRoutes({ color, size = 22 }: { color: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d="M3 17c0-1.1.9-2 2-2h14a2 2 0 010 4H5a2 2 0 01-2-2z" stroke={color} strokeWidth={1.8}/>
-      <Path d="M3 7c0-1.1.9-2 2-2h8a2 2 0 010 4H5a2 2 0 01-2-2z" stroke={color} strokeWidth={1.8}/>
-      <Circle cx="19" cy="7" r="2" stroke={color} strokeWidth={1.8}/>
-    </Svg>
-  );
-}
-function IconTrips({ color, size = 22 }: { color: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d="M5 17H3a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v9a2 2 0 01-2 2h-2" stroke={color} strokeWidth={1.8} strokeLinejoin="round"/>
-      <Circle cx="7.5" cy="17.5" r="2.5" stroke={color} strokeWidth={1.8}/>
-      <Circle cx="17.5" cy="17.5" r="2.5" stroke={color} strokeWidth={1.8}/>
-    </Svg>
-  );
-}
-function IconPayments({ color, size = 22 }: { color: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d="M2 8h20M2 8v10a2 2 0 002 2h16a2 2 0 002-2V8M2 8V6a2 2 0 012-2h16a2 2 0 012 2v2" stroke={color} strokeWidth={1.8} strokeLinejoin="round"/>
-      <Path d="M6 12h4" stroke={color} strokeWidth={1.8} strokeLinecap="round"/>
-    </Svg>
-  );
-}
-function IconProfile({ color, size = 22 }: { color: string; size?: number }) {
-  return (
-    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Circle cx="12" cy="8" r="4" stroke={color} strokeWidth={1.8}/>
-      <Path d="M4 20c0-3.314 3.582-6 8-6s8 2.686 8 6" stroke={color} strokeWidth={1.8} strokeLinecap="round"/>
-    </Svg>
-  );
-}
+import { Ionicons } from '@expo/vector-icons';
+import { useAuth } from '../../hooks/useAuth';
+import type { Role } from '../../constants/navigation';
 
 const TABS = [
-  { name: 'index',      label: 'Início',     Icon: IconHome },
-  { name: 'rotas',      label: 'Rotas',      Icon: IconRoutes },
-  { name: 'viagens',    label: 'Viagens',    Icon: IconTrips },
-  { name: 'pagamentos', label: 'Pagamentos', Icon: IconPayments },
-  { name: 'perfil',     label: 'Perfil',     Icon: IconProfile },
+  { name: 'index',      label: 'Início',     iconName: 'home-outline',       allowedRoles: ['ADMIN', 'MOTORISTA', 'PASSAGEIRO'] as Role[] },
+  { name: 'rotas',      label: 'Rotas',      iconName: 'map-outline',        allowedRoles: ['ADMIN', 'MOTORISTA', 'PASSAGEIRO'] as Role[] },
+  { name: 'viagens',    label: 'Viagens',    iconName: 'navigate-outline',   allowedRoles: ['ADMIN', 'MOTORISTA', 'PASSAGEIRO'] as Role[] },
+  { name: 'pagamentos', label: 'Pagamentos', iconName: 'card-outline',       allowedRoles: ['ADMIN', 'MOTORISTA', 'PASSAGEIRO'] as Role[] },
+  { name: 'veiculos',   label: 'Veículos',   iconName: 'bus-outline',        allowedRoles: ['ADMIN', 'MOTORISTA'] as Role[] },
+  { name: 'motoristas', label: 'Motoristas', iconName: 'people-outline',     allowedRoles: ['ADMIN'] as Role[] },
+  { name: 'passageiros',label: 'Passageiros',iconName: 'school-outline',     allowedRoles: ['ADMIN'] as Role[] },
+  { name: 'perfil',     label: 'Perfil',     iconName: 'person-outline',     allowedRoles: ['ADMIN', 'MOTORISTA', 'PASSAGEIRO'] as Role[] },
 ];
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  const { user } = useAuth();
   const insets = useSafeAreaInsets();
+  
+  // Filtrar abas baseado na role do usuário
+  const visibleRoutes = state.routes.filter((route) => {
+    const tab = TABS.find(t => t.name === route.name);
+    if (!tab) return true;
+    if (!user?.role) return false;
+    return tab.allowedRoles.includes(user.role);
+  });
+  
   return (
     <View style={[styles.tabBar, { paddingBottom: insets.bottom || 12 }]}>
-      {state.routes.map((route, index) => {
-        const isFocused = state.index === index;
+      {visibleRoutes.map((route) => {
+        const isFocused = state.index === state.routes.findIndex(r => r.key === route.key);
         const tab = TABS.find(t => t.name === route.name) ?? TABS[0];
         const color = isFocused ? '#2563eb' : '#64748b';
         const onPress = () => {
@@ -71,7 +43,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           <TouchableOpacity key={route.key} onPress={onPress} activeOpacity={0.7} style={styles.tabItem}>
             {isFocused && <View style={styles.activePill} />}
             <View style={[styles.iconWrap, isFocused && styles.iconWrapActive]}>
-              <tab.Icon color={color} size={21} />
+              <Ionicons name={tab.iconName as any} size={21} color={color} />
             </View>
             <Text style={[styles.tabLabel, { color }]}>{tab.label}</Text>
           </TouchableOpacity>
@@ -88,6 +60,9 @@ export default function MainLayout() {
       <Tabs.Screen name="rotas"      options={{ title: 'Rotas' }} />
       <Tabs.Screen name="viagens"    options={{ title: 'Viagens' }} />
       <Tabs.Screen name="pagamentos" options={{ title: 'Pagamentos' }} />
+      <Tabs.Screen name="veiculos"   options={{ title: 'Veículos' }} />
+      <Tabs.Screen name="motoristas" options={{ title: 'Motoristas' }} />
+      <Tabs.Screen name="passageiros" options={{ title: 'Passageiros' }} />
       <Tabs.Screen name="perfil"     options={{ title: 'Perfil' }} />
     </Tabs>
   );

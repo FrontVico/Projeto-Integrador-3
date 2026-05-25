@@ -1,9 +1,9 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 // const BASE_URL = 'http://10.0.2.2:8080'; // Android emulator
-const BASE_URL = "http://localhost:8080"; // Web
+// const BASE_URL = "http://localhost:8080"; // Web
 // const BASE_URL = 'http://SEU_IP:8080';   // Celular físico
-// const BASE_URL = 'https://projeto-integrador-3-yazx.onrender.com'; // Deploy
+const BASE_URL = 'https://projeto-integrador-3-yazx.onrender.com'; // Deploy
 
 async function getToken(): Promise<string | null> {
   return AsyncStorage.getItem("@vancontrol:token");
@@ -43,8 +43,17 @@ async function request<T>(
     body: body ? JSON.stringify(body) : undefined,
   });
 
+  if (!response.ok) {
+    const data = await response.json().catch(() => ({}));
+    throw new Error(data?.message ?? `Erro ${response.status}`);
+  }
+
+  // Handle empty responses (e.g., 204 No Content)
+  if (response.status === 204) {
+    return {} as T;
+  }
+
   const data = await response.json().catch(() => null);
-  if (!response.ok) throw new Error(data?.message ?? `Erro ${response.status}`);
   return data as T;
 }
 
@@ -132,12 +141,20 @@ export const passageirosService = {
 export const viagensService = {
   listar: () => request<any[]>("/viagens"),
   buscarPorCodigo: (codigo: string) => request<any>(`/viagens/${codigo}`),
+  listarPassageirosPorCpf: (cpf: string) =>
+    request<any[]>(`/passageiros/${cpf}/viagens`),
   criar: (payload: any) =>
     request("/viagens", { method: "POST", body: payload }),
   atualizarStatus: (codigo: string) =>
     request(`/viagens/${codigo}`, { method: "PUT" }),
   deletar: (codigo: string) =>
     request(`/viagens/${codigo}`, { method: "DELETE" }),
+  associarPassageiro: (codigo: string, cpf: string) =>
+    request(`/viagens/${codigo}/passageiros/${cpf}`, { method: "POST" }),
+  removerPassageiro: (codigo: string, cpf: string) =>
+    request(`/viagens/${codigo}/passageiros/${cpf}`, { method: "DELETE" }),
+  listarPassageiros: (codigo: string) =>
+    request<any>(`/viagens/${codigo}/passageiros`),
 };
 
 export const pagamentosService = {

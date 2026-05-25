@@ -1,19 +1,42 @@
 import {
-  View, Text, StyleSheet, ScrollView,
+  View, Text, StyleSheet,
   TouchableOpacity, Animated, ActivityIndicator, Dimensions,
+  useWindowDimensions,
 } from 'react-native';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { rotasService, veiculosService, motoristasService, viagensService } from '../services/api';
 import type { AuthUser } from '../hooks/useAuth';
+import { QUICK_ACCESS_ITEMS } from '../constants/navigation';
 
 const { width } = Dimensions.get('window');
 
 interface Props { user: AuthUser }
 
+const getResponsiveStyles = (screenWidth: number) => {
+  const isSmall = screenWidth < 380;
+  const isMedium = screenWidth < 768;
+  
+  return {
+    heroPaddingTop: isSmall ? 50 : isMedium ? 56 : 64,
+    heroPaddingHorizontal: isSmall ? 16 : 24,
+    heroNameFontSize: isSmall ? 22 : isMedium ? 24 : 26,
+    sectionLabelFontSize: isSmall ? 11 : 12,
+    bodyPaddingHorizontal: isSmall ? 16 : 24,
+    tileGap: isSmall ? 8 : 10,
+    actionPadding: isSmall ? 12 : 18,
+    tripPadding: isSmall ? 12 : 14,
+    tripGap: isSmall ? 10 : 14,
+    avatarSize: isSmall ? 40 : 46,
+    avatarMarginLeft: isSmall ? 12 : 16,
+  };
+};
+
 export default function DashboardAdmin({ user }: Props) {
+  const { width: screenWidth } = useWindowDimensions();
+  const responsiveStyles = useMemo(() => getResponsiveStyles(screenWidth), [screenWidth]);
   const [counts,  setCounts]  = useState({ rotas: 0, veiculos: 0, motoristas: 0, viagens: 0 });
   const [viagens, setViagens] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -48,6 +71,7 @@ export default function DashboardAdmin({ user }: Props) {
       }
     }
     load();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   if (loading) {
@@ -65,14 +89,7 @@ export default function DashboardAdmin({ user }: Props) {
     { label: 'Viagens',    value: counts.viagens,    icon: 'navigate-outline', color: '#f59e0b' },
   ];
 
-  const ACTIONS = [
-    { icon: 'map-outline',    label: 'Rotas',       route: '/(main)/rotas',      color: '#2563eb' },
-    { icon: 'bus-outline',    label: 'Veículos',    route: '/(main)/rotas',      color: '#0ea5e9' },
-    { icon: 'people-outline', label: 'Motoristas',  route: '/(main)/rotas',      color: '#22c55e' },
-    { icon: 'navigate-outline', label: 'Viagens',   route: '/(main)/viagens',    color: '#f59e0b' },
-    { icon: 'card-outline',   label: 'Pagamentos',  route: '/(main)/pagamentos', color: '#a78bfa' },
-    { icon: 'school-outline', label: 'Passageiros', route: '/(main)/perfil',     color: '#f472b6' },
-  ];
+  const ACTIONS = QUICK_ACCESS_ITEMS;
 
   return (
     <Animated.ScrollView
@@ -81,7 +98,10 @@ export default function DashboardAdmin({ user }: Props) {
       showsVerticalScrollIndicator={false}
     >
       {/* ── HERO HEADER ── */}
-      <LinearGradient colors={['#100d28', '#070e28']} style={styles.hero}>
+      <LinearGradient colors={['#100d28', '#070e28']} style={[styles.hero, {
+        paddingTop: responsiveStyles.heroPaddingTop,
+        paddingHorizontal: responsiveStyles.heroPaddingHorizontal,
+      }]}>
         <View style={styles.glowCircle} />
 
         <Animated.View style={[styles.heroTop, { transform: [{ translateY: slideAnim }] }]}>
@@ -90,10 +110,15 @@ export default function DashboardAdmin({ user }: Props) {
               <Ionicons name="flash-outline" size={12} color="#c4b5fd" />
               <Text style={styles.roleText}>Administrador</Text>
             </View>
-            <Text style={styles.heroName}>Painel de controle</Text>
+            <Text style={[styles.heroName, { fontSize: responsiveStyles.heroNameFontSize }]}>Painel de controle</Text>
             <Text style={styles.heroSub}>Olá, {user.name.split(' ')[0]}! Visão geral do sistema.</Text>
           </View>
-          <View style={styles.avatar}>
+          <View style={[styles.avatar, {
+            width: responsiveStyles.avatarSize,
+            height: responsiveStyles.avatarSize,
+            borderRadius: responsiveStyles.avatarSize / 2,
+            marginLeft: responsiveStyles.avatarMarginLeft,
+          }]}>
             <Text style={styles.avatarLetter}>{user.name[0].toUpperCase()}</Text>
           </View>
         </Animated.View>
@@ -113,16 +138,19 @@ export default function DashboardAdmin({ user }: Props) {
       </LinearGradient>
 
       {/* ── CORPO ── */}
-      <Animated.View style={[styles.body, { transform: [{ translateY: slideAnim }] }]}>
+      <Animated.View style={[styles.body, { 
+        transform: [{ translateY: slideAnim }],
+        paddingHorizontal: responsiveStyles.bodyPaddingHorizontal,
+      }]}>
 
         {/* ── Gestão rápida — grid 3x2 ── */}
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Gestão rápida</Text>
-          <View style={styles.actionsGrid}>
+          <Text style={[styles.sectionLabel, { fontSize: responsiveStyles.sectionLabelFontSize }]}>Gestão rápida</Text>
+          <View style={[styles.actionsGrid, { gap: responsiveStyles.tileGap }]}>
             {ACTIONS.map((a) => (
               <TouchableOpacity
                 key={a.label}
-                style={styles.actionTile}
+                style={[styles.actionTile, { padding: responsiveStyles.actionPadding }]}
                 onPress={() => router.push(a.route as any)}
                 activeOpacity={0.72}
               >
@@ -139,7 +167,7 @@ export default function DashboardAdmin({ user }: Props) {
         {viagens.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionRow}>
-              <Text style={styles.sectionLabel}>Últimas viagens</Text>
+              <Text style={[styles.sectionLabel, { fontSize: responsiveStyles.sectionLabelFontSize }]}>Últimas viagens</Text>
               <TouchableOpacity onPress={() => router.push('/(main)/viagens' as any)}>
                 <Text style={styles.seeAll}>Ver todas →</Text>
               </TouchableOpacity>
@@ -151,7 +179,10 @@ export default function DashboardAdmin({ user }: Props) {
                   v.status === 'EM_ANDAMENTO' ? '#0ea5e9' :
                   v.status === 'CANCELADA'    ? '#ef4444' : '#f59e0b';
                 return (
-                  <View key={i} style={[styles.tripRow, i < viagens.length - 1 && styles.tripRowBorder]}>
+                  <View key={i} style={[styles.tripRow, { 
+                    gap: responsiveStyles.tripGap,
+                    paddingVertical: responsiveStyles.tripPadding,
+                  }, i < viagens.length - 1 && styles.tripRowBorder]}>
                     {/* Indicador lateral colorido */}
                     <View style={[styles.tripBar, { backgroundColor: cor }]} />
                     <View style={styles.tripInfo}>
@@ -183,8 +214,6 @@ const styles = StyleSheet.create({
 
   // ── Hero ──
   hero: {
-    paddingTop: 64,
-    paddingHorizontal: 24,
     paddingBottom: 28,
     position: 'relative',
     overflow: 'hidden',
@@ -218,18 +247,16 @@ const styles = StyleSheet.create({
   },
   
   roleText:  { fontSize: 11, color: '#c4b5fd', fontWeight: '600', letterSpacing: 0.3 },
-  heroName:  { fontSize: 26, fontWeight: '800', color: '#fff', letterSpacing: 0.2, lineHeight: 32 },
+  heroName:  { fontWeight: '800', color: '#fff', letterSpacing: 0.2, lineHeight: 32 },
   heroSub:   { fontSize: 13, color: '#4a5a7a', fontWeight: '500' },
 
   avatar: {
-    width: 46, height: 46,
     borderRadius: 23,
     backgroundColor: 'rgba(167,139,250,0.2)',
     borderWidth: 1.5,
     borderColor: 'rgba(167,139,250,0.4)',
     alignItems: 'center',
     justifyContent: 'center',
-    marginLeft: 16,
     marginTop: 20,
   },
   avatarLetter: { fontSize: 18, fontWeight: '700', color: '#c4b5fd' },
@@ -263,18 +290,17 @@ const styles = StyleSheet.create({
   statDesc: { fontSize: 10, color: '#4a5a7a', fontWeight: '600', letterSpacing: 0.5, textTransform: 'uppercase' },
 
   // ── Body ──
-  body: { paddingHorizontal: 24, paddingTop: 28, gap: 32 },
+  body: { paddingTop: 28, gap: 32 },
 
   section:    {},
   sectionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
-  sectionLabel: { fontSize: 12, fontWeight: '700', color: '#4a5a7a', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 14 },
+  sectionLabel: { fontWeight: '700', color: '#4a5a7a', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 14 },
   seeAll:     { fontSize: 13, color: '#a78bfa', fontWeight: '600' },
 
   // Actions grid 3 colunas
   actionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 10,
   },
   actionTile: {
     width: TILE_W,
@@ -282,7 +308,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     borderWidth: 0.5,
     borderColor: 'rgba(255,255,255,0.08)',
-    paddingVertical: 18,
     paddingHorizontal: 10,
     alignItems: 'center',
     gap: 10,
@@ -306,9 +331,7 @@ const styles = StyleSheet.create({
   tripRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
     paddingHorizontal: 18,
-    paddingVertical: 14,
   },
   tripRowBorder: {
     borderBottomWidth: 0.5,

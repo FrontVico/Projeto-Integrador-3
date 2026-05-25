@@ -1,6 +1,6 @@
 import {
-  View, Text, StyleSheet, ScrollView, TouchableOpacity,
-  Animated, ActivityIndicator, Dimensions, Alert,
+  View, Text, StyleSheet, TouchableOpacity,
+  Animated, ActivityIndicator, Modal,
 } from 'react-native';
 import { useEffect, useRef, useState } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
@@ -8,25 +8,33 @@ import { router } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { authService } from '../../services/api';
 import { useAuth } from '../../hooks/useAuth';
- 
-const { width } = Dimensions.get('window');
- 
+import { NAVIGATION_ITEMS } from '../../constants/navigation';
+
+
+// 1. Tipagem das roles permitidas
+type Role = 'ADMIN' | 'MOTORISTA' | 'PASSAGEIRO';
+
+// 2. Adição da propriedade allowedRoles no MenuItem
 type MenuItem = {
   icon: string;
   label: string;
-  sub: string;
+  sub?: string;
   route?: string;
   action?: () => void;
   color: string;
   danger?: boolean;
+  allowedRoles?: Role[];
 };
- 
-export default function PerfilAdmin() {
+
+export default function Perfil() { // Sugestão: Renomear de PerfilAdmin para Perfil, já que agora é dinâmico
   const { user, loading } = useAuth();
- 
+
   const fadeAnim  = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(32)).current;
- 
+  
+  const [confirmacaoLogout, setConfirmacaoLogout] = useState(false);
+  const [loadingAcao, setLoadingAcao] = useState(false);
+
   useEffect(() => {
     if (!loading) {
       Animated.parallel([
@@ -34,36 +42,70 @@ export default function PerfilAdmin() {
         Animated.timing(slideAnim, { toValue: 0, duration: 600, useNativeDriver: true }),
       ]).start();
     }
-  }, [loading]);
- 
-  function confirmLogout() {
-    Alert.alert(
-      'Sair da conta',
-      'Tem certeza que deseja sair?',
-      [
-        { text: 'Cancelar', style: 'cancel' },
-        {
-          text: 'Sair',
-          style: 'destructive',
-          onPress: async () => {
-            await authService.logout();
-            router.replace('/');
-          },
-        },
-      ]
-    );
-  }
- 
+  }, [loading, fadeAnim, slideAnim]);
+
+  const handleConfirmarLogout = async () => {
+    setLoadingAcao(true);
+    try {
+      await authService.logout();
+    } catch (e: any) {
+      console.error('Erro ao fazer logout:', e);
+    } finally {
+      setLoadingAcao(false);
+      setConfirmacaoLogout(false);
+      router.push('/login');
+    }
+  };
+
+  const renderConfirmacaoInline = ({
+    mensagem,
+    textoBotao,
+    estiloBotao,
+    onConfirmar,
+    onCancelar,
+  }: {
+    mensagem: string;
+    textoBotao: string;
+    estiloBotao: object;
+    onConfirmar: () => void;
+    onCancelar: () => void;
+  }) => (
+    <View style={styles.confirmacaoContainer}>
+      <Text style={styles.confirmacaoTexto}>{mensagem}</Text>
+      <View style={styles.confirmacaoBotoes}>
+        <TouchableOpacity
+          style={[styles.btnAction, styles.btnSecondary, styles.btnFlex]}
+          onPress={onCancelar}
+          disabled={loadingAcao}
+        >
+          <Text style={styles.btnText}>Cancelar</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.btnAction, estiloBotao, styles.btnFlex]}
+          onPress={onConfirmar}
+          disabled={loadingAcao}
+        >
+          {loadingAcao ? (
+            <ActivityIndicator size="small" color="#fff" />
+          ) : (
+            <Text style={styles.btnText}>{textoBotao}</Text>
+          )}
+        </TouchableOpacity>
+      </View>
+    </View>
+  );
+
+  // 3. Definição do Menu com o mapeamento de permissões (allowedRoles)
   const MENU_SECTIONS: { title: string; items: MenuItem[] }[] = [
     {
       title: 'Gerenciamento',
       items: [
-        { icon: 'map-outline',      label: 'Rotas',       sub: 'Gerenciar rotas do sistema',    route: '/(main)/rotas',      color: '#2563eb' },
-        { icon: 'bus-outline',      label: 'Veículos',    sub: 'Frota cadastrada',               route: '/(main)/rotas',      color: '#0ea5e9' },
-        { icon: 'people-outline',   label: 'Motoristas',  sub: 'Equipe de motoristas',           route: '/(main)/rotas',      color: '#22c55e' },
-        { icon: 'navigate-outline', label: 'Viagens',     sub: 'Histórico e andamento',          route: '/(main)/viagens',    color: '#f59e0b' },
-        { icon: 'card-outline',     label: 'Pagamentos',  sub: 'Cobranças e recebimentos',       route: '/(main)/pagamentos', color: '#a78bfa' },
-        { icon: 'school-outline',   label: 'Passageiros', sub: 'Alunos cadastrados no sistema',  route: '/(main)/perfil',     color: '#f472b6' },
+        NAVIGATION_ITEMS.ROTAS,
+        NAVIGATION_ITEMS.VIAGENS,
+        NAVIGATION_ITEMS.PAGAMENTOS,
+        NAVIGATION_ITEMS.VEICULOS,
+        NAVIGATION_ITEMS.MOTORISTAS,
+        NAVIGATION_ITEMS.PASSAGEIROS,
       ],
     },
     {
@@ -77,11 +119,11 @@ export default function PerfilAdmin() {
     {
       title: 'Sessão',
       items: [
-        { icon: 'log-out-outline', label: 'Sair da conta', sub: 'Encerrar sessão atual', color: '#ef4444', danger: true, action: confirmLogout },
+        { icon: 'log-out-outline', label: 'Sair da conta', sub: 'Encerrar sessão atual', color: '#ef4444', danger: true, action: () => {} },
       ],
     },
   ];
- 
+
   if (loading) {
     return (
       <View style={styles.center}>
@@ -89,7 +131,29 @@ export default function PerfilAdmin() {
       </View>
     );
   }
- 
+
+  // 4. Identificar a role do usuário (fallback para passageiro como segurança)
+  const userRole = (user?.role as Role) || 'PASSAGEIRO';
+
+  // 5. Filtrar o menu com base na role
+  const filteredSections = MENU_SECTIONS.map(section => ({
+    ...section,
+    items: section.items.filter(item => 
+      !item.allowedRoles || item.allowedRoles.includes(userRole)
+    )
+  })).filter(section => section.items.length > 0); // Remove seção se todos os itens forem filtrados
+
+  // 6. Configurar o Badge Dinâmico
+  const getRoleBadgeInfo = (role: string) => {
+    switch (role) {
+      case 'ADMIN': return { label: 'Administrador', icon: 'flash-outline' };
+      case 'MOTORISTA': return { label: 'Motorista', icon: 'bus-outline' };
+      case 'PASSAGEIRO': return { label: 'Passageiro', icon: 'person-outline' };
+      default: return { label: 'Usuário', icon: 'person-outline' };
+    }
+  };
+  const roleInfo = getRoleBadgeInfo(userRole);
+
   return (
     <Animated.ScrollView
       style={{ flex: 1, opacity: fadeAnim, backgroundColor: '#060c22' }}
@@ -100,7 +164,7 @@ export default function PerfilAdmin() {
       <LinearGradient colors={['#100d28', '#070e28']} style={styles.hero}>
         <View style={styles.glowCircle} />
         <View style={styles.glowCircle2} />
- 
+
         <Animated.View style={[styles.heroContent, { transform: [{ translateY: slideAnim }] }]}>
           {/* Avatar grande */}
           <LinearGradient
@@ -109,26 +173,27 @@ export default function PerfilAdmin() {
           >
             <View style={styles.avatar}>
               <Text style={styles.avatarLetter}>
-                {user?.name?.[0]?.toUpperCase() ?? 'A'}
+                {user?.name?.[0]?.toUpperCase() ?? 'U'}
               </Text>
             </View>
           </LinearGradient>
- 
+
           {/* Info */}
           <Text style={styles.heroName}>{user?.name ?? '—'}</Text>
           <Text style={styles.heroEmail}>{user?.email ?? '—'}</Text>
- 
-          {/* Badge de role */}
+
+          {/* Badge de role dinâmico */}
           <View style={styles.roleBadge}>
-            <Ionicons name="flash-outline" size={11} color="#c4b5fd" />
-            <Text style={styles.roleText}>Administrador</Text>
+            <Ionicons name={roleInfo.icon as any} size={11} color="#c4b5fd" />
+            <Text style={styles.roleText}>{roleInfo.label}</Text>
           </View>
         </Animated.View>
       </LinearGradient>
- 
+
       {/* ── MENU SECTIONS ── */}
       <Animated.View style={[styles.body, { transform: [{ translateY: slideAnim }] }]}>
-        {MENU_SECTIONS.map((section) => (
+        {/* Renderiza apenas as sessões filtradas */}
+        {filteredSections.map((section) => (
           <View key={section.title} style={styles.section}>
             <Text style={styles.sectionLabel}>{section.title}</Text>
             <View style={styles.menuCard}>
@@ -141,7 +206,14 @@ export default function PerfilAdmin() {
                   ]}
                   activeOpacity={0.7}
                   onPress={() => {
-                    if (item.action) { item.action(); return; }
+                    if (item.action) { 
+                      if (item.label === 'Sair da conta') {
+                        setConfirmacaoLogout(true);
+                      } else {
+                        item.action(); 
+                      }
+                      return; 
+                    }
                     if (item.route) router.push(item.route as any);
                   }}
                 >
@@ -149,7 +221,7 @@ export default function PerfilAdmin() {
                   <View style={[styles.menuIconBox, { backgroundColor: item.color + '1a' }]}>
                     <Ionicons name={item.icon as any} size={18} color={item.color} />
                   </View>
- 
+
                   {/* Texto */}
                   <View style={styles.menuText}>
                     <Text style={[styles.menuLabel, item.danger && { color: '#ef4444' }]}>
@@ -157,7 +229,7 @@ export default function PerfilAdmin() {
                     </Text>
                     <Text style={styles.menuSub}>{item.sub}</Text>
                   </View>
- 
+
                   {/* Chevron */}
                   {!item.danger && (
                     <Ionicons name="chevron-forward" size={16} color="#2a3550" />
@@ -167,16 +239,36 @@ export default function PerfilAdmin() {
             </View>
           </View>
         ))}
- 
+
       </Animated.View>
+
+      {/* ── Modal Confirmação Logout ── */}
+      <Modal
+        animationType="fade"
+        transparent={true}
+        visible={confirmacaoLogout}
+        onRequestClose={() => setConfirmacaoLogout(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            {renderConfirmacaoInline({
+              mensagem: 'Tem certeza que deseja sair da conta?',
+              textoBotao: '✕ Confirmar saída',
+              estiloBotao: styles.btnDanger,
+              onConfirmar: handleConfirmarLogout,
+              onCancelar: () => setConfirmacaoLogout(false),
+            })}
+          </View>
+        </View>
+      </Modal>
     </Animated.ScrollView>
   );
 }
- 
+
 const styles = StyleSheet.create({
   center: { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#050a1e' },
   scroll: { paddingBottom: 48, backgroundColor: '#060c22' },
- 
+
   // ── Hero ──
   hero: {
     paddingTop: 72,
@@ -201,7 +293,7 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(37,99,235,0.08)',
   },
   heroContent: { alignItems: 'center', gap: 8 },
- 
+
   avatarRing: {
     width: 88, height: 88,
     borderRadius: 44,
@@ -219,10 +311,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
   },
   avatarLetter: { fontSize: 30, fontWeight: '800', color: '#c4b5fd' },
- 
+
   heroName:  { fontSize: 22, fontWeight: '800', color: '#fff', letterSpacing: 0.2, marginTop: 4 },
   heroEmail: { fontSize: 13, color: '#4a5a7a', fontWeight: '500' },
- 
+
   roleBadge: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -236,10 +328,10 @@ const styles = StyleSheet.create({
     marginTop: 6,
   },
   roleText: { fontSize: 11, color: '#c4b5fd', fontWeight: '700', letterSpacing: 0.5 },
- 
+
   // ── Body ──
   body: { paddingHorizontal: 24, paddingTop: 28, gap: 28 },
- 
+
   section: {},
   sectionLabel: {
     fontSize: 11,
@@ -249,7 +341,7 @@ const styles = StyleSheet.create({
     textTransform: 'uppercase',
     marginBottom: 10,
   },
- 
+
   menuCard: {
     backgroundColor: 'rgba(255,255,255,0.04)',
     borderRadius: 18,
@@ -277,13 +369,58 @@ const styles = StyleSheet.create({
   menuText:  { flex: 1, gap: 3 },
   menuLabel: { fontSize: 14, color: '#e2e8f0', fontWeight: '600' },
   menuSub:   { fontSize: 12, color: '#4a5a7a', fontWeight: '400' },
- 
-  footer: {
+
+  // ── Modal Confirmação ──
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  },
+  modalContent: {
+    backgroundColor: 'rgba(20, 20, 40, 0.95)',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(167,139,250,0.3)',
+    padding: 24,
+    width: '80%',
+    maxWidth: 340,
+  },
+  confirmacaoContainer: {
+    gap: 16,
+  },
+  confirmacaoTexto: {
+    fontSize: 15,
+    color: '#e2e8f0',
+    lineHeight: 22,
     textAlign: 'center',
-    fontSize: 11,
-    color: '#1e2d4a',
     fontWeight: '500',
-    letterSpacing: 0.3,
-    marginTop: 8,
+  },
+  confirmacaoBotoes: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  btnAction: {
+    paddingVertical: 11,
+    paddingHorizontal: 16,
+    borderRadius: 10,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  btnText: {
+    fontSize: 13,
+    fontWeight: '700',
+    color: '#fff',
+  },
+  btnSecondary: {
+    backgroundColor: 'rgba(100,116,139,0.25)',
+    borderWidth: 0.5,
+    borderColor: 'rgba(100,116,139,0.5)',
+  },
+  btnDanger: {
+    backgroundColor: 'rgba(239,68,68,0.25)',
+  },
+  btnFlex: {
+    flex: 1,
   },
 });

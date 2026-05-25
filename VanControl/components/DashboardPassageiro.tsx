@@ -1,8 +1,9 @@
 import {
   View, Text, StyleSheet, ScrollView,
   TouchableOpacity, Animated, ActivityIndicator, Dimensions,
+  useWindowDimensions,
 } from 'react-native';
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { passageirosService, pagamentosService, viagensService } from '../services/api';
@@ -13,7 +14,29 @@ const { width } = Dimensions.get('window');
 
 interface Props { user: AuthUser }
 
+const getResponsiveStyles = (screenWidth: number) => {
+  const isSmall = screenWidth < 380;
+  const isMedium = screenWidth < 768;
+  
+  return {
+    heroPaddingTop: isSmall ? 50 : isMedium ? 56 : 64,
+    heroPaddingHorizontal: isSmall ? 16 : 24,
+    heroNameFontSize: isSmall ? 24 : isMedium ? 26 : 28,
+    sectionLabelFontSize: isSmall ? 11 : 12,
+    bodyPaddingHorizontal: isSmall ? 16 : 24,
+    actionTileGap: isSmall ? 10 : 12,
+    actionTilePadding: isSmall ? 14 : 20,
+    payRowGap: isSmall ? 10 : 14,
+    payRowPadding: isSmall ? 12 : 14,
+    infoRowGap: isSmall ? 10 : 14,
+    infoRowPadding: isSmall ? 12 : 14,
+    avatarSize: isSmall ? 40 : 46,
+  };
+};
+
 export default function DashboardPassageiro({ user }: Props) {
+  const { width: screenWidth } = useWindowDimensions();
+  const responsiveStyles = useMemo(() => getResponsiveStyles(screenWidth), [screenWidth]);
   const [passageiro, setPassageiro] = useState<any>(null);
   const [pagamentos, setPagamentos] = useState<any[]>([]);
   const [viagens,    setViagens]    = useState<any[]>([]);
@@ -70,7 +93,10 @@ const ACTIONS = [
       showsVerticalScrollIndicator={false}
     >
       {/* ── HERO HEADER ── */}
-      <LinearGradient colors={['#0d1a40', '#070e28']} style={styles.hero}>
+      <LinearGradient colors={['#0d1a40', '#070e28']} style={[styles.hero, {
+        paddingTop: responsiveStyles.heroPaddingTop,
+        paddingHorizontal: responsiveStyles.heroPaddingHorizontal,
+      }]}>
         {/* Glow decorativo */}
         <View style={styles.glowCircle} />
 
@@ -78,9 +104,13 @@ const ACTIONS = [
         <Animated.View style={[styles.heroTop, { transform: [{ translateY: slideAnim }] }]}>
           <View style={styles.heroText}>
             <Text style={styles.heroLabel}>Bem-vindo de volta</Text>
-            <Text style={styles.heroName}>{user.name.split(' ')[0]} 👋</Text>
+            <Text style={[styles.heroName, { fontSize: responsiveStyles.heroNameFontSize }]}>{user.name.split(' ')[0]} 👋</Text>
           </View>
-          <View style={styles.avatar}>
+          <View style={[styles.avatar, {
+            width: responsiveStyles.avatarSize,
+            height: responsiveStyles.avatarSize,
+            borderRadius: responsiveStyles.avatarSize / 2,
+          }]}>
             <Text style={styles.avatarLetter}>{user.name[0].toUpperCase()}</Text>
           </View>
         </Animated.View>
@@ -105,16 +135,22 @@ const ACTIONS = [
       </LinearGradient>
 
       {/* ── CORPO ── */}
-      <Animated.View style={[styles.body, { transform: [{ translateY: slideAnim }] }]}>
+      <Animated.View style={[styles.body, { 
+        transform: [{ translateY: slideAnim }],
+        paddingHorizontal: responsiveStyles.bodyPaddingHorizontal,
+      }]}>
 
         {/* ── Ações rápidas em grid 2x2 ── */}
         <View style={styles.section}>
-          <Text style={styles.sectionLabel}>Acesso rápido</Text>
-          <View style={styles.actionsGrid}>
+          <Text style={[styles.sectionLabel, { fontSize: responsiveStyles.sectionLabelFontSize }]}>Acesso rápido</Text>
+          <View style={[styles.actionsGrid, { gap: responsiveStyles.actionTileGap }]}>
             {ACTIONS.map((a, i) => (
               <TouchableOpacity
                 key={a.label}
-                style={styles.actionTile}
+                style={[styles.actionTile, { 
+                  paddingVertical: responsiveStyles.actionTilePadding,
+                  gap: responsiveStyles.actionTileGap,
+                }]}
                 onPress={() => router.push(a.route as any)}
                 activeOpacity={0.72}
               >
@@ -131,7 +167,7 @@ const ACTIONS = [
         {pagamentos.length > 0 && (
           <View style={styles.section}>
             <View style={styles.sectionRow}>
-              <Text style={styles.sectionLabel}>Pagamentos recentes</Text>
+              <Text style={[styles.sectionLabel, { fontSize: responsiveStyles.sectionLabelFontSize }]}>Pagamentos recentes</Text>
               <TouchableOpacity onPress={() => router.push('/(main)/pagamentos' as any)}>
                 <Text style={styles.seeAll}>Ver todos →</Text>
               </TouchableOpacity>
@@ -140,7 +176,10 @@ const ACTIONS = [
               {pagamentos.map((pg: any, i: number) => {
                 const cor = pg.status === 'PAGO' ? '#22c55e' : pg.status === 'ATRASADO' ? '#ef4444' : '#f59e0b';
                 return (
-                  <View key={i} style={[styles.payRow, i < pagamentos.length - 1 && styles.payRowBorder]}>
+                  <View key={i} style={[styles.payRow, { 
+                    gap: responsiveStyles.payRowGap,
+                    paddingVertical: responsiveStyles.payRowPadding,
+                  }, i < pagamentos.length - 1 && styles.payRowBorder]}>
                     <View style={[styles.payIndicator, { backgroundColor: cor }]} />
                     <View style={styles.payInfo}>
                       <Text style={styles.payComp}>{pg.competencia ?? '—'}</Text>
@@ -159,7 +198,7 @@ const ACTIONS = [
         {/* ── Dados do passageiro ── */}
         {passageiro && (
           <View style={styles.section}>
-            <Text style={styles.sectionLabel}>Seus dados</Text>
+            <Text style={[styles.sectionLabel, { fontSize: responsiveStyles.sectionLabelFontSize }]}>Seus dados</Text>
             <View style={styles.infoCard}>
               {[
                   {
@@ -179,7 +218,10 @@ const ACTIONS = [
                   },
                 ]
               .filter(r => r.value).map((row, i, arr) => (
-                <View key={row.label} style={[styles.infoRow, i < arr.length - 1 && styles.infoRowBorder]}>
+                <View key={row.label} style={[styles.infoRow, { 
+                  gap: responsiveStyles.infoRowGap,
+                  paddingVertical: responsiveStyles.infoRowPadding,
+                }, i < arr.length - 1 && styles.infoRowBorder]}>
                   <Ionicons
                   name={row.icon as any}
                   size={20}
@@ -209,8 +251,6 @@ const styles = StyleSheet.create({
 
   // ── Hero ──
   hero: {
-    paddingTop: 64,
-    paddingHorizontal: 24,
     paddingBottom: 28,
     position: 'relative',
     overflow: 'hidden',
@@ -230,10 +270,9 @@ const styles = StyleSheet.create({
   },
   heroText:  { gap: 4 },
   heroLabel: { fontSize: 13, color: '#4a5a7a', fontWeight: '500', letterSpacing: 0.5 },
-  heroName:  { fontSize: 28, fontWeight: '800', color: '#fff', letterSpacing: 0.2 },
+  heroName:  { fontWeight: '800', color: '#fff', letterSpacing: 0.2 },
 
   avatar: {
-    width: 46, height: 46,
     borderRadius: 23,
     backgroundColor: 'rgba(37,99,235,0.25)',
     borderWidth: 1.5,
@@ -260,18 +299,17 @@ const styles = StyleSheet.create({
   onlineDot:  { width: 8, height: 8, borderRadius: 4, backgroundColor: '#22c55e' },
 
   // ── Body ──
-  body: { paddingHorizontal: 24, paddingTop: 28, gap: 32 },
+  body: { paddingTop: 28, gap: 32 },
 
   section:    {},
   sectionRow: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginBottom: 14 },
-  sectionLabel:{ fontSize: 12, fontWeight: '700', color: '#4a5a7a', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 14 },
+  sectionLabel:{ fontWeight: '700', color: '#4a5a7a', letterSpacing: 1.2, textTransform: 'uppercase', marginBottom: 14 },
   seeAll:     { fontSize: 13, color: '#2563eb', fontWeight: '600' },
 
   // ── Actions grid ──
   actionsGrid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    gap: 12,
   },
   actionTile: {
     width: TILE,
@@ -279,11 +317,9 @@ const styles = StyleSheet.create({
     borderRadius: 18,
     borderWidth: 0.5,
     borderColor: 'rgba(255,255,255,0.08)',
-    paddingVertical: 20,
     paddingHorizontal: 16,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
   },
   actionIconBox: {
     width: 40, height: 40,
@@ -306,9 +342,7 @@ const styles = StyleSheet.create({
   payRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
     paddingHorizontal: 18,
-    paddingVertical: 14,
   },
   payRowBorder: {
     borderBottomWidth: 0.5,
@@ -331,9 +365,7 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 14,
     paddingHorizontal: 18,
-    paddingVertical: 14,
   },
   infoRowBorder: {
     borderBottomWidth: 0.5,

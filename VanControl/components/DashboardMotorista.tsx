@@ -1,5 +1,5 @@
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Animated, ActivityIndicator } from 'react-native';
-import { useEffect, useRef, useState } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, ActivityIndicator, useWindowDimensions } from 'react-native';
+import { useEffect, useRef, useState, useMemo } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import { router } from 'expo-router';
 import { motoristasService, viagensService, veiculosService } from '../services/api';
@@ -7,7 +7,30 @@ import type { AuthUser } from '../hooks/useAuth';
 
 interface Props { user: AuthUser }
 
+const getResponsiveStyles = (screenWidth: number) => {
+  const isSmall = screenWidth < 380;
+  const isMedium = screenWidth < 768;
+  
+  return {
+    headerPaddingTop: isSmall ? 48 : isMedium ? 56 : 60,
+    headerPaddingHorizontal: isSmall ? 16 : 24,
+    greetingFontSize: isSmall ? 22 : isMedium ? 24 : 26,
+    sectionTitleFontSize: isSmall ? 13 : 15,
+    statCardPadding: isSmall ? 10 : 14,
+    actionCardWidth: isSmall ? 0.48 : 0.46,
+    actionCardMarginPercent: isSmall ? 0.01 : 0.02,
+    actionCardPadding: isSmall ? 14 : 18,
+    tripCardMarginHorizontal: isSmall ? 16 : 24,
+    infoCardMarginHorizontal: isSmall ? 16 : 24,
+    contentPaddingHorizontal: isSmall ? 16 : 24,
+    gapSmall: isSmall ? 8 : 10,
+    gapMedium: isSmall ? 12 : 16,
+  };
+};
+
 export default function DashboardMotorista({ user }: Props) {
+  const { width: screenWidth } = useWindowDimensions();
+  const responsiveStyles = useMemo(() => getResponsiveStyles(screenWidth), [screenWidth]);
   const [motorista, setMotorista] = useState<any>(null);
   const [viagens,   setViagens]   = useState<any[]>([]);
   const [veiculos,  setVeiculos]  = useState<any[]>([]);
@@ -35,7 +58,8 @@ export default function DashboardMotorista({ user }: Props) {
       }
     }
     load();
-  }, []);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [user.sub]);
 
   if (loading) return <View style={styles.center}><ActivityIndicator color="#0ea5e9" size="large" /></View>;
 
@@ -43,21 +67,24 @@ export default function DashboardMotorista({ user }: Props) {
 
   return (
     <Animated.ScrollView style={{ opacity: fadeAnim }} contentContainerStyle={styles.scroll} showsVerticalScrollIndicator={false}>
-      <LinearGradient colors={['#071428', '#050a1e']} style={styles.header}>
+      <LinearGradient colors={['#071428', '#050a1e']} style={[styles.header, { 
+        paddingTop: responsiveStyles.headerPaddingTop,
+        paddingHorizontal: responsiveStyles.headerPaddingHorizontal,
+      }]}>
         <View style={styles.glowAccent} />
         <View style={styles.roleTag}><Text style={styles.roleText}>🚐 Motorista</Text></View>
-        <Text style={styles.greeting}>Olá, {user.name.split(' ')[0]}!</Text>
+        <Text style={[styles.greeting, { fontSize: responsiveStyles.greetingFontSize }]}>Olá, {user.name.split(' ')[0]}!</Text>
         <Text style={styles.headerSub}>Sua jornada de hoje</Text>
-        <View style={styles.statsRow}>
-          <LinearGradient colors={['rgba(14,165,233,0.2)', 'rgba(14,165,233,0.05)']} style={styles.statCard}>
+        <View style={[styles.statsRow, { gap: responsiveStyles.gapSmall }]}>
+          <LinearGradient colors={['rgba(14,165,233,0.2)', 'rgba(14,165,233,0.05)']} style={[styles.statCard, { padding: responsiveStyles.statCardPadding }]}>
             <Text style={styles.statValue}>{viagensHoje.length}</Text>
             <Text style={styles.statLabel}>Viagens hoje</Text>
           </LinearGradient>
-          <LinearGradient colors={['rgba(34,197,94,0.2)', 'rgba(34,197,94,0.05)']} style={styles.statCard}>
+          <LinearGradient colors={['rgba(34,197,94,0.2)', 'rgba(34,197,94,0.05)']} style={[styles.statCard, { padding: responsiveStyles.statCardPadding }]}>
             <Text style={styles.statValue}>{veiculos.length}</Text>
             <Text style={styles.statLabel}>Veículos</Text>
           </LinearGradient>
-          <LinearGradient colors={['rgba(251,191,36,0.2)', 'rgba(251,191,36,0.05)']} style={styles.statCard}>
+          <LinearGradient colors={['rgba(251,191,36,0.2)', 'rgba(251,191,36,0.05)']} style={[styles.statCard, { padding: responsiveStyles.statCardPadding }]}>
             <Text style={styles.statValue}>{viagens.length}</Text>
             <Text style={styles.statLabel}>Total viagens</Text>
           </LinearGradient>
@@ -65,15 +92,19 @@ export default function DashboardMotorista({ user }: Props) {
       </LinearGradient>
 
       <Animated.View style={{ transform: [{ translateY: slideAnim }] }}>
-        <Text style={styles.sectionTitle}>Ações rápidas</Text>
-        <View style={styles.actionsGrid}>
+        <Text style={[styles.sectionTitle, { fontSize: responsiveStyles.sectionTitleFontSize, paddingHorizontal: responsiveStyles.contentPaddingHorizontal }]}>Ações rápidas</Text>
+        <View style={[styles.actionsGrid, { paddingHorizontal: responsiveStyles.gapSmall, gap: responsiveStyles.gapSmall }]}>
           {[
             { icon: '🛣️', label: 'Viagens',    route: '/(main)/viagens',    color: '#0ea5e9' },
             { icon: '🚐', label: 'Veículos',   route: '/(main)/rotas',      color: '#22c55e' },
             { icon: '💳', label: 'Pagamentos', route: '/(main)/pagamentos', color: '#f59e0b' },
             { icon: '👤', label: 'Meu Perfil', route: '/(main)/perfil',     color: '#a78bfa' },
           ].map((a) => (
-            <TouchableOpacity key={a.label} style={styles.actionCard} onPress={() => router.push(a.route as any)} activeOpacity={0.75}>
+            <TouchableOpacity key={a.label} style={[styles.actionCard, { 
+              width: `${responsiveStyles.actionCardWidth * 100}%`,
+              marginHorizontal: `${responsiveStyles.actionCardMarginPercent * 100}%`,
+              padding: responsiveStyles.actionCardPadding,
+            }]} onPress={() => router.push(a.route as any)} activeOpacity={0.75}>
               <View style={[styles.actionIconWrap, { backgroundColor: a.color + '22' }]}>
                 <Text style={styles.actionIcon}>{a.icon}</Text>
               </View>
@@ -84,14 +115,14 @@ export default function DashboardMotorista({ user }: Props) {
 
         {viagens.length > 0 && (
           <>
-            <View style={styles.rowBetween}>
-              <Text style={styles.sectionTitle}>Próximas viagens</Text>
+            <View style={[styles.rowBetween, { paddingHorizontal: responsiveStyles.contentPaddingHorizontal }]}>
+              <Text style={[styles.sectionTitle, { fontSize: responsiveStyles.sectionTitleFontSize, paddingHorizontal: 0, marginTop: 0 }]}>Próximas viagens</Text>
               <TouchableOpacity onPress={() => router.push('/(main)/viagens' as any)}>
                 <Text style={styles.seeAll}>Ver todas →</Text>
               </TouchableOpacity>
             </View>
             {viagens.map((v: any, i: number) => (
-              <View key={i} style={styles.tripCard}>
+              <View key={i} style={[styles.tripCard, { marginHorizontal: responsiveStyles.tripCardMarginHorizontal }]}>
                 <View style={styles.tripLeft}>
                   <Text style={styles.tripCode}>#{v.codigo ?? `VG${i + 1}`}</Text>
                   <Text style={styles.tripDate}>{v.dataViagem ?? '—'}</Text>
@@ -106,8 +137,8 @@ export default function DashboardMotorista({ user }: Props) {
 
         {motorista && (
           <>
-            <Text style={[styles.sectionTitle, { marginTop: 24 }]}>Sua habilitação</Text>
-            <View style={styles.infoCard}>
+            <Text style={[styles.sectionTitle, { marginTop: responsiveStyles.gapMedium, fontSize: responsiveStyles.sectionTitleFontSize, paddingHorizontal: responsiveStyles.contentPaddingHorizontal }]}>Sua habilitação</Text>
+            <View style={[styles.infoCard, { marginHorizontal: responsiveStyles.infoCardMarginHorizontal }]}>
               {[
                 { label: 'CNH',          value: motorista.cnh },
                 { label: 'Categoria',    value: motorista.categoriaCnh },
@@ -130,31 +161,31 @@ export default function DashboardMotorista({ user }: Props) {
 const styles = StyleSheet.create({
   center:        { flex: 1, alignItems: 'center', justifyContent: 'center', backgroundColor: '#050a1e' },
   scroll:        { paddingBottom: 40, backgroundColor: '#060c22' },
-  header:        { paddingTop: 60, paddingHorizontal: 24, paddingBottom: 0, position: 'relative', overflow: 'hidden' },
+  header:        { paddingBottom: 0, position: 'relative', overflow: 'hidden' },
   glowAccent:    { position: 'absolute', top: -60, right: -60, width: 220, height: 220, borderRadius: 110, backgroundColor: 'rgba(14,165,233,0.12)' },
   roleTag:       { alignSelf: 'flex-start', backgroundColor: 'rgba(14,165,233,0.15)', borderWidth: 0.5, borderColor: 'rgba(14,165,233,0.4)', paddingHorizontal: 12, paddingVertical: 5, borderRadius: 20, marginBottom: 12 },
   roleText:      { fontSize: 12, color: '#38bdf8', fontWeight: '600' },
-  greeting:      { fontSize: 26, fontWeight: '800', color: '#fff', marginBottom: 4 },
+  greeting:      { fontWeight: '800', color: '#fff', marginBottom: 4 },
   headerSub:     { fontSize: 14, color: '#64748b', marginBottom: 24 },
-  statsRow:      { flexDirection: 'row', gap: 10, marginBottom: 28 },
-  statCard:      { flex: 1, borderRadius: 14, borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.1)', padding: 14, alignItems: 'center', gap: 4 },
+  statsRow:      { flexDirection: 'row', marginBottom: 28 },
+  statCard:      { flex: 1, borderRadius: 14, borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.1)', alignItems: 'center', gap: 4 },
   statValue:     { fontSize: 22, fontWeight: '800', color: '#fff' },
   statLabel:     { fontSize: 11, color: '#64748b', textAlign: 'center' },
-  sectionTitle:  { fontSize: 15, fontWeight: '700', color: '#e2e8f0', marginBottom: 12, paddingHorizontal: 24, marginTop: 8 },
-  rowBetween:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 24, marginTop: 8 },
+  sectionTitle:  { fontWeight: '700', color: '#e2e8f0', marginBottom: 12, marginTop: 8 },
+  rowBetween:    { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', marginTop: 8 },
   seeAll:        { fontSize: 13, color: '#0ea5e9', fontWeight: '600' },
-  actionsGrid:   { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: 16, gap: 10, marginBottom: 8 },
-  actionCard:    { width: '46%', marginHorizontal: '2%', backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 14, borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.09)', padding: 18, alignItems: 'center', gap: 10 },
+  actionsGrid:   { flexDirection: 'row', flexWrap: 'wrap', marginBottom: 8 },
+  actionCard:    { backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 14, borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.09)', alignItems: 'center', gap: 10 },
   actionIconWrap:{ width: 48, height: 48, borderRadius: 14, alignItems: 'center', justifyContent: 'center' },
   actionIcon:    { fontSize: 24 },
   actionLabel:   { fontSize: 13, color: '#cbd5e1', fontWeight: '600', textAlign: 'center' },
-  tripCard:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginHorizontal: 24, marginBottom: 8, backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 12, borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.09)', padding: 14 },
+  tripCard:      { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginBottom: 8, backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 12, borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.09)', padding: 14 },
   tripLeft:      { gap: 4 },
   tripCode:      { fontSize: 14, fontWeight: '700', color: '#f1f5f9' },
   tripDate:      { fontSize: 12, color: '#64748b' },
   tripBadge:     { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 8 },
   tripStatus:    { fontSize: 12, fontWeight: '600' },
-  infoCard:      { marginHorizontal: 24, backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 14, borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.09)', overflow: 'hidden' },
+  infoCard:      { backgroundColor: 'rgba(255,255,255,0.05)', borderRadius: 14, borderWidth: 0.5, borderColor: 'rgba(255,255,255,0.09)', overflow: 'hidden' },
   infoRow:       { flexDirection: 'row', justifyContent: 'space-between', padding: 14, borderBottomWidth: 0.5, borderBottomColor: 'rgba(255,255,255,0.06)' },
   infoLabel:     { fontSize: 13, color: '#64748b' },
   infoValue:     { fontSize: 13, color: '#e2e8f0', fontWeight: '600' },
