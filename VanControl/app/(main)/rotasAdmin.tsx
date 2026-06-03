@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, Animated, ActivityIndicator, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Animated, ActivityIndicator, TextInput, Alert, Platform, Modal, Pressable } from 'react-native';
 import { useEffect, useRef, useState, useCallback } from 'react';
 import { LinearGradient } from 'expo-linear-gradient';
 import type { AuthUser } from '../../hooks/useAuth';
@@ -36,6 +36,8 @@ export default function RotasAdminScreen({ user }: Props) {
   const [activeEdit, setActiveEdit] = useState<string | null>(null);
   const [editDescricao, setEditDescricao] = useState('');
   const [actionLoading, setActionLoading] = useState(false);
+  const [deleteModalVisible, setDeleteModalVisible] = useState(false);
+  const [modalPendingCodigo, setModalPendingCodigo] = useState<string | null>(null);
 
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const slideAnim = useRef(new Animated.Value(24)).current;
@@ -157,7 +159,36 @@ export default function RotasAdminScreen({ user }: Props) {
     }
   };
 
+  const performDelete = async () => {
+    if (!modalPendingCodigo) return;
+
+    const codigoRota = modalPendingCodigo;
+    setDeleteModalVisible(false);
+    setModalPendingCodigo(null);
+    setError(null);
+    setActionLoading(true);
+    setMessage(null);
+    console.log('[DEBUG] performDelete web', codigoRota);
+
+    try {
+      await rotasService.deletar(codigoRota);
+      setMessage('Rota deletada com sucesso.');
+      await loadRotas();
+    } catch (exception) {
+      console.error('[DEBUG] erro delete rota', exception);
+      setError((exception as Error).message || 'Erro ao deletar rota.');
+    } finally {
+      setActionLoading(false);
+    }
+  };
+
   const handleDelete = (codigoRota: string) => {
+    if (Platform.OS === 'web') {
+      setModalPendingCodigo(codigoRota);
+      setDeleteModalVisible(true);
+      return;
+    }
+
     Alert.alert(
       'Deletar rota',
       'Deseja remover esta rota permanentemente?',
@@ -370,6 +401,23 @@ export default function RotasAdminScreen({ user }: Props) {
             </View>
           ))
         )}
+
+        <Modal visible={deleteModalVisible} transparent animationType="fade" onRequestClose={() => { setDeleteModalVisible(false); setModalPendingCodigo(null); }}>
+          <View style={styles.modalOverlay}>
+            <View style={styles.modalCard}>
+              <Text style={styles.modalTitle}>Confirmar exclusão</Text>
+              <Text style={styles.modalText}>Deseja realmente deletar a rota {modalPendingCodigo}?</Text>
+              <View style={styles.modalButtons}>
+                <Pressable style={[styles.modalButton, styles.dangerButton]} onPress={performDelete}>
+                  <Text style={styles.modalButtonText}>Confirmar</Text>
+                </Pressable>
+                <Pressable style={[styles.modalButton, styles.cancelButton]} onPress={() => { setDeleteModalVisible(false); setModalPendingCodigo(null); }}>
+                  <Text style={styles.modalButtonText}>Cancelar</Text>
+                </Pressable>
+              </View>
+            </View>
+          </View>
+        </Modal>
       </Animated.View>
     </Animated.ScrollView>
   );
@@ -419,6 +467,15 @@ const styles = StyleSheet.create({
   editInput: { minHeight: 90, textAlignVertical: 'top' },
   rowButtons: { flexDirection: 'row', gap: 12, flexWrap: 'wrap' },
   smallButton: { flex: 1, paddingVertical: 12 },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.55)', justifyContent: 'center', alignItems: 'center' },
+  modalCard: { width: '88%', maxWidth: 520, borderRadius: 16, backgroundColor: '#071425', padding: 18, borderWidth: 1, borderColor: 'rgba(255,255,255,0.06)' },
+  modalTitle: { fontSize: 18, fontWeight: '800', color: '#fff', marginBottom: 8 },
+  modalText: { fontSize: 14, color: '#cbd5e1', marginBottom: 16 },
+  modalButtons: { flexDirection: 'row', gap: 12, flexWrap: 'wrap' },
+  modalButton: { flex: 1, borderRadius: 12, paddingVertical: 12, backgroundColor: '#2563eb', alignItems: 'center' },
+  modalButtonText: { color: '#eff6ff', fontWeight: '700' },
+  cancelButton: { backgroundColor: 'rgba(255,255,255,0.06)' },
+  dangerButton: { backgroundColor: 'rgba(239,68,68,0.9)' },
   lockTitle: { fontSize: 20, fontWeight: '800', color: '#fff', marginBottom: 10, textAlign: 'center' },
   lockSubtitle: { fontSize: 14, lineHeight: 20, color: '#94a3b8', textAlign: 'center' },
 });

@@ -95,7 +95,7 @@ export const rotasService = {
       method: "PATCH",
       body: { novaDescricao },
     }),
-  deletar: (id: string) => request(`/rotas?id=${id}`, { method: "DELETE" }),
+  deletar: (id: string) => request(`/rotas?codigoRota=${encodeURIComponent(id)}`, { method: "DELETE" }),
 };
 
 export const veiculosService = {
