@@ -30,11 +30,13 @@ function IconTrips({ color, size = 22 }: { color: string; size?: number }) {
     </Svg>
   );
 }
-function IconPayments({ color, size = 22 }: { color: string; size?: number }) {
+function IconVehicles({ color, size = 22 }: { color: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
-      <Path d="M2 8h20M2 8v10a2 2 0 002 2h16a2 2 0 002-2V8M2 8V6a2 2 0 012-2h16a2 2 0 012 2v2" stroke={color} strokeWidth={1.8} strokeLinejoin="round"/>
-      <Path d="M6 12h4" stroke={color} strokeWidth={1.8} strokeLinecap="round"/>
+      <Path d="M3 12h18v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5z" stroke={color} strokeWidth={1.8} strokeLinejoin="round"/>
+      <Path d="M5 12V8a2 2 0 012-2h10a2 2 0 012 2v4" stroke={color} strokeWidth={1.8} strokeLinejoin="round"/>
+      <Circle cx="7" cy="18" r="1.5" stroke={color} strokeWidth={1.8}/>
+      <Circle cx="17" cy="18" r="1.5" stroke={color} strokeWidth={1.8}/>
     </Svg>
   );
 }
@@ -48,11 +50,11 @@ function IconProfile({ color, size = 22 }: { color: string; size?: number }) {
 }
 
 const TABS = [
-  { name: 'index',      label: 'Início',     Icon: IconHome },
-  { name: 'rotas',      label: 'Rotas',      Icon: IconRoutes },
-  { name: 'viagens',    label: 'Viagens',    Icon: IconTrips },
-  { name: 'pagamentos', label: 'Pagamentos', Icon: IconPayments },
-  { name: 'perfil',     label: 'Perfil',     Icon: IconProfile },
+  { name: 'index',    label: 'Início',   Icon: IconHome },
+  { name: 'rotas',    label: 'Rotas',    Icon: IconRoutes },
+  { name: 'viagens',  label: 'Viagens',  Icon: IconTrips },
+  { name: 'veiculos', label: 'Veículos', Icon: IconVehicles },
+  { name: 'perfil',   label: 'Perfil',   Icon: IconProfile },
 ];
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
@@ -87,7 +89,7 @@ export default function MainLayout() {
       <Tabs.Screen name="index"      options={{ title: 'Início' }} />
       <Tabs.Screen name="rotas"      options={{ title: 'Rotas' }} />
       <Tabs.Screen name="viagens"    options={{ title: 'Viagens' }} />
-      <Tabs.Screen name="pagamentos" options={{ title: 'Pagamentos' }} />
+      <Tabs.Screen name="veiculos"   options={{ title: 'Veículos' }} />
       <Tabs.Screen name="perfil"     options={{ title: 'Perfil' }} />
     </Tabs>
   );

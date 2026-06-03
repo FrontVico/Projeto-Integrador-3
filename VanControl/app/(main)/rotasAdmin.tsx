@@ -213,9 +213,7 @@ export default function RotasAdminScreen({ user }: Props) {
         <Text style={styles.heroLabel}>Rotas</Text>
         <Text style={styles.heroTitle}>Administração de rotas</Text>
         <Text style={styles.heroSubtitle}>
-          {user.role === 'ADMIN'
-            ? 'Crie, busque, atualize e delete rotas do sistema.'
-            : 'Cadastre, consulte e gerencie suas rotas.'}
+          Crie, busque, atualize e delete rotas do sistema.
         </Text>
         <View style={styles.statsRow}>
           <View style={[styles.statCard, styles.statCardBlue]}>

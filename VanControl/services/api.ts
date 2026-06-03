@@ -100,13 +100,13 @@ export const rotasService = {
 
 export const veiculosService = {
   listar: () => request<any[]>("/veiculos"),
-  buscarPorPlaca: (placa: string) => request<any>(`/veiculos/${placa}`),
+  buscarPorPlaca: (placa: string) => request<any>(`/veiculos/${encodeURIComponent(placa)}`),
   cadastrar: (payload: any) =>
     request("/veiculos", { method: "POST", body: payload }),
   atualizarStatus: (placa: string, status: string) =>
     request("/veiculos/status", { method: "PUT", body: { placa, status } }),
   deletar: (placa: string) =>
-    request(`/veiculos?placa=${placa}`, { method: "DELETE" }),
+    request(`/veiculos?placa=${encodeURIComponent(placa)}`, { method: "DELETE" }),
 };
 
 export const motoristasService = {
