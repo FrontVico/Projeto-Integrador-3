@@ -66,12 +66,12 @@ export default function DashboardAdmin({ user }: Props) {
   ];
 
   const ACTIONS = [
-    { icon: 'map-outline',    label: 'Rotas',       route: '/(main)/rotas',      color: '#2563eb' },
-    { icon: 'bus-outline',    label: 'Veículos',    route: '/(main)/rotas',      color: '#0ea5e9' },
-    { icon: 'people-outline', label: 'Motoristas',  route: '/(main)/rotas',      color: '#22c55e' },
-    { icon: 'navigate-outline', label: 'Viagens',   route: '/(main)/viagens',    color: '#f59e0b' },
-    { icon: 'card-outline',   label: 'Pagamentos',  route: '/(main)/pagamentos', color: '#a78bfa' },
-    { icon: 'school-outline', label: 'Passageiros', route: '/(main)/perfil',     color: '#f472b6' },
+    { icon: 'map-outline',      label: 'Rotas',      route: '/(main)/rotas',             color: '#2563eb' },
+    { icon: 'navigate-outline', label: 'Viagens',    route: '/(main)/viagens',            color: '#0ea5e9' },
+    { icon: 'bus-outline',      label: 'Veículos',   route: '/(main)/veiculos',           color: '#22c55e' },
+    { icon: 'reader-outline',   label: 'Meus Dados', route: '/(main)/motoristaAdmin', color: '#a78bfa' },
+    { icon: 'card-outline',     label: 'Pagamentos', route: '/(main)/pagamentos',         color: '#f59e0b' },
+    { icon: 'person-outline',   label: 'Meu Perfil', route: '/(main)/perfil',             color: '#f472b6' },
   ];
 
   return (

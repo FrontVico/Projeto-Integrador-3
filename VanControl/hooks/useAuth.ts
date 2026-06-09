@@ -7,6 +7,7 @@ export interface AuthUser {
   name: string;
   email: string;
   role: UserRole;
+  cpf: string;
   sub: string;
 }
 
@@ -37,10 +38,11 @@ export function useAuth() {
         const payload = decodeJWT(token);
         if (!payload) return;
         setUser({
-          name:  payload.name  ?? payload.sub ?? 'Usuário',
-          email: payload.email ?? '',
-          role:  payload.role  ?? payload.perfil ?? 'PASSAGEIRO',
-          sub:   payload.cpf   ?? payload.sub   ?? '',
+          name: payload.name ?? 'Usuário',
+          role: payload.role ?? 'PASSAGEIRO',
+          sub: payload.sub ?? '',   
+          cpf: payload.cpf ?? '',  
+          email: payload.sub ?? ''  
         });
       } finally {
         setLoading(false);

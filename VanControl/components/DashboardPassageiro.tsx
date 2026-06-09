@@ -27,7 +27,7 @@ export default function DashboardPassageiro({ user }: Props) {
     async function load() {
       try {
         const [p, pg, v] = await Promise.allSettled([
-          passageirosService.buscarPorCpf(user.sub),
+          passageirosService.buscarPorCpf(user.cpf || user.sub), // Garantindo a busca pelo CPF
           pagamentosService.meusPagamentos(),
           viagensService.listar(),
         ]);
@@ -44,7 +44,7 @@ export default function DashboardPassageiro({ user }: Props) {
       }
     }
     load();
-  }, []);
+  }, [user.cpf, user.sub]);
 
   if (loading) {
     return (
@@ -56,12 +56,14 @@ export default function DashboardPassageiro({ user }: Props) {
 
   const pendentes = pagamentos.filter((p: any) => p.status === 'PENDENTE').length;
 
-const ACTIONS = [
-  { icon: 'map-outline', label: 'Rotas', route: '/(main)/rotas' },
-  { icon: 'bus-outline', label: 'Viagens', route: '/(main)/viagens' },
-  { icon: 'card-outline', label: 'Pagamentos', route: '/(main)/pagamentos' },
-  { icon: 'person-outline', label: 'Perfil', route: '/(main)/perfil' },
-];
+  const ACTIONS = [
+    { icon: 'map-outline',      label: 'Rotas',      route: '/(main)/rotas',               color: '#2563eb' },
+    { icon: 'navigate-outline', label: 'Viagens',    route: '/(main)/viagens',             color: '#0ea5e9' },
+    { icon: 'bus-outline',      label: 'Veículos',   route: '/(main)/veiculos',            color: '#22c55e' },
+    { icon: 'reader-outline',   label: 'Motoristas', route: '/(main)/motoristaPassageiro', color: '#a78bfa' },
+    { icon: 'card-outline',     label: 'Pagamentos', route: '/(main)/pagamentos',          color: '#f59e0b' },
+    { icon: 'person-outline',   label: 'Meu Perfil', route: '/(main)/perfil',              color: '#f472b6' },
+  ];
 
   return (
     <Animated.ScrollView
@@ -81,7 +83,7 @@ const ACTIONS = [
             <Text style={styles.heroName}>{user.name.split(' ')[0]} 👋</Text>
           </View>
           <View style={styles.avatar}>
-            <Text style={styles.avatarLetter}>{user.name[0].toUpperCase()}</Text>
+            <Text style={styles.avatarLetter}>{user.name[0]?.toUpperCase()}</Text>
           </View>
         </Animated.View>
 
@@ -118,8 +120,9 @@ const ACTIONS = [
                 onPress={() => router.push(a.route as any)}
                 activeOpacity={0.72}
               >
-                <View style={styles.actionIconBox}>
-                  <Ionicons name={a.icon as any} size={22} color="#60a5fa" />
+                {/* ── AQUI ESTAVA O PROBLEMA! Agora puxa a cor da constante ACTIONS ── */}
+                <View style={[styles.actionIconBox, { backgroundColor: a.color + '22' }]}>
+                  <Ionicons name={a.icon as any} size={22} color={a.color} />
                 </View>
                 <Text style={styles.actionLabel}>{a.label}</Text>
               </TouchableOpacity>
@@ -288,11 +291,10 @@ const styles = StyleSheet.create({
   actionIconBox: {
     width: 40, height: 40,
     borderRadius: 12,
-    backgroundColor: 'rgba(37,99,235,0.12)',
+    // Removi o backgroundColor fixo para pegar a cor dinâmica!
     alignItems: 'center',
     justifyContent: 'center',
   },
-  actionEmoji: { fontSize: 20 },
   actionLabel: { fontSize: 13, color: '#c8d3e8', fontWeight: '600', flexShrink: 1 },
 
   // ── Pagamentos ──
@@ -339,7 +341,6 @@ const styles = StyleSheet.create({
     borderBottomWidth: 0.5,
     borderBottomColor: 'rgba(255,255,255,0.06)',
   },
-  infoIcon:  { fontSize: 18, width: 28, textAlign: 'center' },
   infoText:  { flex: 1, gap: 3 },
   infoLabel: { fontSize: 11, color: '#4a5a7a', fontWeight: '600', letterSpacing: 0.5, textTransform: 'uppercase' },
   infoValue: { fontSize: 14, color: '#e2e8f0', fontWeight: '600' },

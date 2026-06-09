@@ -4,6 +4,7 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import Svg, { Path, Circle } from 'react-native-svg';
 
+// ── ÍCONES EXISTENTES ──
 function IconHome({ color, size = 22 }: { color: string; size?: number }) {
   return (
     <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
@@ -49,12 +50,44 @@ function IconProfile({ color, size = 22 }: { color: string; size?: number }) {
   );
 }
 
+// ── NOVOS ÍCONES PARA AS TELAS DE MOTORISTA ──
+function IconShield({ color, size = 22 }: { color: string; size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" stroke={color} strokeWidth={1.8} strokeLinejoin="round"/>
+    </Svg>
+  );
+}
+function IconID({ color, size = 22 }: { color: string; size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Path d="M4 4h16a2 2 0 012 2v12a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2z" stroke={color} strokeWidth={1.8} />
+      <Circle cx="8" cy="11" r="2" stroke={color} strokeWidth={1.8} />
+      <Path d="M4 16h8" stroke={color} strokeWidth={1.8} strokeLinecap="round"/>
+    </Svg>
+  );
+}
+function IconPeople({ color, size = 22 }: { color: string; size?: number }) {
+  return (
+    <Svg width={size} height={size} viewBox="0 0 24 24" fill="none">
+      <Circle cx="9" cy="7" r="4" stroke={color} strokeWidth={1.8}/>
+      <Path d="M3 21v-2a4 4 0 014-4h4a4 4 0 014 4v2" stroke={color} strokeWidth={1.8}/>
+      <Circle cx="16" cy="10" r="3" stroke={color} strokeWidth={1.8}/>
+      <Path d="M15 15.28a4 4 0 013.72 3.72V21" stroke={color} strokeWidth={1.8}/>
+    </Svg>
+  );
+}
+
+// ── AGORA TEMOS TODAS AS 8 TELAS CADASTRADAS AQUI ──
 const TABS = [
-  { name: 'index',    label: 'Início',   Icon: IconHome },
-  { name: 'rotas',    label: 'Rotas',    Icon: IconRoutes },
-  { name: 'viagens',  label: 'Viagens',  Icon: IconTrips },
-  { name: 'veiculos', label: 'Veículos', Icon: IconVehicles },
-  { name: 'perfil',   label: 'Perfil',   Icon: IconProfile },
+  { name: 'index',               label: 'Início',     Icon: IconHome },
+  { name: 'rotas',               label: 'Rotas',      Icon: IconRoutes },
+  { name: 'viagens',             label: 'Viagens',    Icon: IconTrips },
+  { name: 'veiculos',            label: 'Veículos',   Icon: IconVehicles },
+  { name: 'perfil',              label: 'Perfil',     Icon: IconProfile },
+  { name: 'motoristaAdmin',      label: 'Motorista Admin',      Icon: IconShield },
+  { name: 'motoristaMotorista',  label: 'Motorista dados', Icon: IconID },
+  { name: 'motoristaPassageiro', label: 'Motoristas', Icon: IconPeople },
 ];
 
 function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
@@ -62,13 +95,19 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
   return (
     <View style={[styles.tabBar, { paddingBottom: insets.bottom || 12 }]}>
       {state.routes.map((route, index) => {
+        const tab = TABS.find(t => t.name === route.name);
+        
+        // Proteção: Se a rota não estiver na lista TABS, ele não desenha nada
+        if (!tab) return null;
+
         const isFocused = state.index === index;
-        const tab = TABS.find(t => t.name === route.name) ?? TABS[0];
         const color = isFocused ? '#2563eb' : '#64748b';
+        
         const onPress = () => {
           const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
           if (!isFocused && !event.defaultPrevented) navigation.navigate(route.name);
         };
+        
         return (
           <TouchableOpacity key={route.key} onPress={onPress} activeOpacity={0.7} style={styles.tabItem}>
             {isFocused && <View style={styles.activePill} />}
@@ -91,6 +130,9 @@ export default function MainLayout() {
       <Tabs.Screen name="viagens"    options={{ title: 'Viagens' }} />
       <Tabs.Screen name="veiculos"   options={{ title: 'Veículos' }} />
       <Tabs.Screen name="perfil"     options={{ title: 'Perfil' }} />
+      <Tabs.Screen name="motoristaAdmin"      options={{ title: 'Motoristas Admin' }} />
+      <Tabs.Screen name="motoristaMotorista"  options={{ title: 'Meus Dados' }} />
+      <Tabs.Screen name="motoristaPassageiro" options={{ title: 'Motoristas' }} />
     </Tabs>
   );
 }

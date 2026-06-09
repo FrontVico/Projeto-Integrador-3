@@ -126,24 +126,24 @@ export const passageirosService = {
   atualizar: (cpf: string, payload: any) =>
     request(`/passageiros/${cpf}`, { method: "PUT", body: payload }),
   deletar: (cpf: string) =>
-    request(`/passageiros/${cpf}`, { method: "DELETE" }),
+    request(`/passageiros?cpf=${encodeURIComponent(cpf)}`, { method: "DELETE" }),
 };
 
 export const viagensService = {
   listar: () => request<any[]>("/viagens"),
-  buscarPorCodigo: (codigo: string) => request<any>(`/viagens/${codigo}`),
+  buscarPorCodigo: (codigo: string) => request<any>(`/viagens/${encodeURIComponent(codigo)}`),
   criar: (payload: any) =>
     request("/viagens", { method: "POST", body: payload }),
   atualizarStatus: (codigo: string) =>
-    request(`/viagens/${codigo}`, { method: "PUT" }),
+    request(`/viagens/${encodeURIComponent(codigo)}`, { method: "PUT" }),
   deletar: (codigo: string) =>
-    request(`/viagens/${codigo}`, { method: "DELETE" }),
+    request(`/viagens/${encodeURIComponent(codigo)}`, { method: "DELETE" }),
 };
 
 export const pagamentosService = {
-  buscar: (id: string) => request<any>(`/pagamentos/${id}`),
+  buscar: (id: string) => request<any>(`/pagamentos/${encodeURIComponent(id)}`),
   listarPorPassageiro: (id: string) =>
-    request<any[]>(`/pagamentos/passageiro/${id}`),
+    request<any[]>(`/pagamentos/passageiro/${encodeURIComponent(id)}`),
   listarPorCompetencia: (competencia: string) =>
     request<any[]>(
       `/pagamentos?competencia=${encodeURIComponent(competencia)}`,
@@ -152,9 +152,9 @@ export const pagamentosService = {
   criar: (payload: any) =>
     request("/pagamentos", { method: "POST", body: payload }),
   atualizarStatus: (id: string, status: string, dataPagamento?: string) =>
-    request(`/pagamentos/${id}/status`, {
+    request(`/pagamentos/${encodeURIComponent(id)}/status`, {
       method: "PATCH",
       body: { status, dataPagamento },
     }),
-  deletar: (id: string) => request(`/pagamentos/${id}`, { method: "DELETE" }),
+  deletar: (id: string) => request(`/pagamentos/${encodeURIComponent(id)}`, { method: "DELETE" }),
 };
