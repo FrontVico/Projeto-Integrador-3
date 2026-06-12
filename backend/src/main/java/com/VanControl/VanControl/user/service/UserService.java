@@ -15,6 +15,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 @Service
@@ -25,6 +26,7 @@ public class UserService {
     private final TokenService tokenService;
     private final PassageiroService passageiroService;
     private final PasswordEncoder passwordEncoder;
+    private final EmailService emailService;
 
     public ResponseDTO registrarUsuario(RegisterRequestDTO dto) {
         Optional<User> user = this.userRepository.findByEmail(dto.email());
@@ -63,4 +65,37 @@ public class UserService {
 
         throw new BadRequestException("Credenciais inválidas");
     }
+
+    public void forgotPassword(String email) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        String pin = String.format("%06d", new java.util.Random().nextInt(999999));
+
+        user.setResetPassword(pin);
+        user.setExpirationPin(LocalDateTime.now().plusMinutes(15));
+        userRepository.save(user);
+
+        emailService.enviarEmailToken(user.getEmail(), user.getName(), pin);
+    }
+
+    public void resetPassword(String email, String pin, String newPassword) {
+        User user = userRepository.findByEmail(email)
+                .orElseThrow(() -> new RuntimeException("Usuário não encontrado"));
+
+        if (user.getResetPassword() == null || !user.getResetPassword().equals(pin)) {
+            throw new RuntimeException("Código PIN inválido");
+        }
+
+        if (user.getExpirationPin().isBefore(LocalDateTime.now())) {
+            throw new RuntimeException("Código PIN expirado");
+        }
+
+        user.setPassword(passwordEncoder.encode(newPassword));
+        user.setResetPassword(null);
+        user.setExpirationPin(null);
+
+        userRepository.save(user);
+    }
+
 }

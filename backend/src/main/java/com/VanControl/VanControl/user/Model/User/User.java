@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "users")
 @Getter
@@ -21,6 +23,8 @@ public class User {
     private String password;
     private String cpf;
     private Role role;
+    private String resetPassword;
+    private LocalDateTime expirationPin;
 }
 
 

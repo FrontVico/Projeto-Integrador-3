@@ -1,8 +1,6 @@
 package com.VanControl.VanControl.user.Controller;
 
-import com.VanControl.VanControl.user.DTO.LoginRequestDTO;
-import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
-import com.VanControl.VanControl.user.DTO.ResponseDTO;
+import com.VanControl.VanControl.user.DTO.*;
 import com.VanControl.VanControl.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
@@ -41,5 +39,23 @@ public class AuthController {
     )
     public ResponseEntity<ResponseDTO> register(@RequestBody RegisterRequestDTO dto) {
         return new ResponseEntity<>(userService.registrarUsuario(dto), HttpStatus.CREATED);
+    }
+
+    @PostMapping("/forgot-password")
+    @Operation(
+            summary = "Solicitar recuperação de senha",
+            description = "Gera um PIN de 6 dígitos e envia por e-mail")
+    public ResponseEntity<DefaultResponseDto> forgotPassword(@RequestBody ForgotPasswordRequestDto dto) {
+        userService.forgotPassword(dto.email());
+        return new ResponseEntity<>(new DefaultResponseDto("PIN enviado no seu e-mail!"), HttpStatus.OK);
+    }
+
+    @PostMapping("/reset-password")
+    @Operation(
+            summary = "Resetar a senha",
+            description = "Valida o PIN e salva a nova senha")
+    public ResponseEntity<DefaultResponseDto> resetPassword(@RequestBody ResetPasswordRequestDto dto) {
+        userService.resetPassword(dto.email(), dto.pin(), dto.newPassword());
+        return new ResponseEntity<>(new DefaultResponseDto("Senha resetada com sucesso!"), HttpStatus.OK);
     }
 }
