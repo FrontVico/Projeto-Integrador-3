@@ -29,8 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.format.DateTimeFormatter;
-import java.time.format.DateTimeParseException;
 import java.util.List;
 import java.util.UUID;
 
@@ -217,23 +215,11 @@ public class ViagemService {
     }
 
     private void validarPrazoAssociacao(Viagem viagem) {
-        LocalDate dataViagem = parseDataViagem(viagem.getDataViagem());
+        LocalDate dataViagem = viagem.getDataViagem();
         LocalDate limite = dataViagem.minusDays(1);
 
         if (LocalDate.now().isAfter(limite)) {
             throw new BadRequestException("Associar passageiro permitido apenas até um dia antes da viagem");
-        }
-    }
-
-    private LocalDate parseDataViagem(String dataViagem) {
-        if (dataViagem == null || dataViagem.isBlank()) {
-            throw new BadRequestException("Data da viagem inválida. Use o formato yyyy-MM-dd");
-        }
-
-        try {
-            return LocalDate.parse(dataViagem, DateTimeFormatter.ISO_LOCAL_DATE);
-        } catch (DateTimeParseException ex) {
-            throw new BadRequestException("Data da viagem inválida. Use o formato yyyy-MM-dd");
         }
     }
 }

@@ -52,7 +52,7 @@ class ViagemServiceTest {
         viagem.setId(UUID.randomUUID());
         viagem.setCodigoViagem("VIA-1234");
         viagem.setPlacaVeiculo("ABC-1234");
-        viagem.setDataViagem(LocalDate.now().plusDays(5).toString());
+        viagem.setDataViagem(LocalDate.now().plusDays(5));
         viagem.setViagemConcluida(false);
 
         passageiro = new Passageiro();
@@ -110,7 +110,7 @@ class ViagemServiceTest {
     @DisplayName("Lança BadRequestException se estourar capacidade")
     void deveLancarExceptionSeCapacidadeMax() {
         // Data no futuro para passar na verificação do prazo
-        viagem.setDataViagem(LocalDate.now().plusDays(2).toString());
+        viagem.setDataViagem(LocalDate.now().plusDays(2));
 
         when(viagemRepository.findByCodigoViagem(viagem.getCodigoViagem())).thenReturn(viagem);
         when(passageiroRepository.findByCpf(passageiro.getCpf())).thenReturn(passageiro);

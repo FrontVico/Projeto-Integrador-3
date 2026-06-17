@@ -22,6 +22,9 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.test.web.servlet.MockMvc;
 
+import java.time.LocalDate;
+import java.time.LocalTime;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
@@ -206,7 +209,12 @@ class PassageiroControllerTest {
     @WithMockUser(username = CPF_PASSAGEIRO, roles = "PASSAGEIRO")
     void deveListarViagensDoPassageiroQuandoPassageiroAcessaProprioDados() throws Exception {
         doNothing().when(securityUtils).validateCpfAccess(CPF_PASSAGEIRO);
-        ViagemResumoResponseDto viagemResumo = new ViagemResumoResponseDto("VIA-12345678", "ROT-123", "ABC-1234", "2026-05-10", "08:00", "09:00", false);
+
+        ViagemResumoResponseDto viagemResumo = new ViagemResumoResponseDto(
+                "VIA-12345678", "ROT-123", "ABC-1234",
+                LocalDate.of(2026,5,10),
+                LocalTime.of(8,0), LocalTime.of(9,0), false);
+
         when(viagemService.listarViagensPorPassageiroCpf(CPF_PASSAGEIRO)).thenReturn(java.util.List.of(viagemResumo));
 
         mockMvc.perform(get("/passageiros/{cpf}/viagens", CPF_PASSAGEIRO))
