@@ -1,11 +1,11 @@
 package com.VanControl.VanControl.motorista.controller;
 
-import com.VanControl.VanControl.commons.util.SecurityUtils;
+import com.VanControl.VanControl.common.util.SecurityUtils;
 import com.VanControl.VanControl.motorista.domain.dto.request.AtualizarTelefoneMotoristaRequestDto;
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaDefaultResponseDto;
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaResponseDto;
 import com.VanControl.VanControl.motorista.service.MotoristaService;
-import com.VanControl.VanControl.commons.security.TokenService;
+import com.VanControl.VanControl.common.security.TokenService;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

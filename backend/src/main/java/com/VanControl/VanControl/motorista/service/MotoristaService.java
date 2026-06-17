@@ -1,7 +1,7 @@
 package com.VanControl.VanControl.motorista.service;
 
-import com.VanControl.VanControl.commons.exception.model.ConflictException;
-import com.VanControl.VanControl.commons.exception.model.NotFoundException;
+import com.VanControl.VanControl.common.exception.model.ConflictException;
+import com.VanControl.VanControl.common.exception.model.NotFoundException;
 import com.VanControl.VanControl.motorista.domain.dto.request.AtualizarTelefoneMotoristaRequestDto;
 import com.VanControl.VanControl.motorista.domain.dto.request.CadastrarMotoristaRequestDto;
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaDefaultResponseDto;

@@ -1,6 +1,6 @@
 package com.VanControl.VanControl.motorista.controller;
 
-import com.VanControl.VanControl.commons.util.SecurityUtils;
+import com.VanControl.VanControl.common.util.SecurityUtils;
 import com.VanControl.VanControl.motorista.domain.dto.request.AtualizarTelefoneMotoristaRequestDto;
 import com.VanControl.VanControl.motorista.domain.dto.request.CadastrarMotoristaRequestDto;
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaDefaultResponseDto;

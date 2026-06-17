@@ -1,16 +1,16 @@
 package com.VanControl.VanControl.user.service;
 
-import com.VanControl.VanControl.commons.exception.model.BadRequestException;
-import com.VanControl.VanControl.commons.exception.model.ConflictException;
-import com.VanControl.VanControl.commons.exception.model.NotFoundException;
-import com.VanControl.VanControl.passageiros.service.PassageiroService;
+import com.VanControl.VanControl.common.exception.model.BadRequestException;
+import com.VanControl.VanControl.common.exception.model.ConflictException;
+import com.VanControl.VanControl.common.exception.model.NotFoundException;
+import com.VanControl.VanControl.passageiro.service.PassageiroService;
 import com.VanControl.VanControl.user.domain.dto.request.LoginRequestDTO;
 import com.VanControl.VanControl.user.domain.dto.request.RegisterRequestDTO;
 import com.VanControl.VanControl.user.domain.dto.response.ResponseDTO;
 import com.VanControl.VanControl.user.domain.enums.Role;
 import com.VanControl.VanControl.user.domain.entity.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
-import com.VanControl.VanControl.commons.security.TokenService;
+import com.VanControl.VanControl.common.security.TokenService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;

@@ -1,6 +1,6 @@
 package com.VanControl.VanControl.viagem.controller;
 
-import com.VanControl.VanControl.commons.util.SecurityUtils;
+import com.VanControl.VanControl.common.util.SecurityUtils;
 import com.VanControl.VanControl.viagem.domain.dto.request.CriarViagemRequestDto;
 import com.VanControl.VanControl.viagem.domain.dto.response.ViagemDefaultResponseDto;
 import com.VanControl.VanControl.viagemPassageiro.domain.dto.ViagemPassageirosResponseDto;

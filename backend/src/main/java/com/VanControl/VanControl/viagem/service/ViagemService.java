@@ -1,17 +1,17 @@
 package com.VanControl.VanControl.viagem.service;
 
-import com.VanControl.VanControl.commons.exception.model.BadRequestException;
-import com.VanControl.VanControl.commons.exception.model.ConflictException;
-import com.VanControl.VanControl.commons.exception.model.NotFoundException;
-import com.VanControl.VanControl.commons.util.SecurityUtils;
+import com.VanControl.VanControl.common.exception.model.BadRequestException;
+import com.VanControl.VanControl.common.exception.model.ConflictException;
+import com.VanControl.VanControl.common.exception.model.NotFoundException;
+import com.VanControl.VanControl.common.util.SecurityUtils;
 import com.VanControl.VanControl.motorista.service.MotoristaService;
-import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroResumoResponseDto;
-import com.VanControl.VanControl.passageiros.domain.entity.Passageiro;
-import com.VanControl.VanControl.passageiros.repository.PassageiroRepository;
-import com.VanControl.VanControl.rotas.service.RotaService;
+import com.VanControl.VanControl.passageiro.domain.dto.response.PassageiroResumoResponseDto;
+import com.VanControl.VanControl.passageiro.domain.entity.Passageiro;
+import com.VanControl.VanControl.passageiro.repository.PassageiroRepository;
+import com.VanControl.VanControl.rota.service.RotaService;
 import com.VanControl.VanControl.user.domain.enums.Role;
 import com.VanControl.VanControl.user.domain.entity.User;
-import com.VanControl.VanControl.veiculos.service.VeiculoService;
+import com.VanControl.VanControl.veiculo.service.VeiculoService;
 import com.VanControl.VanControl.viagem.domain.dto.request.CriarViagemRequestDto;
 import com.VanControl.VanControl.viagem.domain.dto.response.ViagemDefaultResponseDto;
 import com.VanControl.VanControl.viagemPassageiro.domain.dto.ViagemPassageirosResponseDto;

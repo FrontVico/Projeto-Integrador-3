@@ -1,6 +1,6 @@
 package com.VanControl.VanControl.viagemPassageiro.domain.dto;
 
-import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroResumoResponseDto;
+import com.VanControl.VanControl.passageiro.domain.dto.response.PassageiroResumoResponseDto;
 
 import java.util.List;
 

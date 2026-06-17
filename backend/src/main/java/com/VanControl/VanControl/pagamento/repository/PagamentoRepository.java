@@ -1,0 +1,21 @@
+package com.VanControl.VanControl.pagamento.repository;
+
+import com.VanControl.VanControl.pagamento.domain.entity.Pagamento;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import java.util.List;
+import java.util.Optional;
+import java.util.UUID;
+
+public interface PagamentoRepository extends JpaRepository<Pagamento, UUID> {
+
+   List<Pagamento> findByPassageiroId(UUID passageiroId);
+
+   List<Pagamento> id(UUID id);
+
+   boolean existsByPassageiroIdAndCompetencia(UUID passageiroId, String competencia);
+
+   List<Pagamento> findByCompetencia(String competencia);
+
+   Optional<Pagamento> findByCodigoPagamento(String codigoPagamento);
+}

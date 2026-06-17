@@ -1,6 +1,6 @@
 package com.VanControl.VanControl.viagemPassageiro.domain.entity;
 
-import com.VanControl.VanControl.passageiros.domain.entity.Passageiro;
+import com.VanControl.VanControl.passageiro.domain.entity.Passageiro;
 import com.VanControl.VanControl.viagem.domain.entity.Viagem;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;

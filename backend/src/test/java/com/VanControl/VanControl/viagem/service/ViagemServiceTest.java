@@ -1,12 +1,12 @@
 package com.VanControl.VanControl.viagem.service;
 
-import com.VanControl.VanControl.commons.exception.model.BadRequestException;
-import com.VanControl.VanControl.commons.exception.model.ConflictException;
-import com.VanControl.VanControl.commons.exception.model.NotFoundException;
-import com.VanControl.VanControl.passageiros.domain.entity.Passageiro;
-import com.VanControl.VanControl.passageiros.repository.PassageiroRepository;
-import com.VanControl.VanControl.veiculos.domain.dto.response.VeiculoResponseDto;
-import com.VanControl.VanControl.veiculos.service.VeiculoService;
+import com.VanControl.VanControl.common.exception.model.BadRequestException;
+import com.VanControl.VanControl.common.exception.model.ConflictException;
+import com.VanControl.VanControl.common.exception.model.NotFoundException;
+import com.VanControl.VanControl.passageiro.domain.entity.Passageiro;
+import com.VanControl.VanControl.passageiro.repository.PassageiroRepository;
+import com.VanControl.VanControl.veiculo.domain.dto.response.VeiculoResponseDto;
+import com.VanControl.VanControl.veiculo.service.VeiculoService;
 import com.VanControl.VanControl.viagem.domain.entity.Viagem;
 import com.VanControl.VanControl.viagemPassageiro.domain.entity.ViagemPassageiro;
 import com.VanControl.VanControl.viagemPassageiro.repository.ViagemPassageiroRepository;

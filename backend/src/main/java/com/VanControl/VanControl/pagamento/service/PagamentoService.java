@@ -1,0 +1,121 @@
+package com.VanControl.VanControl.pagamento.service;
+
+import com.VanControl.VanControl.common.exception.model.ConflictException;
+import com.VanControl.VanControl.common.exception.model.NotFoundException;
+import com.VanControl.VanControl.pagamento.domain.dto.request.AtualizarStatusPagamentoRequestDto;
+import com.VanControl.VanControl.pagamento.domain.dto.request.CadastrarPagamentoRequestDto;
+import com.VanControl.VanControl.pagamento.domain.dto.response.PagamentoDefaultResponseDto;
+import com.VanControl.VanControl.pagamento.domain.dto.response.PagamentoResponseDto;
+import com.VanControl.VanControl.pagamento.domain.entity.Pagamento;
+import com.VanControl.VanControl.pagamento.domain.enums.StatusPagamento;
+import com.VanControl.VanControl.pagamento.mapper.PagamentoMapper;
+import com.VanControl.VanControl.pagamento.repository.PagamentoRepository;
+import com.VanControl.VanControl.passageiro.domain.entity.Passageiro;
+import com.VanControl.VanControl.passageiro.repository.PassageiroRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.UUID;
+
+@Service
+@RequiredArgsConstructor
+public class PagamentoService{
+
+    private final PagamentoRepository pagamentoRepository;
+    private final PassageiroRepository passageiroRepository;
+
+    public PagamentoDefaultResponseDto cadastrarPagamento(CadastrarPagamentoRequestDto dto) {
+
+        Passageiro passageiro = passageiroRepository.findByCpf(dto.cpf());
+
+        if(passageiro == null){
+            throw new NotFoundException("Passageiro não encontrado");
+        }
+
+        if (pagamentoRepository.existsByPassageiroIdAndCompetencia(passageiro.getId(), dto.competencia())) {
+            throw new ConflictException("Pagamento já cadastrado para o passageiro na competência: " + dto.competencia());
+        }
+
+        var pagamento = PagamentoMapper.converterParaPagamento(dto, passageiro);
+        pagamento.setStatus(StatusPagamento.PENDENTE);
+
+        pagamento.setCodigoPagamento("PGTO-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
+
+        pagamentoRepository.save(pagamento);
+
+        return new PagamentoDefaultResponseDto("Pagamento cadastrado com sucesso");
+    }
+
+    public PagamentoDefaultResponseDto atualizarStatusPagamento(String codigoPagamento, AtualizarStatusPagamentoRequestDto dto){
+
+        Pagamento pagamento = pagamentoRepository.findByCodigoPagamento(codigoPagamento)
+                .orElseThrow(() -> new NotFoundException("Pagamento não encontrado"));
+
+        pagamento.setStatus(StatusPagamento.valueOf(dto.status()));
+        pagamento.setDataPagamento(dto.dataPagamento());
+
+        pagamentoRepository.save(pagamento);
+
+        return new PagamentoDefaultResponseDto("Status e data de pagamento atualizado com sucesso");
+    }
+
+    public List<PagamentoResponseDto> buscarPagamentosDoPassageiroPorCpf(String cpf){
+        Passageiro passageiro = passageiroRepository.findByCpf(cpf);
+        if(passageiro == null){
+            throw new NotFoundException("Passageiro não encontrado");
+        }
+        var pagamentos = pagamentoRepository.findByPassageiroId(passageiro.getId());
+        if (pagamentos.isEmpty()) {
+            throw new NotFoundException("Nenhum pagamento encontrado para esse passageiro");
+        }
+
+        return pagamentos.stream()
+                .map(PagamentoMapper::converterParaPagamentoDto)
+                .toList();
+    }
+
+    public PagamentoResponseDto buscarPagamentoPorCodigoPagamento(String codigoPagamento){
+        Pagamento pagamento = pagamentoRepository.findByCodigoPagamento(codigoPagamento)
+                .orElseThrow(() -> new NotFoundException("Pagamento não encontrado"));
+
+        return  PagamentoMapper.converterParaPagamentoDto(pagamento);
+    }
+
+    public List<PagamentoResponseDto> buscarPagamentosPorCompetencia(String competencia){
+        var pagamento = pagamentoRepository.findByCompetencia(competencia);
+        if(pagamento.isEmpty()){
+            throw new NotFoundException("Competencia não encontrado");
+        }
+
+        return pagamento.stream()
+                .map(PagamentoMapper::converterParaPagamentoDto)
+                .toList();
+
+    }
+
+    public List<PagamentoResponseDto> buscarMeusPagamentos(String user){
+
+        Passageiro passageiro = passageiroRepository.findByUser_Id(user)
+                .orElseThrow(() -> new NotFoundException("Perfil de passageiro não encontrado para esse usuário"));
+
+        List<Pagamento> pagamentos = pagamentoRepository.findByPassageiroId(passageiro.getId());
+
+        return pagamentos.stream()
+                .map(PagamentoMapper::converterParaPagamentoDto)
+                .toList();
+    }
+
+    @Transactional
+    public PagamentoDefaultResponseDto deletarPagamento(String codigoPagamento){
+        var pagamento = pagamentoRepository.findByCodigoPagamento(codigoPagamento);
+        if(pagamento.isEmpty()){
+            throw new NotFoundException("Pagamento não encontrado");
+        }
+
+        pagamentoRepository.delete(pagamento.get());
+        return new PagamentoDefaultResponseDto("Pagamento removido com sucesso!");
+    }
+
+}
