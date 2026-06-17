@@ -1,11 +1,8 @@
-package com.VanControl.VanControl.user.DTO;
+package com.VanControl.VanControl.user.domain.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
-import org.hibernate.validator.constraints.br.CPF;
-
-import java.time.LocalDateTime;
 
 public record ResetPasswordRequestDto(
         @Email(message = "Insira um email válido")

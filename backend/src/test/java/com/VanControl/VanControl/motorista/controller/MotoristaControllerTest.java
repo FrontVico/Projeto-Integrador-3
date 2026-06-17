@@ -5,7 +5,7 @@ import com.VanControl.VanControl.motorista.domain.dto.request.AtualizarTelefoneM
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaDefaultResponseDto;
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaResponseDto;
 import com.VanControl.VanControl.motorista.service.MotoristaService;
-import com.VanControl.VanControl.user.Infra.Security.TokenService;
+import com.VanControl.VanControl.commons.security.TokenService;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;

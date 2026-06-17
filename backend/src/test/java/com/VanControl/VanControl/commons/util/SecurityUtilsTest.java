@@ -1,7 +1,7 @@
 package com.VanControl.VanControl.commons.util;
 
-import com.VanControl.VanControl.user.Model.User.Role;
-import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.domain.enums.Role;
+import com.VanControl.VanControl.user.domain.entity.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

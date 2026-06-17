@@ -1,4 +1,4 @@
-package com.VanControl.VanControl.user.Infra.Security;
+package com.VanControl.VanControl.commons.security;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

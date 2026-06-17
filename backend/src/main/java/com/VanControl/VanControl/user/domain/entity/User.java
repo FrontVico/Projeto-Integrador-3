@@ -1,5 +1,6 @@
-package com.VanControl.VanControl.user.Model.User;
+package com.VanControl.VanControl.user.domain.entity;
 
+import com.VanControl.VanControl.user.domain.enums.Role;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;

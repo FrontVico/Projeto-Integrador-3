@@ -1,6 +1,11 @@
-package com.VanControl.VanControl.user.Controller;
+package com.VanControl.VanControl.user.controller;
 
-import com.VanControl.VanControl.user.DTO.*;
+import com.VanControl.VanControl.user.domain.dto.request.ForgotPasswordRequestDto;
+import com.VanControl.VanControl.user.domain.dto.request.LoginRequestDTO;
+import com.VanControl.VanControl.user.domain.dto.request.RegisterRequestDTO;
+import com.VanControl.VanControl.user.domain.dto.request.ResetPasswordRequestDto;
+import com.VanControl.VanControl.user.domain.dto.response.DefaultResponseDto;
+import com.VanControl.VanControl.user.domain.dto.response.ResponseDTO;
 import com.VanControl.VanControl.user.service.UserService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;

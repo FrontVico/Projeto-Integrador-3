@@ -3,7 +3,7 @@ package com.VanControl.VanControl.motorista.mapper;
 import com.VanControl.VanControl.motorista.domain.dto.request.CadastrarMotoristaRequestDto;
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaResponseDto;
 import com.VanControl.VanControl.motorista.domain.entity.Motorista;
-import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
+import com.VanControl.VanControl.user.domain.dto.request.RegisterRequestDTO;
 
 public class MotoristaMapper {
 

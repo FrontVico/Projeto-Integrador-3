@@ -5,7 +5,7 @@ import com.VanControl.VanControl.passageiros.domain.dto.request.AtualizarPassage
 import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroResponseDto;
 import com.VanControl.VanControl.passageiros.mapper.PassageiroMapper;
 import com.VanControl.VanControl.passageiros.service.PassageiroService;
-import com.VanControl.VanControl.user.Infra.Security.TokenService;
+import com.VanControl.VanControl.commons.security.TokenService;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import com.VanControl.VanControl.viagem.domain.dto.response.ViagemResumoResponseDto;
 import com.VanControl.VanControl.viagem.service.ViagemService;

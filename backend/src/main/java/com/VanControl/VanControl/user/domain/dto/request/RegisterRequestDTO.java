@@ -1,4 +1,4 @@
-package com.VanControl.VanControl.user.DTO;
+package com.VanControl.VanControl.user.domain.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

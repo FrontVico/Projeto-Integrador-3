@@ -1,7 +1,7 @@
-package com.VanControl.VanControl.user.Infra.Security;
+package com.VanControl.VanControl.commons.security;
 
 import com.VanControl.VanControl.commons.exception.model.NotFoundException;
-import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.domain.entity.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

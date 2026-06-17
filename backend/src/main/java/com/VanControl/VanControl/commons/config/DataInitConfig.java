@@ -1,8 +1,8 @@
-package com.VanControl.VanControl.user.Infra.config;
+package com.VanControl.VanControl.commons.config;
 
 import com.VanControl.VanControl.commons.exception.model.InternalServerErrorException;
-import com.VanControl.VanControl.user.Model.User.Role;
-import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.domain.enums.Role;
+import com.VanControl.VanControl.user.domain.entity.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;

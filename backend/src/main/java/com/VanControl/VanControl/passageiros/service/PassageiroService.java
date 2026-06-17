@@ -8,8 +8,8 @@ import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroRespo
 import com.VanControl.VanControl.passageiros.domain.entity.Passageiro;
 import com.VanControl.VanControl.passageiros.mapper.PassageiroMapper;
 import com.VanControl.VanControl.passageiros.repository.PassageiroRepository;
-import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
-import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.domain.dto.request.RegisterRequestDTO;
+import com.VanControl.VanControl.user.domain.entity.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;

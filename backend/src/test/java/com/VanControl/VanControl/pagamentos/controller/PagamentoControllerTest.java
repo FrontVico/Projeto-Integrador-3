@@ -4,7 +4,7 @@ import com.VanControl.VanControl.commons.util.SecurityUtils;
 import com.VanControl.VanControl.pagamentos.domain.dto.response.PagamentoResponseDto;
 import com.VanControl.VanControl.pagamentos.domain.enums.StatusPagamento;
 import com.VanControl.VanControl.pagamentos.service.PagamentoService;
-import com.VanControl.VanControl.user.Infra.Security.TokenService;
+import com.VanControl.VanControl.commons.security.TokenService;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;

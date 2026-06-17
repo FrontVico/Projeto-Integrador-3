@@ -3,7 +3,7 @@ package com.VanControl.VanControl.passageiros.mapper;
 import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroResponseAdminDto;
 import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroResponseDto;
 import com.VanControl.VanControl.passageiros.domain.entity.Passageiro;
-import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
+import com.VanControl.VanControl.user.domain.dto.request.RegisterRequestDTO;
 
 public class PassageiroMapper {
 

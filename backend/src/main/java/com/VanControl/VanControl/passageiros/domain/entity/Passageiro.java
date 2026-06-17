@@ -2,7 +2,7 @@ package com.VanControl.VanControl.passageiros.domain.entity;
 
 import com.VanControl.VanControl.pagamentos.domain.entity.Pagamento;
 import com.VanControl.VanControl.viagemPassageiro.domain.entity.ViagemPassageiro;
-import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.domain.entity.User;
 import jakarta.persistence.*;
 import lombok.*;
 

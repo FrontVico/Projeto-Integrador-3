@@ -9,7 +9,6 @@ import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaResponse
 import com.VanControl.VanControl.motorista.domain.entity.Motorista;
 import com.VanControl.VanControl.motorista.mapper.MotoristaMapper;
 import com.VanControl.VanControl.motorista.repository.MotoristaRepository;
-import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
 import com.VanControl.VanControl.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

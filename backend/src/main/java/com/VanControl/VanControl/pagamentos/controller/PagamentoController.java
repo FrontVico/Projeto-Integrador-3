@@ -6,7 +6,7 @@ import com.VanControl.VanControl.pagamentos.domain.dto.request.CadastrarPagament
 import com.VanControl.VanControl.pagamentos.domain.dto.response.PagamentoDefaultResponseDto;
 import com.VanControl.VanControl.pagamentos.domain.dto.response.PagamentoResponseDto;
 import com.VanControl.VanControl.pagamentos.service.PagamentoService;
-import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.domain.entity.User;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -18,8 +18,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.UUID;
 
 @RestController
 @RequestMapping("/pagamentos")

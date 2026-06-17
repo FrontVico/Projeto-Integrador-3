@@ -1,4 +1,4 @@
-package com.VanControl.VanControl.user.Infra.Security;
+package com.VanControl.VanControl.commons.security;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;

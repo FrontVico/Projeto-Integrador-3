@@ -1,4 +1,4 @@
-package com.VanControl.VanControl.user.Model.User;
+package com.VanControl.VanControl.user.domain.enums;
 
 public enum Role {
     PASSAGEIRO,

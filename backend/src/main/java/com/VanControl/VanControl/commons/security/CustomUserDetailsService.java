@@ -1,6 +1,6 @@
-package com.VanControl.VanControl.user.Infra.Security;
+package com.VanControl.VanControl.commons.security;
 
-import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.domain.entity.User;
 import com.VanControl.VanControl.user.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

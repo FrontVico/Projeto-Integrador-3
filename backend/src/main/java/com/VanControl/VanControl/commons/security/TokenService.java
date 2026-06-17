@@ -1,7 +1,7 @@
-package com.VanControl.VanControl.user.Infra.Security;
+package com.VanControl.VanControl.commons.security;
 
 import com.VanControl.VanControl.commons.exception.model.InternalServerErrorException;
-import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.domain.entity.User;
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.exceptions.JWTCreationException;

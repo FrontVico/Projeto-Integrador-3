@@ -9,8 +9,8 @@ import com.VanControl.VanControl.passageiros.domain.dto.response.PassageiroResum
 import com.VanControl.VanControl.passageiros.domain.entity.Passageiro;
 import com.VanControl.VanControl.passageiros.repository.PassageiroRepository;
 import com.VanControl.VanControl.rotas.service.RotaService;
-import com.VanControl.VanControl.user.Model.User.Role;
-import com.VanControl.VanControl.user.Model.User.User;
+import com.VanControl.VanControl.user.domain.enums.Role;
+import com.VanControl.VanControl.user.domain.entity.User;
 import com.VanControl.VanControl.veiculos.service.VeiculoService;
 import com.VanControl.VanControl.viagem.domain.dto.request.CriarViagemRequestDto;
 import com.VanControl.VanControl.viagem.domain.dto.response.ViagemDefaultResponseDto;

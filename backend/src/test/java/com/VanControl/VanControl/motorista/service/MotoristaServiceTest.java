@@ -8,7 +8,7 @@ import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaDefaultR
 import com.VanControl.VanControl.motorista.domain.dto.response.MotoristaResponseDto;
 import com.VanControl.VanControl.motorista.domain.entity.Motorista;
 import com.VanControl.VanControl.motorista.repository.MotoristaRepository;
-import com.VanControl.VanControl.user.DTO.RegisterRequestDTO;
+import com.VanControl.VanControl.user.domain.dto.request.RegisterRequestDTO;
 import com.VanControl.VanControl.user.service.UserService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
