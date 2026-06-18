@@ -95,7 +95,7 @@ public class PagamentoService{
 
     }
 
-    public List<PagamentoResponseDto> buscarMeusPagamentos(String user){
+    public List<PagamentoResponseDto> buscarMeusPagamentos(UUID user){
 
         Passageiro passageiro = passageiroRepository.findByUser_Id(user)
                 .orElseThrow(() -> new NotFoundException("Perfil de passageiro não encontrado para esse usuário"));
