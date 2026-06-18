@@ -11,10 +11,11 @@ import com.VanControl.VanControl.rota.domain.entity.Rota;
 import com.VanControl.VanControl.rota.mapper.RotasMapper;
 import com.VanControl.VanControl.rota.repository.RotaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -45,21 +46,16 @@ public class RotaService {
         return RotasMapper.converterParaRotaDto(rota.get());
     }
 
-    public List<RotaResponseDto> buscarRotaPorDestino(String destino){
-        var rota = rotaRepository.findByDestinoContainingIgnoreCase(destino);
+    public Page<RotaResponseDto> buscarRotaPorDestino(String destino, Pageable pageable){
+        var rota = rotaRepository.findByDestinoContainingIgnoreCase(destino, pageable);
         if(rota.isEmpty()){
             throw new NotFoundException("Rota inexistente");
         }
-        return rota.stream()
-                .map(RotasMapper::converterParaRotaDto)
-                .toList();
+        return rota.map(RotasMapper::converterParaRotaDto);
     }
 
-    public List<RotaResponseDto> buscarTodasRotas(){
-        return rotaRepository.findAll()
-                .stream()
-                .map(RotasMapper::converterParaRotaDto)
-                .toList();
+    public Page<RotaResponseDto> buscarTodasRotas(Pageable pageable){
+        return rotaRepository.findAll(pageable).map(RotasMapper::converterParaRotaDto);
     }
 
     public RotaDefaultResponseDto atualizarDescricaoRota(String codigoRota, AtualizarDescricaoRotaRequestDto dto){

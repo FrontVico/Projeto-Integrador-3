@@ -173,13 +173,17 @@ class ViagemServiceTest {
     @DisplayName("Deve listar viagens de um passageiro")
     void deveListarViagensPorPassageiro() {
         when(passageiroRepository.findByUser_Cpf(passageiro.getUser().getCpf())).thenReturn(Optional.of(passageiro));
+
         ViagemPassageiro vp = new ViagemPassageiro();
         vp.setViagem(viagem);
-        when(viagemPassageiroRepository.findByPassageiro_Id(passageiro.getId())).thenReturn(List.of(vp));
 
-        var resposta = viagemService.listarViagensPorPassageiroCpf(passageiro.getUser().getCpf());
+        when(viagemPassageiroRepository.findByPassageiro_Id(eq(passageiro.getId()), any(org.springframework.data.domain.Pageable.class)))
+                .thenReturn(new org.springframework.data.domain.PageImpl<>(List.of(vp)));
 
-        assertEquals(1, resposta.size());
-        assertEquals(viagem.getCodigoViagem(), resposta.getFirst().codigoViagem());
+        org.springframework.data.domain.PageRequest pageRequest = org.springframework.data.domain.PageRequest.of(0, 10);
+        var resposta = viagemService.listarViagensPorPassageiroCpf(passageiro.getUser().getCpf(), pageRequest);
+
+        assertEquals(1, resposta.getTotalElements());
+        assertEquals(viagem.getCodigoViagem(), resposta.getContent().get(0).codigoViagem());
     }
 }

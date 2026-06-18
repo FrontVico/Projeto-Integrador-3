@@ -23,13 +23,14 @@ import com.VanControl.VanControl.viagem.mapper.ViagemMapper;
 import com.VanControl.VanControl.viagemPassageiro.repository.ViagemPassageiroRepository;
 import com.VanControl.VanControl.viagem.repository.ViagemRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.UUID;
 
 @Service
@@ -66,10 +67,8 @@ public class ViagemService {
         return ViagemMapper.converterParaViagemDto(viagem);
     }
 
-    public List<ViagemResponseDto> listarTodasViagens() {
-        return viagemRepository.findAll().stream()
-                .map(ViagemMapper::converterParaViagemDto)
-                .toList();
+    public Page<ViagemResponseDto> listarTodasViagens(Pageable pageable) {
+        return viagemRepository.findAll(pageable).map(ViagemMapper::converterParaViagemDto);
     }
 
     public ViagemDefaultResponseDto atualizarStatusViagem(String codigo) {
@@ -142,13 +141,12 @@ public class ViagemService {
         );
     }
 
-    public List<ViagemResumoResponseDto> listarViagensPorPassageiroCpf(String cpf) {
+    public Page<ViagemResumoResponseDto> listarViagensPorPassageiroCpf(String cpf, Pageable pageable) {
         var passageiro = buscarPassageiroPorCpfInterno(cpf);
 
-        return viagemPassageiroRepository.findByPassageiro_Id(passageiro.getId()).stream()
+        return viagemPassageiroRepository.findByPassageiro_Id(passageiro.getId(), pageable)
                 .map(ViagemPassageiro::getViagem)
-                .map(this::converterParaResumo)
-                .toList();
+                .map(this::converterParaResumo);
     }
 
     private PassageiroResumoResponseDto converterParaResumo(Passageiro passageiro) {

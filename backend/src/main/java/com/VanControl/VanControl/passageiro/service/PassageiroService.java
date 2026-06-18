@@ -8,18 +8,17 @@ import com.VanControl.VanControl.passageiro.domain.dto.response.PassageiroRespon
 import com.VanControl.VanControl.passageiro.domain.entity.Passageiro;
 import com.VanControl.VanControl.passageiro.mapper.PassageiroMapper;
 import com.VanControl.VanControl.passageiro.repository.PassageiroRepository;
-import com.VanControl.VanControl.user.Repository.UserRepository;
 import com.VanControl.VanControl.user.domain.dto.request.RegisterRequestDTO;
 import com.VanControl.VanControl.user.domain.entity.User;
-import com.VanControl.VanControl.user.service.UserService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Objects;
 
 import static com.VanControl.VanControl.passageiro.mapper.PassageiroMapper.converterParaPassageiro;
@@ -29,7 +28,6 @@ import static com.VanControl.VanControl.passageiro.mapper.PassageiroMapper.conve
 public class PassageiroService {
 
     private final PassageiroRepository passageiroRepository;
-    private final UserService userService;
 
     public void cadastrarPassageiro(RegisterRequestDTO dto, User user) {
         if(passageiroRepository.findByUser_Cpf(dto.cpf()).isPresent()){
@@ -46,11 +44,9 @@ public class PassageiroService {
         return PassageiroMapper.converterParaPassageiroResponseDto(passageiro);
     }
 
-    public List<PassageiroResponseDto> listarPassageiros() {
-        return passageiroRepository.findAll()
-                .stream()
-                .map(PassageiroMapper::converterParaPassageiroResponseDto)
-                .toList();
+    public Page<PassageiroResponseDto> listarPassageiros(Pageable pageable) {
+        return passageiroRepository.findAll(pageable)
+                .map(PassageiroMapper::converterParaPassageiroResponseDto);
     }
 
     public PassageiroResponseDto atualizarPassageiro(String cpf, AtualizarPassageiroRequestDto dto) {

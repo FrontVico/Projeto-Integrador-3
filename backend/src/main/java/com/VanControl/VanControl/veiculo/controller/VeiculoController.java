@@ -10,12 +10,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/veiculos")
@@ -50,8 +52,8 @@ public class VeiculoController {
             summary = "Listar veiculos",
             description = "Saida: lista de VeiculoResponseDto (placa, marca, modelo, ano, capacidade, status)."
     )
-    public ResponseEntity<List<VeiculoResponseDto>> listarVeiculos() {
-        return new ResponseEntity<>(veiculoService.listarVeiculos(), HttpStatus.OK);
+    public ResponseEntity<Page<VeiculoResponseDto>> listarVeiculos(@PageableDefault(size = 10, page = 0, sort = "placa", direction = Sort.Direction.ASC) Pageable pageable) {
+        return new ResponseEntity<>(veiculoService.listarVeiculos(pageable), HttpStatus.OK);
     }
 
     @PutMapping("/status")

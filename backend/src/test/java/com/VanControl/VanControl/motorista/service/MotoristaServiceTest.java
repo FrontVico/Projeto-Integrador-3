@@ -18,6 +18,10 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
 import java.time.YearMonth;
 import java.util.List;
@@ -175,27 +179,32 @@ class MotoristaServiceTest {
         motorista2.setDataValidadeCnh(YearMonth.of(2027, 6));
         motorista2.setTelefone("(21) 99999-9999");
 
-        when(motoristaRepository.findAll()).thenReturn(List.of(motorista, motorista2));
+        when(motoristaRepository.findAll(any(PageRequest.class)))
+                .thenReturn(new PageImpl<>(List.of(motorista, motorista2)));
 
-        List<MotoristaResponseDto> resposta = motoristaService.buscarTodosMotoristas();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<MotoristaResponseDto> resposta = motoristaService.buscarTodosMotoristas(pageable);
 
         assertNotNull(resposta);
-        assertEquals(2, resposta.size());
-        assertEquals("Maria Santos", resposta.get(0).nome());
-        assertEquals("João Silva", resposta.get(1).nome());
-        verify(motoristaRepository, times(1)).findAll();
+        assertEquals(2, resposta.getTotalElements());
+        assertEquals("Maria Santos", resposta.getContent().get(0).nome());
+        assertEquals("João Silva", resposta.getContent().get(1).nome());
+
+        verify(motoristaRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
     }
 
     @Test
     @DisplayName("Deve retornar lista vazia quando não há motoristas cadastrados")
     void deveRetornarListaVaziaQuandoNaoHaMotoristas() {
-        when(motoristaRepository.findAll()).thenReturn(List.of());
+        when(motoristaRepository.findAll(any(org.springframework.data.domain.PageRequest.class)))
+                .thenReturn(org.springframework.data.domain.Page.empty());
 
-        List<MotoristaResponseDto> resposta = motoristaService.buscarTodosMotoristas();
+        Pageable pageable = PageRequest.of(0, 10);
+        Page<MotoristaResponseDto> resposta = motoristaService.buscarTodosMotoristas(pageable);
 
         assertNotNull(resposta);
         assertTrue(resposta.isEmpty());
-        verify(motoristaRepository, times(1)).findAll();
+        verify(motoristaRepository, times(1)).findAll(any(org.springframework.data.domain.PageRequest.class));
     }
 
     // ========== Testes de atualizarTelefoneMotorista ==========

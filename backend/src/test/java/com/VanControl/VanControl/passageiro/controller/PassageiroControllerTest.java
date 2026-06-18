@@ -16,6 +16,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithMockUser;
@@ -24,6 +26,7 @@ import org.springframework.test.web.servlet.MockMvc;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
+import java.util.List;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
@@ -215,13 +218,14 @@ class PassageiroControllerTest {
                 LocalDate.of(2026,5,10),
                 LocalTime.of(8,0), LocalTime.of(9,0), false);
 
-        when(viagemService.listarViagensPorPassageiroCpf(CPF_PASSAGEIRO)).thenReturn(java.util.List.of(viagemResumo));
+        when(viagemService.listarViagensPorPassageiroCpf(eq(CPF_PASSAGEIRO), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(List.of(viagemResumo)));
 
         mockMvc.perform(get("/passageiros/{cpf}/viagens", CPF_PASSAGEIRO))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].codigoViagem").value("VIA-12345678"));
+                .andExpect(jsonPath("$.content[0].codigoViagem").value("VIA-12345678"));
 
         verify(securityUtils, times(1)).validateCpfAccess(CPF_PASSAGEIRO);
-        verify(viagemService, times(1)).listarViagensPorPassageiroCpf(CPF_PASSAGEIRO);
+        verify(viagemService, times(1)).listarViagensPorPassageiroCpf(eq(CPF_PASSAGEIRO), any(Pageable.class));
     }
 }

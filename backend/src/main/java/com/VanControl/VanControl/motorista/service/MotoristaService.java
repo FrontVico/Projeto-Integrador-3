@@ -11,10 +11,10 @@ import com.VanControl.VanControl.motorista.mapper.MotoristaMapper;
 import com.VanControl.VanControl.motorista.repository.MotoristaRepository;
 import com.VanControl.VanControl.common.Service.CredentialsService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -41,11 +41,9 @@ public class MotoristaService {
         return MotoristaMapper.converterParaMotoristaDto(motorista);
     }
 
-    public List<MotoristaResponseDto> buscarTodosMotoristas() {
-        return motoristaRepository.findAll()
-                .stream()
-                .map(MotoristaMapper::converterParaMotoristaDto)
-                .toList();
+    public Page<MotoristaResponseDto> buscarTodosMotoristas(Pageable pageable) {
+        return motoristaRepository.findAll(pageable)
+                .map(MotoristaMapper::converterParaMotoristaDto);
     }
 
     public MotoristaDefaultResponseDto atualizarTelefoneMotorista(AtualizarTelefoneMotoristaRequestDto dto) {

@@ -12,7 +12,12 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import java.util.List;
+import java.util.Objects;
+
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -55,9 +60,9 @@ public class PagamentoController {
             summary = "Listar pagamentos do passageiro",
             description = "Entrada: cpf do passageiro (path). Saida: lista de PagamentoResponseDto (nome, competencia, valor, dataVencimento, dataPagamento, status)."
     )
-    public ResponseEntity<List<PagamentoResponseDto>> buscarPagamentosDoPassageiroPorCpf(@PathVariable String cpf){
+    public ResponseEntity<Page<PagamentoResponseDto>> buscarPagamentosDoPassageiroPorCpf(@PathVariable String cpf, @PageableDefault(size = 10, page = 0, sort = "dataVencimento", direction = Sort.Direction.DESC) Pageable pageable){
         securityUtils.validateCpfAccess(cpf);
-        List<PagamentoResponseDto> pagamentos = pagamentoService.buscarPagamentosDoPassageiroPorCpf(cpf);
+        Page<PagamentoResponseDto> pagamentos = pagamentoService.buscarPagamentosDoPassageiroPorCpf(cpf, pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(pagamentos);
     }
@@ -78,8 +83,8 @@ public class PagamentoController {
             summary = "Buscar pagamentos por competencia",
             description = "Entrada: competencia (query, formato MM/yyyy). Saida: lista de PagamentoResponseDto (nome, competencia, valor, dataVencimento, dataPagamento, status)."
     )
-    public ResponseEntity<List<PagamentoResponseDto>> buscarPagamentosPorCompetencia(@RequestParam String competencia){
-        return new ResponseEntity<>(pagamentoService.buscarPagamentosPorCompetencia(competencia),HttpStatus.OK);
+    public ResponseEntity<Page<PagamentoResponseDto>> buscarPagamentosPorCompetencia(@RequestParam String competencia, @PageableDefault(size = 10, page = 0, sort = "dataVencimento", direction = Sort.Direction.DESC) Pageable pageable){
+        return new ResponseEntity<>(pagamentoService.buscarPagamentosPorCompetencia(competencia, pageable),HttpStatus.OK);
     }
 
     @GetMapping("/meus-pagamentos")
@@ -88,10 +93,11 @@ public class PagamentoController {
             summary = "Listar meus pagamentos",
             description = "Saida: lista de PagamentoResponseDto (nome, competencia, valor, dataVencimento, dataPagamento, status) do usuario autenticado."
     )
-    public ResponseEntity<List<PagamentoResponseDto>> buscarMeusPagamentos(){
-        User userLogged = (User) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+    public ResponseEntity<Page<PagamentoResponseDto>> buscarMeusPagamentos(Pageable pageable){
+        User userLogged = (User) Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getPrincipal();
 
-        List<PagamentoResponseDto> pagamentos = pagamentoService.buscarMeusPagamentos(userLogged.getId());
+        assert userLogged != null;
+        Page<PagamentoResponseDto> pagamentos = pagamentoService.buscarMeusPagamentos(userLogged.getId(), pageable);
 
         return ResponseEntity.status(HttpStatus.OK).body(pagamentos);
     }

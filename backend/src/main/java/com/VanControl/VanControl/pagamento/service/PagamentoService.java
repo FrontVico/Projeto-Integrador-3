@@ -13,11 +13,11 @@ import com.VanControl.VanControl.pagamento.repository.PagamentoRepository;
 import com.VanControl.VanControl.passageiro.domain.entity.Passageiro;
 import com.VanControl.VanControl.passageiro.repository.PassageiroRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -62,18 +62,16 @@ public class PagamentoService{
         return new PagamentoDefaultResponseDto("Status e data de pagamento atualizado com sucesso");
     }
 
-    public List<PagamentoResponseDto> buscarPagamentosDoPassageiroPorCpf(String cpf){
+    public Page<PagamentoResponseDto> buscarPagamentosDoPassageiroPorCpf(String cpf, Pageable pageable){
         var passageiro = passageiroRepository.findByUser_Cpf(cpf)
                 .orElseThrow(() -> new NotFoundException("Passageiro não encontrado"));
 
-        var pagamentos = pagamentoRepository.findByPassageiroId(passageiro.getId());
+        var pagamentos = pagamentoRepository.findByPassageiroId(passageiro.getId(), pageable);
         if (pagamentos.isEmpty()) {
             throw new NotFoundException("Nenhum pagamento encontrado para esse passageiro");
         }
 
-        return pagamentos.stream()
-                .map(PagamentoMapper::converterParaPagamentoDto)
-                .toList();
+        return pagamentos.map(PagamentoMapper::converterParaPagamentoDto);
     }
 
     public PagamentoResponseDto buscarPagamentoPorCodigoPagamento(String codigoPagamento){
@@ -83,28 +81,22 @@ public class PagamentoService{
         return  PagamentoMapper.converterParaPagamentoDto(pagamento);
     }
 
-    public List<PagamentoResponseDto> buscarPagamentosPorCompetencia(String competencia){
-        var pagamento = pagamentoRepository.findByCompetencia(competencia);
+    public Page<PagamentoResponseDto> buscarPagamentosPorCompetencia(String competencia, Pageable pageable){
+        var pagamento = pagamentoRepository.findByCompetencia(competencia, pageable);
         if(pagamento.isEmpty()){
             throw new NotFoundException("Competencia não encontrado");
         }
-
-        return pagamento.stream()
-                .map(PagamentoMapper::converterParaPagamentoDto)
-                .toList();
-
+        return pagamento.map(PagamentoMapper::converterParaPagamentoDto);
     }
 
-    public List<PagamentoResponseDto> buscarMeusPagamentos(UUID user){
+    public Page<PagamentoResponseDto> buscarMeusPagamentos(UUID user, Pageable pageable){
 
         Passageiro passageiro = passageiroRepository.findByUser_Id(user)
                 .orElseThrow(() -> new NotFoundException("Perfil de passageiro não encontrado para esse usuário"));
 
-        List<Pagamento> pagamentos = pagamentoRepository.findByPassageiroId(passageiro.getId());
+        Page<Pagamento> pagamentos = pagamentoRepository.findByPassageiroId(passageiro.getId(), pageable);
 
-        return pagamentos.stream()
-                .map(PagamentoMapper::converterParaPagamentoDto)
-                .toList();
+        return pagamentos.map(PagamentoMapper::converterParaPagamentoDto);
     }
 
     @Transactional

@@ -11,10 +11,10 @@ import com.VanControl.VanControl.veiculo.domain.enums.StatusEnum;
 import com.VanControl.VanControl.veiculo.mapper.VeiculoMapper;
 import com.VanControl.VanControl.veiculo.repository.VeiculoRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -38,11 +38,8 @@ public class VeiculoService {
         return VeiculoMapper.converterParaVeiculoDto(veiculo);
     }
 
-    public List<VeiculoResponseDto> listarVeiculos() {
-        return veiculoRepository.findAll()
-                .stream()
-                .map(VeiculoMapper::converterParaVeiculoDto)
-                .toList();
+    public Page<VeiculoResponseDto> listarVeiculos(Pageable pageable) {
+        return veiculoRepository.findAll(pageable).map(VeiculoMapper::converterParaVeiculoDto);
     }
 
     public VeiculoDefaultResponseDto atualizarStatusVeiculo(AtualizarStatusVeiculoRequestDto dto) {

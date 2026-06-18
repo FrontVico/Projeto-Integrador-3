@@ -11,6 +11,9 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.context.bean.override.mockito.MockitoBean;
@@ -79,18 +82,21 @@ class PagamentoControllerTest {
     @WithMockUser(username = "12345678901", roles = "PASSAGEIRO")
     void deveBuscarPagamentosQuandoPassageiroAcessaProprioDados() throws Exception {
         doNothing().when(securityUtils).validateCpfAccess(CPF_PASSAGEIRO);
-        when(pagamentoService.buscarPagamentosDoPassageiroPorCpf(CPF_PASSAGEIRO)).thenReturn(pagamentosResponseDto);
+        // CORREÇÃO: mock ajustado para receber "eq(CPF)" e "any(Pageable.class)", além de retornar PageImpl
+        when(pagamentoService.buscarPagamentosDoPassageiroPorCpf(eq(CPF_PASSAGEIRO), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(pagamentosResponseDto));
 
+        // CORREÇÃO: Respostas do tipo Page() criam o array de dados dentro do objeto `content` no JSON retornado
         mockMvc.perform(get("/pagamentos/passageiro/{cpf}", CPF_PASSAGEIRO))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(2))
-                .andExpect(jsonPath("$[0].nome").value("João Silva"))
-                .andExpect(jsonPath("$[0].status").value("PAGO"))
-                .andExpect(jsonPath("$[1].status").value("PENDENTE"));
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(2))
+                .andExpect(jsonPath("$.content[0].nome").value("João Silva"))
+                .andExpect(jsonPath("$.content[0].status").value("PAGO"))
+                .andExpect(jsonPath("$.content[1].status").value("PENDENTE"));
 
         verify(securityUtils, times(1)).validateCpfAccess(CPF_PASSAGEIRO);
-        verify(pagamentoService, times(1)).buscarPagamentosDoPassageiroPorCpf(CPF_PASSAGEIRO);
+        verify(pagamentoService, times(1)).buscarPagamentosDoPassageiroPorCpf(eq(CPF_PASSAGEIRO), any(Pageable.class));
     }
 
     @Test
@@ -105,7 +111,7 @@ class PagamentoControllerTest {
                 .andExpect(status().isForbidden());
 
         verify(securityUtils, times(1)).validateCpfAccess(CPF_OUTRO_PASSAGEIRO);
-        verify(pagamentoService, never()).buscarPagamentosDoPassageiroPorCpf(any());
+        verify(pagamentoService, never()).buscarPagamentosDoPassageiroPorCpf(any(), any());
     }
 
     @Test
@@ -113,15 +119,16 @@ class PagamentoControllerTest {
     @WithMockUser(username = "99999999999", roles = "ADMIN")
     void devePermitirAdminBuscarPagamentosDeQualquerPassageiro() throws Exception {
         doNothing().when(securityUtils).validateCpfAccess(CPF_PASSAGEIRO);
-        when(pagamentoService.buscarPagamentosDoPassageiroPorCpf(CPF_PASSAGEIRO)).thenReturn(pagamentosResponseDto);
+        when(pagamentoService.buscarPagamentosDoPassageiroPorCpf(eq(CPF_PASSAGEIRO), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(pagamentosResponseDto));
 
         mockMvc.perform(get("/pagamentos/passageiro/{cpf}", CPF_PASSAGEIRO))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(2));
 
         verify(securityUtils, times(1)).validateCpfAccess(CPF_PASSAGEIRO);
-        verify(pagamentoService, times(1)).buscarPagamentosDoPassageiroPorCpf(CPF_PASSAGEIRO);
+        verify(pagamentoService, times(1)).buscarPagamentosDoPassageiroPorCpf(eq(CPF_PASSAGEIRO), any(Pageable.class));
     }
 
     @Test
@@ -129,15 +136,16 @@ class PagamentoControllerTest {
     @WithMockUser(username = "88888888888", roles = "MOTORISTA")
     void devePermitirMotoristaBuscarPagamentosDeQualquerPassageiro() throws Exception {
         doNothing().when(securityUtils).validateCpfAccess(CPF_PASSAGEIRO);
-        when(pagamentoService.buscarPagamentosDoPassageiroPorCpf(CPF_PASSAGEIRO)).thenReturn(pagamentosResponseDto);
+        when(pagamentoService.buscarPagamentosDoPassageiroPorCpf(eq(CPF_PASSAGEIRO), any(Pageable.class)))
+                .thenReturn(new PageImpl<>(pagamentosResponseDto));
 
         mockMvc.perform(get("/pagamentos/passageiro/{cpf}", CPF_PASSAGEIRO))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(2));
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(2));
 
         verify(securityUtils, times(1)).validateCpfAccess(CPF_PASSAGEIRO);
-        verify(pagamentoService, times(1)).buscarPagamentosDoPassageiroPorCpf(CPF_PASSAGEIRO);
+        verify(pagamentoService, times(1)).buscarPagamentosDoPassageiroPorCpf(eq(CPF_PASSAGEIRO), any(Pageable.class));
     }
 
     @Test
@@ -145,14 +153,15 @@ class PagamentoControllerTest {
     @WithMockUser(username = "12345678901", roles = "PASSAGEIRO")
     void deveRetornarListaVaziaQuandoPassageiroNaoTemPagamentos() throws Exception {
         doNothing().when(securityUtils).validateCpfAccess(CPF_PASSAGEIRO);
-        when(pagamentoService.buscarPagamentosDoPassageiroPorCpf(CPF_PASSAGEIRO)).thenReturn(Collections.emptyList());
+        when(pagamentoService.buscarPagamentosDoPassageiroPorCpf(eq(CPF_PASSAGEIRO), any(Pageable.class)))
+                .thenReturn(Page.empty());
 
         mockMvc.perform(get("/pagamentos/passageiro/{cpf}", CPF_PASSAGEIRO))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$").isArray())
-                .andExpect(jsonPath("$.length()").value(0));
+                .andExpect(jsonPath("$.content").isArray())
+                .andExpect(jsonPath("$.content.length()").value(0));
 
         verify(securityUtils, times(1)).validateCpfAccess(CPF_PASSAGEIRO);
-        verify(pagamentoService, times(1)).buscarPagamentosDoPassageiroPorCpf(CPF_PASSAGEIRO);
+        verify(pagamentoService, times(1)).buscarPagamentosDoPassageiroPorCpf(eq(CPF_PASSAGEIRO), any(Pageable.class));
     }
 }

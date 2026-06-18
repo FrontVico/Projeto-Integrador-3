@@ -12,12 +12,13 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/passageiros")
@@ -46,8 +47,8 @@ public class PassageiroController {
             summary = "Listar passageiros",
             description = "Saida: lista de PassageiroResponseDto (nome, cpf, telefone, email, intituicaoEnsino, turno, endereco, cep)."
     )
-    public ResponseEntity<List<PassageiroResponseDto>> buscarTodosPassageiros() {
-        return new ResponseEntity<>(passageiroService.listarPassageiros(), HttpStatus.OK);
+    public ResponseEntity<Page<PassageiroResponseDto>> buscarTodosPassageiros(@PageableDefault(size = 10, page = 0, sort = "user.name", direction = org.springframework.data.domain.Sort.Direction.ASC) Pageable pageable) {
+        return new ResponseEntity<>(passageiroService.listarPassageiros(pageable), HttpStatus.OK);
     }
 
     @PutMapping("/{cpf}")
@@ -77,8 +78,8 @@ public class PassageiroController {
             summary = "Listar viagens do passageiro",
             description = "Entrada: cpf (path). Saida: lista de ViagemResumoResponseDto."
     )
-    public ResponseEntity<List<ViagemResumoResponseDto>> listarViagensPorPassageiro(@PathVariable String cpf) {
+    public ResponseEntity<Page<ViagemResumoResponseDto>> listarViagensPorPassageiro(@PathVariable String cpf, @PageableDefault(size = 10, page = 0, sort = "dataViagem", direction = org.springframework.data.domain.Sort.Direction.DESC) Pageable pageable) {
         securityUtils.validateCpfAccess(cpf);
-        return new ResponseEntity<>(viagemService.listarViagensPorPassageiroCpf(cpf), HttpStatus.OK);
+        return new ResponseEntity<>(viagemService.listarViagensPorPassageiroCpf(cpf, pageable), HttpStatus.OK);
     }
 }

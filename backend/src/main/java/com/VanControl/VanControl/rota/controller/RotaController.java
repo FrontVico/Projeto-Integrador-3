@@ -10,12 +10,14 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/rotas")
@@ -41,8 +43,8 @@ public class RotaController {
             summary = "Buscar rotas por destino",
             description = "Entrada: destino (path). Saida: lista de RotaResponseDto (codigoRota, descricao, destino, distancia, tempoEstimado)."
     )
-    public ResponseEntity<List<RotaResponseDto>> buscarRotaPorDestino(@PathVariable String destino) {
-        List<RotaResponseDto> rotas = rotaService.buscarRotaPorDestino(destino);
+    public ResponseEntity<Page<RotaResponseDto>> buscarRotaPorDestino(@PathVariable String destino, @PageableDefault(size = 10, page = 0, sort = "codigoRota", direction = Sort.Direction.ASC) Pageable pageable) {
+        Page<RotaResponseDto> rotas = rotaService.buscarRotaPorDestino(destino, pageable);
         return ResponseEntity.status(HttpStatus.OK).body(rotas);
     }
 
@@ -51,8 +53,8 @@ public class RotaController {
             summary = "Listar todas as rotas",
             description = "Saida: lista de RotaResponseDto (codigoRota, descricao, destino, distancia, tempoEstimado)."
     )
-    public ResponseEntity<List<RotaResponseDto>> buscarTodasRotas(){
-        return new ResponseEntity<>(rotaService.buscarTodasRotas(), HttpStatus.OK);
+    public ResponseEntity<Page<RotaResponseDto>> buscarTodasRotas(@PageableDefault(size = 10, page = 0, sort = "codigoRota", direction = Sort.Direction.ASC) Pageable pageable){
+        return new ResponseEntity<>(rotaService.buscarTodasRotas(pageable), HttpStatus.OK);
     }
 
     @PatchMapping("/{codigoRota}/descricao")
