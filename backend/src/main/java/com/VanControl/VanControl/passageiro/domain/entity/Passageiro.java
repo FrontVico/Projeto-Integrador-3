@@ -34,24 +34,16 @@ public class Passageiro {
     @Builder.Default
     private List<ViagemPassageiro> viagens = new ArrayList<>();
 
-    private String nome;
-    @Column(unique = true)
-    private String cpf;
     @Column(unique = true)
     private String telefone;
-    @Column(unique = true)
-    private String email;
     private String instituicaoEnsino;
     private String turno;
     private String endereco;
     private String cep;
 
-    public Passageiro(String nome, String cpf, String telefone, String email, String intituicaoEnsino, String turno,
+    public Passageiro(String telefone, String intituicaoEnsino, String turno,
                       String endereco, String cep) {
-        this.nome = nome;
-        this.cpf = cpf;
         this.telefone = telefone;
-        this.email = email;
         this.instituicaoEnsino = intituicaoEnsino;
         this.turno = turno;
         this.endereco = endereco;

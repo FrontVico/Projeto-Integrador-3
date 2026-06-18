@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 @Service
@@ -28,17 +29,17 @@ public class PagamentoService{
 
     public PagamentoDefaultResponseDto cadastrarPagamento(CadastrarPagamentoRequestDto dto) {
 
-        Passageiro passageiro = passageiroRepository.findByCpf(dto.cpf());
+            var passageiro = passageiroRepository.findByUser_Cpf(dto.cpf());
 
-        if(passageiro == null){
+        if(passageiro.isEmpty()){
             throw new NotFoundException("Passageiro não encontrado");
         }
 
-        if (pagamentoRepository.existsByPassageiroIdAndCompetencia(passageiro.getId(), dto.competencia())) {
+        if (pagamentoRepository.existsByPassageiroIdAndCompetencia(passageiro.get().getId(), dto.competencia())) {
             throw new ConflictException("Pagamento já cadastrado para o passageiro na competência: " + dto.competencia());
         }
 
-        var pagamento = PagamentoMapper.converterParaPagamento(dto, passageiro);
+        var pagamento = PagamentoMapper.converterParaPagamento(dto, passageiro.get());
         pagamento.setStatus(StatusPagamento.PENDENTE);
 
         pagamento.setCodigoPagamento("PGTO-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase());
@@ -62,10 +63,9 @@ public class PagamentoService{
     }
 
     public List<PagamentoResponseDto> buscarPagamentosDoPassageiroPorCpf(String cpf){
-        Passageiro passageiro = passageiroRepository.findByCpf(cpf);
-        if(passageiro == null){
-            throw new NotFoundException("Passageiro não encontrado");
-        }
+        var passageiro = passageiroRepository.findByUser_Cpf(cpf)
+                .orElseThrow(() -> new NotFoundException("Passageiro não encontrado"));
+
         var pagamentos = pagamentoRepository.findByPassageiroId(passageiro.getId());
         if (pagamentos.isEmpty()) {
             throw new NotFoundException("Nenhum pagamento encontrado para esse passageiro");

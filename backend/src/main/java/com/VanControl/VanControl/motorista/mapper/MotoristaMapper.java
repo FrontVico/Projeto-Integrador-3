@@ -9,19 +9,18 @@ public class MotoristaMapper {
 
     public static Motorista converterParaMotorista(CadastrarMotoristaRequestDto dto) {
         return new Motorista(
-                dto.nome(),
                 dto.cnh(),
                 dto.categoriaCnh(),
                 dto.dataValidadeCnh(),
-                dto.cpf(),
                 dto.telefone()
         );
     }
 
     public static MotoristaResponseDto converterParaMotoristaDto(Motorista motorista) {
         return new MotoristaResponseDto(
-                motorista.getNome(),
-                motorista.getCpf(),
+                motorista.getUser() != null ? motorista.getUser().getName() : null,
+                motorista.getUser() != null ? motorista.getUser().getCpf() : null,
+                motorista.getUser() != null ? motorista.getUser().getEmail() : null,
                 motorista.getCnh(),
                 motorista.getCategoriaCnh(),
                 motorista.getDataValidadeCnh(),

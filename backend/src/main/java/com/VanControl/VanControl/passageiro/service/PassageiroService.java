@@ -8,8 +8,10 @@ import com.VanControl.VanControl.passageiro.domain.dto.response.PassageiroRespon
 import com.VanControl.VanControl.passageiro.domain.entity.Passageiro;
 import com.VanControl.VanControl.passageiro.mapper.PassageiroMapper;
 import com.VanControl.VanControl.passageiro.repository.PassageiroRepository;
+import com.VanControl.VanControl.user.Repository.UserRepository;
 import com.VanControl.VanControl.user.domain.dto.request.RegisterRequestDTO;
 import com.VanControl.VanControl.user.domain.entity.User;
+import com.VanControl.VanControl.user.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.Authentication;
@@ -27,9 +29,10 @@ import static com.VanControl.VanControl.passageiro.mapper.PassageiroMapper.conve
 public class PassageiroService {
 
     private final PassageiroRepository passageiroRepository;
+    private final UserService userService;
 
     public void cadastrarPassageiro(RegisterRequestDTO dto, User user) {
-        if(passageiroRepository.findByCpf(dto.cpf()) != null){
+        if(passageiroRepository.findByUser_Cpf(dto.cpf()).isPresent()){
             throw new ConflictException("Passageiro já cadastrado");
         }
         var passageiro = converterParaPassageiro(dto);
@@ -55,10 +58,13 @@ public class PassageiroService {
 
         verificarPermissaoAcesso(passageiro);
 
-        if (dto.nome() != null) passageiro.setNome(dto.nome());
+        if (dto.nome() != null) {
+            if(passageiro.getUser() != null) {
+                passageiro.getUser().setName(dto.nome());
+            }
+        }
         if (dto.telefone() != null) passageiro.setTelefone(dto.telefone());
         if (dto.email() != null) {
-            passageiro.setEmail(dto.email());
             if (passageiro.getUser() != null) {
                 passageiro.getUser().setEmail(dto.email());
             }
@@ -86,21 +92,22 @@ public class PassageiroService {
     private void verificarPermissaoAcesso(Passageiro passageiro) {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
 
+        assert auth != null;
         var usuarioLogado = (User) auth.getPrincipal();
 
         boolean hasAdminRole = auth.getAuthorities().stream()
                 .anyMatch(a -> Objects.equals(a.getAuthority(), "ROLE_ADMIN"));
 
-        if(!hasAdminRole && !Objects.equals(usuarioLogado.getEmail(), passageiro.getEmail())) {
-            throw new AccessDeniedException("Acesso negado");
+        if(!hasAdminRole) {
+            assert usuarioLogado != null;
+            if (!Objects.equals(usuarioLogado.getEmail(), passageiro.getUser().getEmail())) {
+                throw new AccessDeniedException("Acesso negado");
+            }
         }
     }
 
     private Passageiro buscarPassageiroPorCpfInterno(String cpf) {
-        var passageiro = passageiroRepository.findByCpf(cpf);
-        if(passageiro == null){
-            throw new NotFoundException("Passageiro não encontrado");
-        }
-        return passageiro;
+        return passageiroRepository.findByUser_Cpf(cpf)
+                .orElseThrow(() -> new NotFoundException("Passageiro não encontrado"));
     }
 }

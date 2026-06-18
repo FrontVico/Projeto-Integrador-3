@@ -22,7 +22,7 @@ public class PagamentoMapper {
     public static PagamentoResponseDto converterParaPagamentoDto(Pagamento pagamento){
         return new PagamentoResponseDto(
                 pagamento.getCodigoPagamento(),
-                pagamento.getPassageiro().getNome(),
+                pagamento.getPassageiro().getUser().getName(),
                 pagamento.getCompetencia(),
                 pagamento.getValor(),
                 pagamento.getDataVencimento(),

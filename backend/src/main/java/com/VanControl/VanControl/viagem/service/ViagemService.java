@@ -153,9 +153,9 @@ public class ViagemService {
 
     private PassageiroResumoResponseDto converterParaResumo(Passageiro passageiro) {
         return new PassageiroResumoResponseDto(
-                passageiro.getNome(),
-                passageiro.getCpf(),
-                passageiro.getEmail()
+                passageiro.getUser().getName(),
+                passageiro.getUser().getCpf(),
+                passageiro.getUser().getEmail()
         );
     }
 
@@ -180,11 +180,8 @@ public class ViagemService {
     }
 
     private Passageiro buscarPassageiroPorCpfInterno(String cpf) {
-        var passageiro = passageiroRepository.findByCpf(cpf);
-        if (passageiro == null) {
-            throw new NotFoundException("Passageiro não encontrado");
-        }
-        return passageiro;
+        return passageiroRepository.findByUser_Cpf(cpf)
+                .orElseThrow(() -> new NotFoundException("Passageiro não encontrado"));
     }
 
     private void validarAcessoViagem(Viagem viagem) {
@@ -194,10 +191,8 @@ public class ViagemService {
             return;
         }
 
-        var passageiro = passageiroRepository.findByCpf(user.getCpf());
-        if (passageiro == null) {
-            throw new AccessDeniedException("Acesso negado");
-        }
+        var passageiro = passageiroRepository.findByUser_Cpf(user.getCpf())
+                .orElseThrow(() -> new AccessDeniedException("Acesso negado"));
 
         boolean associado = viagemPassageiroRepository.existsByViagem_IdAndPassageiro_Id(viagem.getId(), passageiro.getId());
         if (!associado) {

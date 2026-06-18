@@ -6,7 +6,7 @@ import com.VanControl.VanControl.user.domain.dto.request.RegisterRequestDTO;
 import com.VanControl.VanControl.user.domain.dto.request.ResetPasswordRequestDto;
 import com.VanControl.VanControl.user.domain.dto.response.DefaultResponseDto;
 import com.VanControl.VanControl.user.domain.dto.response.ResponseDTO;
-import com.VanControl.VanControl.user.service.UserService;
+import com.VanControl.VanControl.common.Service.CredentialsService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RestController;
 @SecurityRequirements
 public class AuthController {
 
-    private final UserService userService;
+    private final CredentialsService credentialsService;
 
     @PostMapping("/login")
     @Operation(
@@ -34,7 +34,7 @@ public class AuthController {
             description = "Entrada: LoginRequestDTO (email, password). Saida: ResponseDTO (name, token)."
     )
     public ResponseEntity<ResponseDTO> login(@RequestBody LoginRequestDTO dto){
-        return new ResponseEntity<>(userService.login(dto), HttpStatus.OK);
+        return new ResponseEntity<>(credentialsService.login(dto), HttpStatus.OK);
     }
 
     @PostMapping("/register")
@@ -43,7 +43,7 @@ public class AuthController {
             description = "Entrada: RegisterRequestDTO (name, email, password, cpf, telefone, instituicaoEnsino, turno, endereco, cep). Saida: ResponseDTO (name, token)."
     )
     public ResponseEntity<ResponseDTO> register(@RequestBody RegisterRequestDTO dto) {
-        return new ResponseEntity<>(userService.registrarUsuario(dto), HttpStatus.CREATED);
+        return new ResponseEntity<>(credentialsService.registrarUsuario(dto), HttpStatus.CREATED);
     }
 
     @PostMapping("/forgot-password")
@@ -51,7 +51,7 @@ public class AuthController {
             summary = "Solicitar recuperação de senha",
             description = "Gera um PIN de 6 dígitos e envia por e-mail")
     public ResponseEntity<DefaultResponseDto> forgotPassword(@RequestBody ForgotPasswordRequestDto dto) {
-        userService.forgotPassword(dto.email());
+        credentialsService.forgotPassword(dto.email());
         return new ResponseEntity<>(new DefaultResponseDto("PIN enviado no seu e-mail!"), HttpStatus.OK);
     }
 
@@ -60,7 +60,7 @@ public class AuthController {
             summary = "Resetar a senha",
             description = "Valida o PIN e salva a nova senha")
     public ResponseEntity<DefaultResponseDto> resetPassword(@RequestBody ResetPasswordRequestDto dto) {
-        userService.resetPassword(dto.email(), dto.pin(), dto.newPassword());
+        credentialsService.resetPassword(dto.email(), dto.pin(), dto.newPassword());
         return new ResponseEntity<>(new DefaultResponseDto("Senha resetada com sucesso!"), HttpStatus.OK);
     }
 }

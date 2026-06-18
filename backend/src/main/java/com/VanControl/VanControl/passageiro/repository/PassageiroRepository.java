@@ -7,7 +7,6 @@ import java.util.Optional;
 import java.util.UUID;
 
 public interface PassageiroRepository extends JpaRepository<Passageiro, UUID> {
-    Passageiro findByCpf(String cpf);
-
     Optional<Passageiro> findByUser_Id(String user);
+    Optional<Passageiro> findByUser_Cpf(String cpf);
 }

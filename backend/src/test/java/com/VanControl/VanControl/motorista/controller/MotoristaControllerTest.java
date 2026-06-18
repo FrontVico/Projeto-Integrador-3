@@ -60,6 +60,7 @@ class MotoristaControllerTest {
         motoristaResponseDto = new MotoristaResponseDto(
                 "Maria Santos",
                 CPF_PRINCIPAL,
+                "email@gmail.com",
                 "98765432101",
                 "D",
                 YearMonth.of(2026, 12),
