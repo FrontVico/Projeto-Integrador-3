@@ -14,6 +14,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import java.util.Collections;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -31,21 +32,21 @@ class SecurityUtilsTest {
     @BeforeEach
     void setUp() {
         passageiroUser = new User();
-        passageiroUser.setId("user-passageiro-id");
+        passageiroUser.setId(UUID.randomUUID());
         passageiroUser.setName("João Silva");
         passageiroUser.setEmail("joao@email.com");
         passageiroUser.setCpf("12345678901");
         passageiroUser.setRole(Role.PASSAGEIRO);
 
         motoristaUser = new User();
-        motoristaUser.setId("user-motorista-id");
+        motoristaUser.setId(UUID.randomUUID());
         motoristaUser.setName("Maria Santos");
         motoristaUser.setEmail("maria@email.com");
         motoristaUser.setCpf("98765432100");
         motoristaUser.setRole(Role.MOTORISTA);
 
         adminUser = new User();
-        adminUser.setId("user-admin-id");
+        adminUser.setId(UUID.randomUUID());
         adminUser.setName("Admin User");
         adminUser.setEmail("admin@email.com");
         adminUser.setCpf("11111111111");
@@ -87,7 +88,7 @@ class SecurityUtilsTest {
     @DisplayName("Deve lançar exceção quando usuário não possui CPF")
     void deveLancarExcecaoQuandoUsuarioNaoPossuiCpf() {
         User userSemCpf = new User();
-        userSemCpf.setId("user-id");
+        userSemCpf.setId(UUID.randomUUID());
         userSemCpf.setRole(Role.PASSAGEIRO);
         authenticateUser(userSemCpf);
 
